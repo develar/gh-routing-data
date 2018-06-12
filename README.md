@@ -2,12 +2,12 @@
 
 Routing data for GraphHopper. To use for offline routing for awesome and the best outdfoor navigation app [Locus Map](http://www.locusmap.eu).
 
-## Germany, Austria and Switzerland 
+| Region  | Link  |
+| ------------- | ------------- |
+| Germany, Austria and Switzerland | [[osm-gh.zip]](https://s3.eu-central-1.amazonaws.com/gh-routing-data/2018-06-11/de-at-ch.osm-gh.zip) (2.88 GB)  |
+| Italy | [[osm-gh.zip]](https://s3.eu-central-1.amazonaws.com/gh-routing-data/2018-06-11/italy.osm-gh.zip) (996.99 MB)  |
 
-[de-at-ch.osm-gh.zip
-](https://gh-routing-data.ams3.digitaloceanspaces.com/10.06.2018/de-at-ch.osm-gh.zip)
-
-[Source](http://download.geofabrik.de/europe/dach.html) OSM map and coverage.
+File [issue](https://github.com/develar/gh-routing-data/issues) if routing data not provided for wanted country/region.
 
 ### Notes
 
