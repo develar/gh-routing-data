@@ -11,21 +11,21 @@ Click a "Locus" link to install on Locus (will be automatically downloaded and e
 ## Europe
 | Region | Install | Size | Coverage |
 | --- | --- | --- | --- |
-| [Germany, Austria and Switzerland](https://s3.eu-central-1.amazonaws.com/gh-routing-data/2018-06-11/de-at-ch.osm-gh.zip) | [Locus](locus-actions://https/s3.eu-central-1.amazonaws.com/gh-routing-data/2018-06-11/de-at-ch.locus.xml) | 3.09 GB | [coverage](https://download.geofabrik.de/europe/dach.html) |
-| [Italy](https://s3.eu-central-1.amazonaws.com/gh-routing-data/2018-06-11/italy.osm-gh.zip) | [Locus](locus-actions://https/s3.eu-central-1.amazonaws.com/gh-routing-data/2018-06-11/italy.locus.xml) | 1.05 GB | [coverage](https://download.geofabrik.de/europe/italy.html) |
-| [Czech Republic](https://s3.eu-central-1.amazonaws.com/gh-routing-data/2018-06-13/czech-republic.osm-gh.zip) | [Locus](locus-actions://https/s3.eu-central-1.amazonaws.com/gh-routing-data/2018-06-13/czech-republic.locus.xml) | 256 MB | [coverage](https://download.geofabrik.de/europe/czech-republic.html) |
+| [Germany, Austria and Switzerland](https://s3.eu-central-1.amazonaws.com/gh-routing-data/2018-06-11/de-at-ch.osm-gh.zip) | <a href="locus-actions://https/s3.eu-central-1.amazonaws.com/gh-routing-data/2018-06-11/de-at-ch.locus.xml">Locus</a> | 3.09 GB | [coverage](https://download.geofabrik.de/europe/dach.html) |
+| [Italy](https://s3.eu-central-1.amazonaws.com/gh-routing-data/2018-06-11/italy.osm-gh.zip) | <a href="locus-actions://https/s3.eu-central-1.amazonaws.com/gh-routing-data/2018-06-11/italy.locus.xml">Locus</a> | 1.05 GB | [coverage](https://download.geofabrik.de/europe/italy.html) |
+| [Czech Republic](https://s3.eu-central-1.amazonaws.com/gh-routing-data/2018-06-13/czech-republic.osm-gh.zip) | <a href="locus-actions://https/s3.eu-central-1.amazonaws.com/gh-routing-data/2018-06-13/czech-republic.locus.xml">Locus</a> | 256 MB | [coverage](https://download.geofabrik.de/europe/czech-republic.html) |
 
 ## North America
 | Region | Install | Size | Coverage |
 | --- | --- | --- | --- |
-| [Canada](https://s3.eu-central-1.amazonaws.com/gh-routing-data/2018-06-13/canada.osm-gh.zip) | [Locus](locus-actions://https/s3.eu-central-1.amazonaws.com/gh-routing-data/2018-06-13/canada.locus.xml) | 562 MB | [coverage](https://download.geofabrik.de/north-america/canada.html) |
-| [US Midwest](https://s3.eu-central-1.amazonaws.com/gh-routing-data/2018-06-13/us-midwest.osm-gh.zip) | [Locus](locus-actions://https/s3.eu-central-1.amazonaws.com/gh-routing-data/2018-06-13/us-midwest.locus.xml) | 1.43 GB | [coverage](https://download.geofabrik.de/north-america/us-midwest.html) |
-| [US Northeast](https://s3.eu-central-1.amazonaws.com/gh-routing-data/2018-06-13/us-northeast.osm-gh.zip) | [Locus](locus-actions://https/s3.eu-central-1.amazonaws.com/gh-routing-data/2018-06-13/us-northeast.locus.xml) | 687 MB | [coverage](https://download.geofabrik.de/north-america/us-northeast.html) |
-| [US pacific](https://s3.eu-central-1.amazonaws.com/gh-routing-data/2018-06-13/us-pacific.osm-gh.zip) | [Locus](locus-actions://https/s3.eu-central-1.amazonaws.com/gh-routing-data/2018-06-13/us-pacific.locus.xml) | 21.5 MB | [coverage](https://download.geofabrik.de/north-america/us-pacific.html) |
-| [US South](https://s3.eu-central-1.amazonaws.com/gh-routing-data/2018-06-13/us-south.osm-gh.zip) | [Locus](locus-actions://https/s3.eu-central-1.amazonaws.com/gh-routing-data/2018-06-13/us-south.locus.xml) | 2.16 GB | [coverage](https://download.geofabrik.de/north-america/us-south.html) |
-| [US West](https://s3.eu-central-1.amazonaws.com/gh-routing-data/2018-06-13/us-west.osm-gh.zip) | [Locus](locus-actions://https/s3.eu-central-1.amazonaws.com/gh-routing-data/2018-06-13/us-west.locus.xml) | 1.49 GB | [coverage](https://download.geofabrik.de/north-america/us-west.html) |
+| [Canada](https://s3.eu-central-1.amazonaws.com/gh-routing-data/2018-06-13/canada.osm-gh.zip) | <a href="locus-actions://https/s3.eu-central-1.amazonaws.com/gh-routing-data/2018-06-13/canada.locus.xml">Locus</a> | 562 MB | [coverage](https://download.geofabrik.de/north-america/canada.html) |
+| [US Midwest](https://s3.eu-central-1.amazonaws.com/gh-routing-data/2018-06-13/us-midwest.osm-gh.zip) | <a href="locus-actions://https/s3.eu-central-1.amazonaws.com/gh-routing-data/2018-06-13/us-midwest.locus.xml">Locus</a> | 1.43 GB | [coverage](https://download.geofabrik.de/north-america/us-midwest.html) |
+| [US Northeast](https://s3.eu-central-1.amazonaws.com/gh-routing-data/2018-06-13/us-northeast.osm-gh.zip) | <a href="locus-actions://https/s3.eu-central-1.amazonaws.com/gh-routing-data/2018-06-13/us-northeast.locus.xml">Locus</a> | 687 MB | [coverage](https://download.geofabrik.de/north-america/us-northeast.html) |
+| [US pacific](https://s3.eu-central-1.amazonaws.com/gh-routing-data/2018-06-13/us-pacific.osm-gh.zip) | <a href="locus-actions://https/s3.eu-central-1.amazonaws.com/gh-routing-data/2018-06-13/us-pacific.locus.xml">Locus</a> | 21.5 MB | [coverage](https://download.geofabrik.de/north-america/us-pacific.html) |
+| [US South](https://s3.eu-central-1.amazonaws.com/gh-routing-data/2018-06-13/us-south.osm-gh.zip) | <a href="locus-actions://https/s3.eu-central-1.amazonaws.com/gh-routing-data/2018-06-13/us-south.locus.xml">Locus</a> | 2.16 GB | [coverage](https://download.geofabrik.de/north-america/us-south.html) |
+| [US West](https://s3.eu-central-1.amazonaws.com/gh-routing-data/2018-06-13/us-west.osm-gh.zip) | <a href="locus-actions://https/s3.eu-central-1.amazonaws.com/gh-routing-data/2018-06-13/us-west.locus.xml">Locus</a> | 1.49 GB | [coverage](https://download.geofabrik.de/north-america/us-west.html) |
 
 ## Other
 | Region | Install | Size | Coverage |
 | --- | --- | --- | --- |
-| [Australia](https://s3.eu-central-1.amazonaws.com/gh-routing-data/2018-06-13/australia.osm-gh.zip) | [Locus](locus-actions://https/s3.eu-central-1.amazonaws.com/gh-routing-data/2018-06-13/australia.locus.xml) | 456 MB | [coverage](https://download.geofabrik.de/australia-oceania/australia.html) |
+| [Australia](https://s3.eu-central-1.amazonaws.com/gh-routing-data/2018-06-13/australia.osm-gh.zip) | <a href="locus-actions://https/s3.eu-central-1.amazonaws.com/gh-routing-data/2018-06-13/australia.locus.xml">Locus</a> | 456 MB | [coverage](https://download.geofabrik.de/australia-oceania/australia.html) |
