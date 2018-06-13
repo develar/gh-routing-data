@@ -1,0 +1,7 @@
+<locusActions>
+  <download>
+    <source size="${size}"><![CDATA[https://s3.eu-central-1.amazonaws.com/gh-routing-data/${file}]]></source>
+    <dest><![CDATA[/mapsVector/${name}]]></dest>
+    <after>extract|deleteSource</after>
+  </download>
+</locusActions>

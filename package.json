@@ -1,0 +1,7 @@
+{
+  "private": true,
+  "dependencies": {
+    "pretty-bytes": "^5.1.0",
+    "s3-bucket-toolkit": "^0.0.10"
+  }
+}
