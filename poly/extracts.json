@@ -1,0 +1,32 @@
+{
+  "extracts": [
+    {
+      "output": "portugal-spain.osm.pbf",
+      "output_format": "pbf",
+      "multipolygon": {
+        "file_name": "portugal-spain.poly"
+      }
+    },
+    {
+      "output": "estonia-latvia-lithuania.osm.pbf",
+      "output_format": "pbf",
+      "multipolygon": {
+        "file_name": "estonia-latvia-lithuania.poly"
+      }
+    },
+    {
+      "output": "al-ba-bg-hr-hu-xk-mk-md-me-ro-rs-sk-si.osm.pbf",
+      "output_format": "pbf",
+      "multipolygon": {
+        "file_name": "al-ba-bg-hr-hu-xk-mk-md-me-ro-rs-sk-si.poly"
+      }
+    },
+    {
+      "output": "finland-norway-sweden.osm.pbf",
+      "output_format": "pbf",
+      "multipolygon": {
+        "file_name": "finland-norway-sweden.poly"
+      }
+    }
+  ]
+}

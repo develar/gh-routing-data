@@ -5,4 +5,6 @@ set -ex
 
 BASEDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
-aria2c --input-file="$BASEDIR/map-urls.txt" --dir="$MAP_DIR" --conditional-get true
+aria2c --max-connection-per-server=2 --max-concurrent-downloads=4 --input-file="$BASEDIR/map-urls.txt" --dir="$MAP_DIR" --conditional-get=true --allow-overwrite=true
+
+# https://ftp5.gwdg.de/pub/misc/openstreetmap/download.geofabrik.de/europe-latest.osm.pbf

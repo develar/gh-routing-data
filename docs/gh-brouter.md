@@ -1,0 +1,3 @@
+* Better routes (at least for racing bike).
+* Much, much faster (nearly instant result, of course, if contraction hierarchies (CH) were prepared for routing data). Provided here data is built using the best possible settings.
+* [GraphHopper](https://www.graphhopper.com) is everywhere - [Komoot](https://www.komoot.com/) uses it, Locus uses online GraphHopper API. So, you get nearly the same route regardless of online status.
