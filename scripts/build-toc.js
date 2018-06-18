@@ -14,12 +14,18 @@ const regionIdToName = {
   "estonia-latvia-lithuania": "Estonia, Latvia and Lithuania",
   "finland-norway-sweden": "Finland, Norway and Sweden",
   "al-ba-bg-hr-hu-xk-mk-md-me-ro-rs-sk-si": "Albania, Bosnia-Herzegovina, Bulgaria, Croatia, Hungary, Kosovo, Macedonia, Moldova, Montenegro, Romania, Serbia, Slovakia and Slovenia",
+
+  "bayern-at-cz": "Bayern (Germany), Austria, Czech Republic",
+
+  "europe-region1": "Austria, Belgium, Croatia, Czech Republic, Denmark, France, Germany, Italy, Luxembourg, Montenegro, Netherlands, Portugal, Spain, Switzerland, Slovenia",
 }
+
+const prefix = ".osm-gh.zip"
 
 async function main() {
   const bucket = new s3Util({
-                                 bucketName: "gh-routing-data",
-                               })
+    bucketName: "gh-routing-data",
+  })
   const files = await bucket.listFiles({})
   const keyToInfo = new Map()
   for (const file of files) {
@@ -28,17 +34,28 @@ async function main() {
     }
   }
 
-  files.sort((a, b) => path.posix.basename(a.Key).localeCompare(path.posix.basename(b.Key)))
+  const dataFiles = files.filter(it => {
+    const name = it.Key
+    return name.endsWith(prefix) && (!name.includes("2018-06-11") || name.includes("italy"))
+  })
+  dataFiles.sort((a, b) => path.posix.basename(a.Key).localeCompare(path.posix.basename(b.Key)))
 
-  const prefix = ".osm-gh.zip"
+  buildToC(dataFiles.filter(it => !isCarRoutingFile(it.Key)), keyToInfo, "index.md")
+  buildToC(dataFiles.filter(it => isCarRoutingFile(it.Key)), keyToInfo, "car.md")
+}
+
+function isCarRoutingFile(fileName) {
+  return fileName.includes("europe-region1") || fileName.includes("we-ce-europe")
+}
+
+function buildToC(files, keyToInfo, resultFileName) {
   const regionGroupToResult = new Map()
   for (const file of files) {
-    if (!file.Key.endsWith(prefix)) {
-      continue
-    }
-
     const name = path.posix.basename(file.Key)
-    const regionId = name.substring(0, name.length - prefix.length)
+    let regionId = name.substring(0, name.length - prefix.length)
+    if (regionId === "we-ce-europe") {
+      regionId = "europe-region1"
+    }
 
     let regionName = regionIdToName[regionId]
     if (regionName == null) {
@@ -75,16 +92,17 @@ async function main() {
     regionGroupToResult.set(regionScope, result)
   }
 
+  let car = regionGroupToResult.get("europe-region1")
+  regionGroupToResult.delete("europe-region1")
+  replace(car, "car.md")
+
   const keys = Array.from(regionGroupToResult.keys()).sort()
   let result = ""
   for (const key of keys) {
     result += regionGroupToResult.get(key)
   }
 
-  // console.log(files)
-
-  replace(result)
-  console.log(result)
+  replace(result, resultFileName)
 }
 
 function getCoverageUrl(regionId) {
@@ -97,8 +115,14 @@ function getCoverageUrl(regionId) {
   if (regionId === "alps") {
     return "https://umap.openstreetmap.fr/en/map/alps-coverage_227659"
   }
+  if (regionId === "finland-norway-sweden") {
+    return "https://umap.openstreetmap.fr/en/map/finland-norway-and-sweden_227901"
+  }
   if (regionId === "al-ba-bg-hr-hu-xk-mk-md-me-ro-rs-sk-si") {
     return "http://umap.openstreetmap.fr/en/map/al-ba-bg-hr-hu-xk-mk-md-me-ro-rs-sk-si-coverage_227665"
+  }
+  if (regionId === "europe-region1") {
+    return "https://umap.openstreetmap.fr/en/map/europe-region-1-coverage_228183"
   }
 
   let coveragePage = getCoverageDir(regionId)
@@ -109,8 +133,8 @@ function getCoverageUrl(regionId) {
   return `https://download.geofabrik.de/${coveragePage}.html`
 }
 
-function replace(content) {
-  const file = path.join(__dirname, "/../docs/index.md")
+function replace(content, fileName) {
+  const file = path.join(__dirname, "/../docs/" + fileName)
   const existingContent = fs.readFileSync(file, "utf8")
   const startMarker = "<!-- do not edit. start of generated block -->"
   const endMarker = "<!-- end of generated block -->"
@@ -133,6 +157,9 @@ function getCoverageDir(regionId) {
   }
   if (regionId === "africa" || regionId === "south-america" || regionId === "russia") {
     return ""
+  }
+  if (regionId === "europe-region1") {
+    return "car"
   }
   return "europe"
 }

@@ -7,7 +7,8 @@ theme:
     primary: 'light blue'
     accent: 'light blue'
 pages:
-  - 'Routing Files': 'index.md'
+  - 'Hike and Bike': 'index.md'
+  - 'Car': 'car.md'
   - 'GraphHopper vs BRouter': 'gh-brouter.md'
 
 repo_name: 'develar/gh-routing-data'

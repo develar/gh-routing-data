@@ -7,7 +7,7 @@ set -ex
 
 BASEDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
-export JAVA_OPTS="-Xmx14g -Xms10g -XX:+UseG1GC"
+export JAVA_OPTS="-Xmx15g -Xms10g -XX:+UseG1GC"
 
 build()
 {
@@ -18,7 +18,8 @@ build()
   if [[ -z "${SKIP_BUILD}" ]]; then
     rm -rf "$NAME.osm-gh"
     rm -rf "$RESULT_NAME.osm-gh"
-    ./graphhopper.sh -a import -i "$MAP_DIR/$NAME.osm.pbf" -c "$BASEDIR/config.yml"
+    node "$BASEDIR/scripts/compute-config.js" "$MAP_DIR/$NAME.osm.pbf"
+    ./graphhopper.sh -a import -i "$MAP_DIR/$NAME.osm.pbf" -c "/tmp/gh-config.yml"
     if [ "$NAME" != "$RESULT_NAME" ]; then
       mv "$MAP_DIR/$NAME.osm-gh" "$MAP_DIR/$RESULT_NAME.osm-gh"
     fi
@@ -29,17 +30,18 @@ build()
 #build "alps-latest" "alps"
 #build "belgium-latest" "belgium"
 #build "czech-republic-latest" "czech-republic"
-
+#
 #build "dach-latest" "de-at-ch"
+#build "bayern-at-cz" "bayern-at-cz"
 #build "denmark-latest" "denmark"
 #build "estonia-latvia-lithuania" "estonia-latvia-lithuania"
 #build "finland-latest" "finland"
 #build "france-latest" "france"
 #build "great-britain-latest" "great-britain"
-
+#
 #build "greece-latest" "greece"
 #build "italy-latest" "italy"
-
+#
 #build "netherlands-latest" "netherlands"
 #build "norway-latest" "norway"
 #build "poland-latest" "poland"
@@ -47,21 +49,21 @@ build()
 #build "russia-latest" "russia"
 #build "sweden-latest" "sweden"
 #build "ukraine-latest" "ukraine"
-
+#
 #build "canada-latest" "canada"
 #build "us-midwest-latest" "us-midwest"
 #build "us-northeast-latest" "us-northeast"
 #build "us-pacific-latest" "us-pacific"
 #build "us-south-latest" "us-south"
 #build "us-west-latest" "us-west"
-
+#
 #build "africa-latest" "africa"
 #build "australia-latest" "australia"
 #build "new-zealand-latest" "new-zealand"
 #build "south-america-latest" "south-america"
-
+#
 #build "al-ba-bg-hr-hu-xk-mk-md-me-ro-rs-sk-si" "al-ba-bg-hr-hu-xk-mk-md-me-ro-rs-sk-si"
-build "finland-norway-sweden" "finland-norway-sweden"
+#build "finland-norway-sweden" "finland-norway-sweden"
 
 # https://stackoverflow.com/questions/14254118/waiting-for-background-processes-to-finish-before-exiting-script
 wait

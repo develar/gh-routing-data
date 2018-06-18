@@ -2,8 +2,8 @@ Routing data for [GraphHopper](https://www.graphhopper.com) for offline navigati
 
 File [issue](https://github.com/develar/gh-routing-data/issues) if routing data not provided for wanted country or region.
 
-!!! info ""
-    GraphHopper doesn't support [multiple](https://github.com/graphhopper/graphhopper/issues/293) files, so, if you need to cross borders, you need to use not country routing data, but some merged, that's why special regions like Alps is provided.
+!!! tip "Cross border navigation"
+    As GraphHopper doesn't support [multiple](https://github.com/graphhopper/graphhopper/issues/293) files, if you need to cross borders, please use special region wide routing data (e.g. Alps).
 
 ## Installation
 
@@ -11,13 +11,13 @@ Click a "Locus" link to install on Locus (will be automatically downloaded and e
 
 ## Maps
 
-??? question "Which vehicles are supported?"
+!!! question "Which vehicles are supported?"
+    * pedestrian or walking with priority for more beautiful hiking tours (`hike`).
     * trekking bike avoiding hills (`bike2`),
     * mountain bike (`mtb`),
     * racing bike (`racingbike`),
-    * pedestrian or walking with priority for more beautiful hiking tours (`hike`).
     
-    Car and foot not supported to reduce size of graph.
+    Routing data for car [provided separately](./car). Foot routing not supported to reduce size of graph (please use `hike` instead).
     
 ??? question "How often data is updated?"
     At least monthly. 
@@ -33,12 +33,13 @@ Last update: 10.06.2018.
 | --- | --- | --- | --- |
 | [Albania, Bosnia-Herzegovina, Bulgaria, Croatia, Hungary, Kosovo, Macedonia, Moldova, Montenegro, Romania, Serbia, Slovakia and Slovenia](https://s3.eu-central-1.amazonaws.com/gh-routing-data/2018-06-14/al-ba-bg-hr-hu-xk-mk-md-me-ro-rs-sk-si.osm-gh.zip) | <a href="locus-actions://https/s3.eu-central-1.amazonaws.com/gh-routing-data/2018-06-14/al-ba-bg-hr-hu-xk-mk-md-me-ro-rs-sk-si.locus.xml">Locus</a> | 856 MB | [coverage](http://umap.openstreetmap.fr/en/map/al-ba-bg-hr-hu-xk-mk-md-me-ro-rs-sk-si-coverage_227665) |
 | [Alps](https://s3.eu-central-1.amazonaws.com/gh-routing-data/2018-06-14/alps.osm-gh.zip) | <a href="locus-actions://https/s3.eu-central-1.amazonaws.com/gh-routing-data/2018-06-14/alps.locus.xml">Locus</a> | 1.61 GB | [coverage](https://umap.openstreetmap.fr/en/map/alps-coverage_227659) |
+| [Bayern (Germany), Austria, Czech Republic](https://s3.eu-central-1.amazonaws.com/gh-routing-data/2018-06-18/bayern-at-cz.osm-gh.zip) | <a href="locus-actions://https/s3.eu-central-1.amazonaws.com/gh-routing-data/2018-06-18/bayern-at-cz.locus.xml">Locus</a> | 1.15 GB | [coverage](https://download.geofabrik.de/europe/bayern-at-cz.html) |
 | [Belgium](https://s3.eu-central-1.amazonaws.com/gh-routing-data/2018-06-14/belgium.osm-gh.zip) | <a href="locus-actions://https/s3.eu-central-1.amazonaws.com/gh-routing-data/2018-06-14/belgium.locus.xml">Locus</a> | 208 MB | [coverage](https://download.geofabrik.de/europe/belgium.html) |
 | [Czech Republic](https://s3.eu-central-1.amazonaws.com/gh-routing-data/2018-06-13/czech-republic.osm-gh.zip) | <a href="locus-actions://https/s3.eu-central-1.amazonaws.com/gh-routing-data/2018-06-13/czech-republic.locus.xml">Locus</a> | 256 MB | [coverage](https://download.geofabrik.de/europe/czech-republic.html) |
-| [Germany, Austria and Switzerland](https://s3.eu-central-1.amazonaws.com/gh-routing-data/2018-06-11/de-at-ch.osm-gh.zip) | <a href="locus-actions://https/s3.eu-central-1.amazonaws.com/gh-routing-data/2018-06-11/de-at-ch.locus.xml">Locus</a> | 3.09 GB | [coverage](https://download.geofabrik.de/europe/dach.html) |
+| [Germany, Austria and Switzerland](https://s3.eu-central-1.amazonaws.com/gh-routing-data/2018-06-18/de-at-ch.osm-gh.zip) | <a href="locus-actions://https/s3.eu-central-1.amazonaws.com/gh-routing-data/2018-06-18/de-at-ch.locus.xml">Locus</a> | 3.14 GB | [coverage](https://download.geofabrik.de/europe/dach.html) |
 | [Denmark](https://s3.eu-central-1.amazonaws.com/gh-routing-data/2018-06-14/denmark.osm-gh.zip) | <a href="locus-actions://https/s3.eu-central-1.amazonaws.com/gh-routing-data/2018-06-14/denmark.locus.xml">Locus</a> | 190 MB | [coverage](https://download.geofabrik.de/europe/denmark.html) |
 | [Estonia, Latvia and Lithuania](https://s3.eu-central-1.amazonaws.com/gh-routing-data/2018-06-14/estonia-latvia-lithuania.osm-gh.zip) | <a href="locus-actions://https/s3.eu-central-1.amazonaws.com/gh-routing-data/2018-06-14/estonia-latvia-lithuania.locus.xml">Locus</a> | 157 MB | [coverage](https://umap.openstreetmap.fr/en/map/estonia-latvia-and-lithuania-coverage_227645#7/57.074/24.439) |
-| [Finland, Norway and Sweden](https://s3.eu-central-1.amazonaws.com/gh-routing-data/2018-06-14/finland-norway-sweden.osm-gh.zip) | <a href="locus-actions://https/s3.eu-central-1.amazonaws.com/gh-routing-data/2018-06-14/finland-norway-sweden.locus.xml">Locus</a> | 810 MB | [coverage](https://download.geofabrik.de/europe/finland-norway-sweden.html) |
+| [Finland, Norway and Sweden](https://s3.eu-central-1.amazonaws.com/gh-routing-data/2018-06-14/finland-norway-sweden.osm-gh.zip) | <a href="locus-actions://https/s3.eu-central-1.amazonaws.com/gh-routing-data/2018-06-14/finland-norway-sweden.locus.xml">Locus</a> | 810 MB | [coverage](https://umap.openstreetmap.fr/en/map/finland-norway-and-sweden_227901) |
 | [Finland](https://s3.eu-central-1.amazonaws.com/gh-routing-data/2018-06-14/finland.osm-gh.zip) | <a href="locus-actions://https/s3.eu-central-1.amazonaws.com/gh-routing-data/2018-06-14/finland.locus.xml">Locus</a> | 282 MB | [coverage](https://download.geofabrik.de/europe/finland.html) |
 | [France](https://s3.eu-central-1.amazonaws.com/gh-routing-data/2018-06-13/france.osm-gh.zip) | <a href="locus-actions://https/s3.eu-central-1.amazonaws.com/gh-routing-data/2018-06-13/france.locus.xml">Locus</a> | 1.84 GB | [coverage](https://download.geofabrik.de/europe/france.html) |
 | [Great Britain](https://s3.eu-central-1.amazonaws.com/gh-routing-data/2018-06-14/great-britain.osm-gh.zip) | <a href="locus-actions://https/s3.eu-central-1.amazonaws.com/gh-routing-data/2018-06-14/great-britain.locus.xml">Locus</a> | 898 MB | [coverage](https://download.geofabrik.de/europe/great-britain.html) |

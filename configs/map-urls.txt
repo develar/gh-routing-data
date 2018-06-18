@@ -27,8 +27,5 @@ http://download.geofabrik.de/australia-oceania/australia-latest.osm.pbf
 http://download.geofabrik.de/australia-oceania/new-zealand-latest.osm.pbf
 http://download.geofabrik.de/south-america-latest.osm.pbf
 
-
-http://download.geofabrik.de/europe/norway-latest.osm.pbf
 http://download.geofabrik.de/europe/finland-latest.osm.pbf
-http://download.geofabrik.de/europe/poland-latest.osm.pbf
 http://download.geofabrik.de/europe/sweden-latest.osm.pbf

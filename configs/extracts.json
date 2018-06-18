@@ -27,6 +27,20 @@
       "multipolygon": {
         "file_name": "finland-norway-sweden.poly"
       }
+    },
+    {
+      "output": "europe-region1.osm.pbf",
+      "output_format": "pbf",
+      "multipolygon": {
+        "file_name": "europe-region1.geojson"
+      }
+    },
+    {
+      "output": "bayern-at-cz.pbf",
+      "output_format": "pbf",
+      "multipolygon": {
+        "file_name": "bayern-at-cz.geojson"
+      }
     }
   ]
 }
