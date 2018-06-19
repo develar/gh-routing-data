@@ -15,7 +15,7 @@ zipFile="$RESULT_NAME.osm-gh.zip"
 if [[ -z "${SKIP_ZIP}" ]]; then
   rm -f "$zipFile"
   zip -r -9 "$zipFile" "$RESULT_NAME.osm-gh"
-  aws s3 cp "$zipFile" "s3://gh-routing-data/$DATE/$zipFile" --acl public-read --content-type application/zip
+  mc cp "$zipFile" "gh-data/gh-data/$DATE/$zipFile"
 fi
 
 "$BASEDIR/locus-action-generator.sh" "$DATE/$zipFile" | mc pipe "gh-data/gh-data/$DATE/$RESULT_NAME.locus.xml"

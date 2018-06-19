@@ -97,7 +97,7 @@ function buildToC(files, keyToInfo, resultFileName) {
     }
 
     result += `| [${regionName}](http://d.graphhopper.develar.org${file.Key})`
-    result += ` | <a href="locus-actions://http://d.graphhopper.develar.org${locusFile}">Locus</a>`
+    result += ` | <a href="locus-actions://http/d.graphhopper.develar.org${locusFile}">Locus</a>`
     result += ` | ${prettyBytes(file.Size)}`
 
 

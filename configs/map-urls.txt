@@ -29,3 +29,8 @@ http://download.geofabrik.de/south-america-latest.osm.pbf
 
 http://download.geofabrik.de/europe/finland-latest.osm.pbf
 http://download.geofabrik.de/europe/sweden-latest.osm.pbf
+
+http://download.geofabrik.de/europe/austria-latest.osm.pbf
+http://download.geofabrik.de/europe/switzerland-latest.osm.pbf
+http://download.geofabrik.de/europe/ireland-and-northern-ireland-latest.osm.pbf
+http://download.geofabrik.de/europe/iceland-latest.osm.pbf

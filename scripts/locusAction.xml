@@ -1,6 +1,6 @@
 <locusActions>
   <download>
-    <source><![CDATA[https://s3.eu-central-1.amazonaws.com/gh-routing-data/${file}]]></source>
+    <source><![CDATA[http://d.graphhopper.develar.org/${file}]]></source>
     <dest><![CDATA[/mapsVector/${name}]]></dest>
     <after>extract|deleteSource</after>
   </download>

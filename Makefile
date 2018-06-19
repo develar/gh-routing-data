@@ -1,8 +1,8 @@
 .PHONY: deps site build coverage compute-geojson extract-maps toc site check-env
 
 deps:
-	brew install python node osmium-tool
-	pip3 install mkdocs-material mkdocs awscli pymdown-extensions --upgrade
+	brew install python node osmium-tool minio/stable/mc
+	pip3 install mkdocs-material mkdocs pymdown-extensions --upgrade
 
 build:
 	./build.sh
