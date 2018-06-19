@@ -1,7 +1,7 @@
 const path = require("path")
 const fs = require("fs")
-const s3Util = require(__dirname + "/bucket.js")
 const prettyBytes = require("pretty-bytes")
+const needle = require("needle");
 
 const regionIdToName = {
   "us-midwest": "US Midwest",
@@ -22,11 +22,25 @@ const regionIdToName = {
 
 const prefix = ".osm-gh.zip"
 
+async function collectFiles(dirPath, files) {
+  // ask master server, not slaves
+  //noinspection JSUnresolvedVariable
+  const list = (await needle("get", `51.15.221.251${dirPath}/`)).body
+  for (const file of list) {
+    const filePath = `${dirPath}/${file.name}`
+
+    if (file.type === "directory") {
+      await collectFiles(filePath, files)
+    }
+    else {
+      files.push({Key: filePath, Size: file.size})
+    }
+  }
+}
+
 async function main() {
-  const bucket = new s3Util({
-    bucketName: "gh-routing-data",
-  })
-  const files = await bucket.listFiles({})
+  const files = []
+  await collectFiles("", files)
   const keyToInfo = new Map()
   for (const file of files) {
     if (!file.Key.endsWith("/")) {
@@ -36,7 +50,7 @@ async function main() {
 
   const dataFiles = files.filter(it => {
     const name = it.Key
-    return name.endsWith(prefix) && (!name.includes("2018-06-11") || name.includes("italy"))
+    return name.endsWith(prefix)
   })
   dataFiles.sort((a, b) => path.posix.basename(a.Key).localeCompare(path.posix.basename(b.Key)))
 
@@ -82,8 +96,8 @@ function buildToC(files, keyToInfo, resultFileName) {
       throw new Error(`Cannot find ${locusFile}`)
     }
 
-    result += `| [${regionName}](https://s3.eu-central-1.amazonaws.com/gh-routing-data/${file.Key})`
-    result += ` | <a href="locus-actions://https/s3.eu-central-1.amazonaws.com/gh-routing-data/${locusFile}">Locus</a>`
+    result += `| [${regionName}](http://d.graphhopper.develar.org${file.Key})`
+    result += ` | <a href="locus-actions://http://d.graphhopper.develar.org${locusFile}">Locus</a>`
     result += ` | ${prettyBytes(file.Size)}`
 
 

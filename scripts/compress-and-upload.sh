@@ -18,4 +18,4 @@ if [[ -z "${SKIP_ZIP}" ]]; then
   aws s3 cp "$zipFile" "s3://gh-routing-data/$DATE/$zipFile" --acl public-read --content-type application/zip
 fi
 
-"$BASEDIR/locus-action-generator.sh" "$DATE/$zipFile" | aws s3 cp - "s3://gh-routing-data/$DATE/$RESULT_NAME.locus.xml" --acl public-read --content-type application/xml
+"$BASEDIR/locus-action-generator.sh" "$DATE/$zipFile" | mc pipe "gh-data/gh-data/$DATE/$RESULT_NAME.locus.xml"
