@@ -4,6 +4,9 @@ deps:
 	brew install python node osmium-tool minio/stable/mc
 	pip3 install mkdocs-material mkdocs pymdown-extensions --upgrade
 
+download: check-env
+	aria2c --max-connection-per-server=2 --max-concurrent-downloads=2 --input-file=configs/map-urls.txt --dir="${MAP_DIR}" --conditional-get --allow-overwrite
+
 build:
 	./build.sh
 
@@ -12,13 +15,13 @@ coverage:
 	node ./scripts/poly-to-geojson.js
 
 extract-maps: check-env
-	osmium extract --overwrite --config=configs/extracts.json --strategy=smart --directory=$MAP_DIR ~/Downloads/europe-latest.osm.pbf
+	osmium extract --overwrite --config=configs/extracts.json --strategy=smart --directory="${MAP_DIR}" ~/Downloads/europe-latest.osm.pbf
 
 toc:
 	node ./scripts/build-toc.js
 
 site: toc
-	mkdocs build
+	mkdocs build --clean
 	netlifyctl deploy --publish-directory site --yes
 
 check-env:

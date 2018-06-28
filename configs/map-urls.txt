@@ -1,36 +1,51 @@
+# to avoid DoS attack to geofabrik, other sources is used in addition (https://gis-lab.info/projects/osm_dump/)
+# maps from http://download.openstreetmap.fr covers a little bit more area than real country, but
+# 1. geofabrik anyway uses smart extract
+# 2. in any case for user better to not hope that route will be covered, but download merged area (several countries) to be sure
+
+http://download.geofabrik.de/africa-latest.osm.pbf
 http://download.geofabrik.de/europe/alps-latest.osm.pbf
+http://download.geofabrik.de/australia-oceania/australia-latest.osm.pbf
+http://download.geofabrik.de/europe/austria-latest.osm.pbf
+
 http://download.geofabrik.de/europe/belgium-latest.osm.pbf
+http://download.geofabrik.de/south-america/brazil-latest.osm.pbf
+
+http://download.geofabrik.de/north-america/canada-latest.osm.pbf
+http://download.geofabrik.de/central-america-latest.osm.pbf
 http://download.geofabrik.de/europe/czech-republic-latest.osm.pbf
 
 http://download.geofabrik.de/europe/dach-latest.osm.pbf
 http://download.geofabrik.de/europe/denmark-latest.osm.pbf
-http://download.geofabrik.de/europe/france-latest.osm.pbf
-http://download.geofabrik.de/europe/great-britain-latest.osm.pbf
 
+http://download.geofabrik.de/europe/finland-latest.osm.pbf
+http://download.geofabrik.de/europe/france-latest.osm.pbf
+
+http://download.geofabrik.de/europe/great-britain-latest.osm.pbf
 http://download.geofabrik.de/europe/greece-latest.osm.pbf
+
+http://download.geofabrik.de/europe/ireland-and-northern-ireland-latest.osm.pbf
+http://download.geofabrik.de/europe/iceland-latest.osm.pbf
 http://download.geofabrik.de/europe/italy-latest.osm.pbf
 
 http://download.geofabrik.de/europe/netherlands-latest.osm.pbf
+http://download.geofabrik.de/australia-oceania/new-zealand-latest.osm.pbf
 
-http://download.geofabrik.de/russia-latest.osm.pbf
-http://download.geofabrik.de/europe/ukraine-latest.osm.pbf
+http://be.gis-lab.info/data/osm_dump/dump/latest/RU.osm.pbf
 
-http://download.geofabrik.de/north-america/canada-latest.osm.pbf
+http://download.geofabrik.de/south-america-latest.osm.pbf
+http://download.geofabrik.de/europe/switzerland-latest.osm.pbf
+
+http://be.gis-lab.info/data/osm_dump/dump/latest/UA.osm.pbf
 http://download.geofabrik.de/north-america/us-midwest-latest.osm.pbf
 http://download.geofabrik.de/north-america/us-northeast-latest.osm.pbf
 http://download.geofabrik.de/north-america/us-pacific-latest.osm.pbf
 http://download.geofabrik.de/north-america/us-south-latest.osm.pbf
 http://download.geofabrik.de/north-america/us-west-latest.osm.pbf
 
-http://download.geofabrik.de/africa-latest.osm.pbf
-http://download.geofabrik.de/australia-oceania/australia-latest.osm.pbf
-http://download.geofabrik.de/australia-oceania/new-zealand-latest.osm.pbf
-http://download.geofabrik.de/south-america-latest.osm.pbf
-
-http://download.geofabrik.de/europe/finland-latest.osm.pbf
-http://download.geofabrik.de/europe/sweden-latest.osm.pbf
-
-http://download.geofabrik.de/europe/austria-latest.osm.pbf
-http://download.geofabrik.de/europe/switzerland-latest.osm.pbf
-http://download.geofabrik.de/europe/ireland-and-northern-ireland-latest.osm.pbf
-http://download.geofabrik.de/europe/iceland-latest.osm.pbf
+http://download.geofabrik.de/asia/japan-latest.osm.pbf
+http://download.geofabrik.de/asia/india-latest.osm.pbf
+http://download.geofabrik.de/asia/china-latest.osm.pbf
+http://download.geofabrik.de/asia/indonesia-latest.osm.pbf
+http://download.geofabrik.de/asia/thailand-latest.osm.pbf
+http://download.geofabrik.de/europe/turkey-latest.osm.pbf

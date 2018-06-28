@@ -4,8 +4,10 @@
     "@turf/dissolve": "^5.1.5",
     "@turf/helpers": "^6.1.4",
     "@turf/simplify": "^5.1.5",
+    "miniget": "^1.2.0",
     "needle": "^2.2.1",
     "pretty-bytes": "^5.1.0",
-    "s3-bucket-toolkit": "^0.0.10"
+    "s3-bucket-toolkit": "^0.0.10",
+    "unirest": "^0.5.1"
   }
 }

@@ -33,9 +33,11 @@ function main() {
 }
 
 function build(files, outFile) {
+  const coverageDir = path.join(__dirname, "../coverage")
+
   const polyList = []
   for (const file of files) {
-    const lines = fs.readFileSync(path.join(__dirname, "../poly/input", file), "utf-8").split("\n")
+    const lines = fs.readFileSync(path.join(coverageDir, "input", file), "utf-8").split("\n")
     // skip first line, "The first line contains the name of the file."
     const n = lines.length - 1
     for (let i = 1; i < n; i++) {
@@ -61,7 +63,7 @@ function build(files, outFile) {
   if (result.features.length !== 1) {
     throw new Error("root object must contain the one Feature")
   }
-  fs.writeFileSync(path.join(__dirname, "../poly", outFile), JSON.stringify(result.features[0]))
+  fs.writeFileSync(path.join(coverageDir, outFile), JSON.stringify(result.features[0]))
 }
 
 let poly

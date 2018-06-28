@@ -1,7 +1,7 @@
 const path = require("path")
 const fs = require("fs")
 const prettyBytes = require("pretty-bytes")
-const needle = require("needle");
+const child_process = require("child_process")
 
 const regionIdToName = {
   "us-midwest": "US Midwest",
@@ -16,46 +16,68 @@ const regionIdToName = {
   "al-ba-bg-hr-hu-xk-mk-md-me-ro-rs-sk-si": "Albania, Bosnia-Herzegovina, Bulgaria, Croatia, Hungary, Kosovo, Macedonia, Moldova, Montenegro, Romania, Serbia, Slovakia and Slovenia",
 
   "bayern-at-cz": "Bayern (Germany), Austria, Czech Republic",
+  "ireland-and-northern-ireland": "Ireland and Northern Ireland",
 
   "europe-region1": "Austria, Belgium, Croatia, Czech Republic, Denmark, France, Germany, Italy, Luxembourg, Montenegro, Netherlands, Portugal, Spain, Switzerland, Slovenia",
 }
 
 const prefix = ".osm-gh.zip"
+const bucketName = "gh-data"
 
-async function collectFiles(dirPath, files) {
-  // ask master server, not slaves
-  //noinspection JSUnresolvedVariable
-  const list = (await needle("get", `51.15.221.251${dirPath}/`)).body
-  for (const file of list) {
-    const filePath = `${dirPath}/${file.name}`
+function collectFiles() {
+  // remove duplicates - later (several days) old items will be removed (cannot be remove on upload a new because old item can be downloaded at this moment)
+  const nameToInfo = new Map()
 
-    if (file.type === "directory") {
-      await collectFiles(filePath, files)
-    }
-    else {
-      files.push({Key: filePath, Size: file.size})
-    }
-  }
+  // funny, but mc find much faster than mc stat
+  child_process.execFileSync("mc", ["find", `${bucketName}/${bucketName}`, "--json"], {encoding: "utf-8"})
+    .trim()
+    .split("\n")
+    .map(it => {
+      const info = JSON.parse(it)
+      const key = info.key.substring((bucketName.length * 2) + 1)
+      const name = path.posix.basename(key)
+
+      if (name.includes("-part2")) {
+        const firstPartInfo = nameToInfo.get(name.replace("-part2", ""))
+        firstPartInfo.size = firstPartInfo.size + info.size
+        return null
+      }
+
+      info.key = key
+      info.lastModified = Date.parse(info.lastModified)
+
+      const mapKey = name.replace("-part1", "")
+      const existingInfo = nameToInfo.get(mapKey)
+      if (existingInfo === undefined || info.lastModified > existingInfo.lastModified) {
+        nameToInfo.set(mapKey, info)
+      }
+      else {
+        return null
+      }
+
+      return info
+    })
+
+  return Array.from(nameToInfo.values())
 }
 
 async function main() {
-  const files = []
-  await collectFiles("", files)
+  const files = collectFiles()
   const keyToInfo = new Map()
   for (const file of files) {
-    if (!file.Key.endsWith("/")) {
-      keyToInfo.set(file.Key, file)
+    if (!file.key.endsWith("/")) {
+      keyToInfo.set(file.key, file)
     }
   }
 
   const dataFiles = files.filter(it => {
-    const name = it.Key
+    const name = it.key
     return name.endsWith(prefix)
   })
-  dataFiles.sort((a, b) => path.posix.basename(a.Key).localeCompare(path.posix.basename(b.Key)))
+  dataFiles.sort((a, b) => path.posix.basename(a.key).localeCompare(path.posix.basename(b.key)))
 
-  buildToC(dataFiles.filter(it => !isCarRoutingFile(it.Key)), keyToInfo, "index.md")
-  buildToC(dataFiles.filter(it => isCarRoutingFile(it.Key)), keyToInfo, "car.md")
+  buildToC(dataFiles.filter(it => !isCarRoutingFile(it.key)), keyToInfo, "index.md")
+  buildToC(dataFiles.filter(it => isCarRoutingFile(it.key)), keyToInfo, "car.md")
 }
 
 function isCarRoutingFile(fileName) {
@@ -65,7 +87,9 @@ function isCarRoutingFile(fileName) {
 function buildToC(files, keyToInfo, resultFileName) {
   const regionGroupToResult = new Map()
   for (const file of files) {
-    const name = path.posix.basename(file.Key)
+    let name = path.posix.basename(file.key)
+    name = name.replace("-part1", "")
+
     let regionId = name.substring(0, name.length - prefix.length)
     if (regionId === "we-ce-europe") {
       regionId = "europe-region1"
@@ -91,14 +115,19 @@ function buildToC(files, keyToInfo, resultFileName) {
       result += "| --- | --- | --- | --- |\n"
     }
 
-    const locusFile = file.Key.substring(0, file.Key.length - prefix.length) + ".locus.xml"
+    const locusFile = path.dirname(file.key) + "/" + regionId + ".locus.xml"
     if (!keyToInfo.has(locusFile)) {
       throw new Error(`Cannot find ${locusFile}`)
     }
 
-    result += `| [${regionName}](http://d.graphhopper.develar.org${file.Key})`
+    if (file.key.includes("-part1")) {
+      result += `| ${regionName}`
+    }
+    else {
+      result += `| [${regionName}](http://d.graphhopper.develar.org${file.key})`
+    }
     result += ` | <a href="locus-actions://http/d.graphhopper.develar.org${locusFile}">Locus</a>`
-    result += ` | ${prettyBytes(file.Size)}`
+    result += ` | ${prettyBytes(file.size)}`
 
 
     result += ` | [coverage](${getCoverageUrl(regionId)})`
@@ -110,8 +139,10 @@ function buildToC(files, keyToInfo, resultFileName) {
   regionGroupToResult.delete("europe-region1")
   replace(car, "car.md")
 
-  const keys = Array.from(regionGroupToResult.keys()).sort()
+  // alphabetical order not suitable, so, list explicitly
+  const keys = ["Europe", "North America", "Asia", "Other"]
   let result = ""
+  // must be first
   for (const key of keys) {
     result += regionGroupToResult.get(key)
   }
@@ -162,6 +193,8 @@ function replace(content, fileName) {
   }
 }
 
+const asiaRegions = ["japan", "india", "china", "indonesia", "thailand"]
+
 function getCoverageDir(regionId) {
   if (regionId.startsWith("us-") || regionId === "canada") {
     return "north-america"
@@ -169,8 +202,14 @@ function getCoverageDir(regionId) {
   if (regionId === "australia" || regionId === "new-zealand") {
     return "australia-oceania"
   }
-  if (regionId === "africa" || regionId === "south-america" || regionId === "russia") {
+  if (regionId === "africa" || regionId === "south-america"  || regionId === "central-america" || regionId === "russia") {
     return ""
+  }
+  if (regionId === "brazil") {
+    return "south-america"
+  }
+  if (asiaRegions.includes(regionId)) {
+    return "asia"
   }
   if (regionId === "europe-region1") {
     return "car"
@@ -182,8 +221,11 @@ function getRegionScopeName(regionId) {
   if (regionId.startsWith("us-") || regionId === "canada") {
     return "North America"
   }
-  if (regionId === "australia" || regionId === "new-zealand" || regionId === "africa" || regionId === "south-america") {
+  if (regionId === "australia" || regionId === "new-zealand" || regionId === "africa" || regionId === "south-america" || regionId === "brazil" || regionId === "central-america") {
     return "Other"
+  }
+  if (asiaRegions.includes(regionId)) {
+    return "Asia"
   }
   // if (regionId === "denmark" || regionId === "norway" || regionId === "finland" || regionId === "sweden" || regionId === "great-britain") {
   //   return "Northern Europe"
@@ -192,7 +234,7 @@ function getRegionScopeName(regionId) {
 }
 
 main()
-.catch(e => {
-  console.error(e.toString())
-  process.exit(1)
-})
+  .catch(e => {
+    console.error(e.stack)
+    process.exit(1)
+  })

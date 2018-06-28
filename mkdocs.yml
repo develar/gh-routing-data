@@ -1,6 +1,7 @@
 site_name: Routing data for GraphHopper
 theme:
   name: material
+  favicon: favicon.ico
   logo:
     icon: 'directions'
   palette:

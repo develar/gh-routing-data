@@ -1,0 +1,12 @@
+# ansible-playbook -v -i configs/server/production.yml configs/server/monitoring.yml
+- hosts: all
+  gather_facts: False
+  tasks:
+    - name: Remove old monitoring stack configuration
+      file:
+        path: /tmp/swarmprom-test
+        state: absent
+    - name: Download monitoring stack
+      shell: wget -qO- https://codeload.github.com/develar/swarmprom/tar.gz/test | tar xvz -C /tmp
+    - name: Deploy monotoring stack
+      command: docker stack deploy -c /tmp/swarmprom-test/docker-compose.yml mon

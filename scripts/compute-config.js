@@ -14,7 +14,7 @@ const config = `graphhopper:
   graph.bytes_for_flags: 8
 
   graph.elevation.provider: multi
-  graph.elevation.cache_dir: '${path.join(os.homedir(), "elevation")}'
+  graph.elevation.cache_dir: '${process.env.ELEVATION_DIR || path.join(os.homedir(), "elevation")}'
 
   # By default the speed mode with the 'fastest' weighting is used. Internally a graph preparation via
   # contraction hierarchies (CH) is done to speed routing up. This requires more RAM/disc space for holding the

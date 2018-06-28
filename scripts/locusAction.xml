@@ -1,7 +1,0 @@
-<locusActions>
-  <download>
-    <source><![CDATA[http://d.graphhopper.develar.org/${file}]]></source>
-    <dest><![CDATA[/mapsVector/${name}]]></dest>
-    <after>extract|deleteSource</after>
-  </download>
-</locusActions>

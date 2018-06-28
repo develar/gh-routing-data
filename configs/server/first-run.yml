@@ -1,0 +1,79 @@
+# ansible-playbook -i configs/server/production.yml configs/server/first-run.yml
+- hosts: all
+  gather_facts: False
+
+  tasks:
+    - name: Install python
+      raw: apk add python2
+
+    # Docker 18 is available only in edge
+    - name: Configure package repositories
+      copy:
+        dest: /etc/apk/repositories
+        content: |
+          http://nl.alpinelinux.org/alpine/edge/main
+          http://nl.alpinelinux.org/alpine/edge/community
+          http://nl.alpinelinux.org/alpine/edge/testing
+    - name: Update system
+      apk:
+        upgrade: yes
+        update_cache: yes
+
+    - name: Get swarm advertise address
+      shell: "/sbin/ifconfig eth0 | grep 'inet addr' | cut -d: -f2 | awk '{print $1}'"
+      register: advertise_addr
+      changed_when: false
+
+#    - name: Configure docker metrics
+#      copy:
+#        dest: /etc/docker/daemon.json
+#        content: |
+#          {
+#            "metrics-addr" : "0.0.0.0:9323",
+#            "experimental" : true
+#          }
+    - name: Install docker
+      apk:
+        name: docker
+        state: latest
+    - name: Run Docker on boot
+      service:
+        name: docker
+        enabled: yes
+        state: started
+
+    - name: Configure sshd
+      copy:
+        dest: /etc/ssh/sshd_config
+        content: |
+          AddressFamily inet6
+          AuthenticationMethods publickey
+          MaxAuthTries 1
+          PasswordAuthentication no
+
+          AuthorizedKeysFile .ssh/authorized_keys
+          Subsystem sftp internal-sftp
+
+    - name: Restart sshd
+      command: /etc/init.d/sshd restart
+
+    - name: Get docker info
+      command: docker info
+      register: docker_info
+      changed_when: false
+
+    - name: Get existing secret names
+      command: docker secret ls
+      register: secret_list
+      changed_when: false
+
+    - name: Create swarm
+      command: docker swarm init --advertise-addr "{{ advertise_addr.stdout }}"
+      when: "docker_info.stdout.find('Swarm: inactive') != -1"
+
+    - name: Add access_key secret
+      shell: echo "{{ minio_access_key }}" | docker secret create access_key -
+      when: "secret_list.stdout.find('access_key') == -1"
+    - name: Add secret_key secret
+      shell: echo "{{ minio_secret_key }}" | docker secret create secret_key -
+      when: "secret_list.stdout.find('secret_key') == -1"

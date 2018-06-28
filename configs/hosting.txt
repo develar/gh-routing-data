@@ -1,0 +1,6 @@
+files.fm 5.59 MB/s in 2m 58s
+scaleway (200 mbit) 21.3 MB/s in 47s
+s3 22.1 MB/s in 45s
+
+So, scaleway is used (unmetered bandwidth).
+
