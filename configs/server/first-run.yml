@@ -6,14 +6,13 @@
     - name: Install python
       raw: apk add python2
 
-    # Docker 18 is available only in edge
+    # Docker 18 is available only in community
     - name: Configure package repositories
       copy:
         dest: /etc/apk/repositories
         content: |
-          http://nl.alpinelinux.org/alpine/edge/main
-          http://nl.alpinelinux.org/alpine/edge/community
-          http://nl.alpinelinux.org/alpine/edge/testing
+          http://nl.alpinelinux.org/alpine/v3.8/main
+          http://nl.alpinelinux.org/alpine/v3.8/community
     - name: Update system
       apk:
         upgrade: yes
@@ -24,14 +23,6 @@
       register: advertise_addr
       changed_when: false
 
-#    - name: Configure docker metrics
-#      copy:
-#        dest: /etc/docker/daemon.json
-#        content: |
-#          {
-#            "metrics-addr" : "0.0.0.0:9323",
-#            "experimental" : true
-#          }
     - name: Install docker
       apk:
         name: docker

@@ -14,17 +14,23 @@ build()
   NAME=$1
   RESULT_NAME=$2
 
-  cd ~/graphhopper-master
   if [[ -z "${SKIP_BUILD}" ]]; then
-    rm -rf "$NAME.osm-gh"
-    rm -rf "$RESULT_NAME.osm-gh"
+    rm -rf "$MAP_DIR/$NAME.osm-gh"
+    rm -rf "$MAP_DIR/$RESULT_NAME.osm-gh"
     node "$BASEDIR/scripts/compute-config.js" "$MAP_DIR/$NAME.osm.pbf"
-    ./graphhopper.sh -a import -i "$MAP_DIR/$NAME.osm.pbf" -c "/tmp/gh-config.yml"
+    cd ~/graphhopper-0.11.0
+    # graphhopper-0.11.0 incorrectly force use default config.yml
+    cp /tmp/gh-config.yml ./config.yml
+    ./graphhopper.sh --action import --input "$MAP_DIR/$NAME.osm.pbf" --config "/tmp/gh-config.yml"
     if [ "$NAME" != "$RESULT_NAME" ]; then
+      rm -rf "$MAP_DIR/$RESULT_NAME.osm-gh"
       mv "$MAP_DIR/$NAME.osm-gh" "$MAP_DIR/$RESULT_NAME.osm-gh"
     fi
+    node "$BASEDIR/scripts/locus-action-generator.js" "$RESULT_NAME" &
+  else
+    # do not in parallel (no sense because build is skipped)
+    node "$BASEDIR/scripts/locus-action-generator.js" "$RESULT_NAME"
   fi
-  node "$BASEDIR/scripts/locus-action-generator.js" "$RESULT_NAME" &
 }
 
 #build "africa-latest" "africa"
@@ -32,49 +38,49 @@ build()
 #build "alps-latest" "alps"
 #build "australia-latest" "australia"
 #build "austria-latest" "austria"
-
+#
 #build "bayern-at-cz" "bayern-at-cz"
-build "belgium-latest" "belgium"
+#build "belgium-latest" "belgium"
 #build "brazil-latest" "brazil"
-
-build "canada-latest" "canada"
+#
+#build "canada-latest" "canada"
 #build "central-america-latest" "central-america"
-build "czech-republic-latest" "czech-republic"
-
-build "dach-latest" "de-at-ch"
-build "denmark-latest" "denmark"
-
+#build "czech-republic-latest" "czech-republic"
+#
+#build "dach-latest" "de-at-ch"
+#build "denmark-latest" "denmark"
+#
 #build "estonia-latvia-lithuania" "estonia-latvia-lithuania"
-
-#build "finland-norway-sweden" "finland-norway-sweden"
-build "finland-latest" "finland"
-build "france-latest" "france"
-
+#
+build "finland-norway-sweden" "finland-norway-sweden"
+#build "finland-latest" "finland"
+#build "france-latest" "france"
+#
 #build "great-britain-latest" "great-britain"
-build "greece-latest" "greece"
-
+#build "greece-latest" "greece"
+#
 #build "ireland-and-northern-ireland-latest" "ireland-and-northern-ireland"
 #build "iceland-latest" "iceland"
-build "italy-latest" "italy"
-
-build "netherlands-latest" "netherlands"
+#build "italy-latest" "italy"
+#
+#build "netherlands-latest" "netherlands"
 #build "new-zealand-latest" "new-zealand"
-
-build "poland-latest" "poland"
+#
+#build "poland-latest" "poland"
 #build "portugal-spain" "portugal-spain"
-
+#
 #build "RU" "russia"
-
+#
 #build "south-america-latest" "south-america"
-build "switzerland-latest" "switzerland"
-
-build "UA" "ukraine"
-build "us-midwest-latest" "us-midwest"
-build "us-northeast-latest" "us-northeast"
-build "us-pacific-latest" "us-pacific"
-build "us-south-latest" "us-south"
-build "us-west-latest" "us-west"
-
+#build "switzerland-latest" "switzerland"
+#
+#build "UA" "ukraine"
+#build "us-midwest-latest" "us-midwest"
+#build "us-northeast-latest" "us-northeast"
+#build "us-pacific-latest" "us-pacific"
+#build "us-south-latest" "us-south"
+#build "us-west-latest" "us-west"
+#
 #build "japan-latest" "japan"
 #build "india-latest" "india"
 #build "china-latest" "china"

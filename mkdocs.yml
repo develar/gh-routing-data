@@ -1,4 +1,5 @@
 site_name: Routing data for GraphHopper
+use_directory_urls: false
 theme:
   name: material
   favicon: favicon.ico
@@ -7,7 +8,7 @@ theme:
   palette:
     primary: 'light blue'
     accent: 'light blue'
-pages:
+nav:
   - 'Hike and Bike': 'index.md'
   - 'Car': 'car.md'
   - 'GraphHopper vs BRouter': 'gh-brouter.md'

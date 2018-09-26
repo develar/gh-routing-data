@@ -23,18 +23,19 @@ const regionIdToName = {
 
 const prefix = ".osm-gh.zip"
 const bucketName = "gh-data"
+const rootUrlWithoutProtocol = "gh-data.s3.nl-ams.scw.cloud"
 
 function collectFiles() {
   // remove duplicates - later (several days) old items will be removed (cannot be remove on upload a new because old item can be downloaded at this moment)
   const nameToInfo = new Map()
 
   // funny, but mc find much faster than mc stat
-  child_process.execFileSync("mc", ["find", `${bucketName}/${bucketName}`, "--json"], {encoding: "utf-8"})
+  child_process.execFileSync("mc", ["find", `sw-gh-data/${bucketName}`, "--json"], {encoding: "utf-8"})
     .trim()
     .split("\n")
     .map(it => {
       const info = JSON.parse(it)
-      const key = info.key.substring((bucketName.length * 2) + 1)
+      const key = info.key.substring(info.key.indexOf("/", info.key.indexOf("/") + 1) + 1)
       const name = path.posix.basename(key)
 
       if (name.includes("-part2")) {
@@ -124,9 +125,9 @@ function buildToC(files, keyToInfo, resultFileName) {
       result += `| ${regionName}`
     }
     else {
-      result += `| [${regionName}](http://d.graphhopper.develar.org${file.key})`
+      result += `| [${regionName}](http://${rootUrlWithoutProtocol}/${file.key})`
     }
-    result += ` | <a href="locus-actions://http/d.graphhopper.develar.org${locusFile}">Locus</a>`
+    result += ` | <a href="locus-actions://https/${rootUrlWithoutProtocol}/${locusFile}">Locus</a>`
     result += ` | ${prettyBytes(file.size)}`
 
 

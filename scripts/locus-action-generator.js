@@ -3,6 +3,7 @@ const path = require("path")
 const child_process = require("child_process")
 
 const patterns = ["*_bike2", "*_mtb", "*_racingbike"]
+const bucketName = "gh-data"
 
 function unlinkIfExists(file) {
  try {
@@ -67,22 +68,27 @@ async function main() {
     }
   }
 
-  //await spawn("mc", ["cp"].concat(archiveFiles).concat([`gh-data/gh-data/${remoteDir}/` + (archiveFiles.length === 1 ? archiveFiles[0] : "")]))
+  if (process.env.SKIP_UPLOAD == null) {
+    const promises = []
+    for (const file of archiveFiles) {
+      promises.push(spawn("aws", ["s3", "cp", file, `s3://${bucketName}/${remoteDir}/${file}`, "--profile", "sw", "--acl", "public-read"]))
+    }
+    await Promise.all(promises)
 
-  let data = "<locusActions>\n"
-  for (const file of archiveFiles) {
-    const remotePath = `${remoteDir}/${file}`
-    data += `  <download>
-    <source><![CDATA[http://d.graphhopper.develar.org/${remotePath}]]></source>
-    <dest><![CDATA[/mapsVector/${resultName}]]></dest>
-    <after>extract|deleteSource</after>
-  </download>
+    let data = "<locusActions>"
+    for (const file of archiveFiles) {
+      const remotePath = `${remoteDir}/${file}`
+      data += `<download>
+  <source><![CDATA[http://gh-data.s3.nl-ams.scw.cloud/${remotePath}]]></source>
+  <dest><![CDATA[/mapsVector/${resultName}]]></dest>
+  <after>extract|deleteSource</after>
+</download>
 `
+    }
+    data += "</locusActions>"
+
+    await spawn("aws", ["s3", "cp", "-", `s3://${bucketName}/${remoteDir}/${resultName}.locus.xml`, "--profile", "sw", "--acl", "public-read"], data)
   }
-
-  data += "/n</locusActions>/n"
-
-  //await spawn("mc", ["pipe", `gh-data/gh-data/${remoteDir}/${resultName}.locus.xml`], data)
 }
 
 main()

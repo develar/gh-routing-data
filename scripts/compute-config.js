@@ -40,4 +40,4 @@ const config = `graphhopper:
   graph.do_sort: true
 `
 
-fs.writeFileSync(path.join("/tmp", "gh-config.yml"), config)
+fs.writeFileSync("/tmp/gh-config.yml", config)
