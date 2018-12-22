@@ -12,77 +12,84 @@ Click a "Locus" link to install on Locus (will be automatically downloaded and e
 ## Maps
 
 !!! question "Which vehicles are supported?"
-    * pedestrian or walking with priority for more beautiful hiking tours (`hike`).
-    * trekking bike avoiding hills (`bike2`),
-    * mountain bike (`mtb`),
-    * racing bike (`racingbike`),
+    * pedestrian or walking with priority for more beautiful hiking tours (`hike`),
+    * trekking bike avoiding hills (`bike2`),`
+    * mountain bike,
+    * racing bike,
+    * car.
     
-    Routing data for car [provided separately](./car). Foot routing not supported to reduce size of graph (please use `hike` instead).
+    Foot routing not supported to reduce size of graph (please use `hike` instead).
     
 ??? question "How often data is updated?"
     At least monthly. 
     File [issue](https://github.com/develar/gh-routing-data/issues) to force update if need. 
     Also, data can be updated once a new version of GraphHopper is released.
     
-Last update: 25.09.2018.
+Last update: 19.12.2018.
 
 <!-- do not edit. start of generated block -->
 
 ### Europe
+
+See [Northern Europe](#northern-europe) below.
+
 | Region | Install | Size | Coverage |
 | --- | --- | --- | --- |
-| [Albania, Bosnia-Herzegovina, Bulgaria, Croatia, Hungary, Kosovo, Macedonia, Moldova, Montenegro, Romania, Serbia, Slovakia and Slovenia](http://gh-data.s3.nl-ams.scw.cloud/2018-09-25/al-ba-bg-hr-hu-xk-mk-md-me-ro-rs-sk-si.osm-gh.zip) | <a href="locus-actions://https/gh-data.s3.nl-ams.scw.cloud/2018-09-25/al-ba-bg-hr-hu-xk-mk-md-me-ro-rs-sk-si.locus.xml">Locus</a> | 870 MB | [coverage](http://umap.openstreetmap.fr/en/map/al-ba-bg-hr-hu-xk-mk-md-me-ro-rs-sk-si-coverage_227665) |
-| [Alps](http://gh-data.s3.nl-ams.scw.cloud/2018-09-25/alps.osm-gh.zip) | <a href="locus-actions://https/gh-data.s3.nl-ams.scw.cloud/2018-09-25/alps.locus.xml">Locus</a> | 1.63 GB | [coverage](https://umap.openstreetmap.fr/en/map/alps-coverage_227659) |
-| [Austria](http://gh-data.s3.nl-ams.scw.cloud/2018-09-25/austria.osm-gh.zip) | <a href="locus-actions://https/gh-data.s3.nl-ams.scw.cloud/2018-09-25/austria.locus.xml">Locus</a> | 386 MB | [coverage](https://download.geofabrik.de/europe/austria.html) |
-| [Bayern (Germany), Austria, Czech Republic](http://gh-data.s3.nl-ams.scw.cloud/2018-09-25/bayern-at-cz.osm-gh.zip) | <a href="locus-actions://https/gh-data.s3.nl-ams.scw.cloud/2018-09-25/bayern-at-cz.locus.xml">Locus</a> | 1.15 GB | [coverage](https://download.geofabrik.de/europe/bayern-at-cz.html) |
-| [Belgium](http://gh-data.s3.nl-ams.scw.cloud/2018-09-25/belgium.osm-gh.zip) | <a href="locus-actions://https/gh-data.s3.nl-ams.scw.cloud/2018-09-25/belgium.locus.xml">Locus</a> | 210 MB | [coverage](https://download.geofabrik.de/europe/belgium.html) |
-| [Czech Republic](http://gh-data.s3.nl-ams.scw.cloud/2018-09-25/czech-republic.osm-gh.zip) | <a href="locus-actions://https/gh-data.s3.nl-ams.scw.cloud/2018-09-25/czech-republic.locus.xml">Locus</a> | 260 MB | [coverage](https://download.geofabrik.de/europe/czech-republic.html) |
-| Germany, Austria and Switzerland | <a href="locus-actions://https/gh-data.s3.nl-ams.scw.cloud/2018-09-25/de-at-ch.locus.xml">Locus</a> | 3.17 GB | [coverage](https://download.geofabrik.de/europe/dach.html) |
-| [Denmark](http://gh-data.s3.nl-ams.scw.cloud/2018-09-25/denmark.osm-gh.zip) | <a href="locus-actions://https/gh-data.s3.nl-ams.scw.cloud/2018-09-25/denmark.locus.xml">Locus</a> | 194 MB | [coverage](https://download.geofabrik.de/europe/denmark.html) |
-| [Estonia, Latvia and Lithuania](http://gh-data.s3.nl-ams.scw.cloud/2018-09-25/estonia-latvia-lithuania.osm-gh.zip) | <a href="locus-actions://https/gh-data.s3.nl-ams.scw.cloud/2018-09-25/estonia-latvia-lithuania.locus.xml">Locus</a> | 160 MB | [coverage](https://umap.openstreetmap.fr/en/map/estonia-latvia-and-lithuania-coverage_227645#7/57.074/24.439) |
-| [Finland, Norway and Sweden](http://gh-data.s3.nl-ams.scw.cloud/2018-09-25/finland-norway-sweden.osm-gh.zip) | <a href="locus-actions://https/gh-data.s3.nl-ams.scw.cloud/2018-09-25/finland-norway-sweden.locus.xml">Locus</a> | 862 MB | [coverage](https://umap.openstreetmap.fr/en/map/finland-norway-and-sweden_227901) |
-| [Finland](http://gh-data.s3.nl-ams.scw.cloud/2018-09-25/finland.osm-gh.zip) | <a href="locus-actions://https/gh-data.s3.nl-ams.scw.cloud/2018-09-25/finland.locus.xml">Locus</a> | 288 MB | [coverage](https://download.geofabrik.de/europe/finland.html) |
-| [France](http://gh-data.s3.nl-ams.scw.cloud/2018-09-25/france.osm-gh.zip) | <a href="locus-actions://https/gh-data.s3.nl-ams.scw.cloud/2018-09-25/france.locus.xml">Locus</a> | 1.88 GB | [coverage](https://download.geofabrik.de/europe/france.html) |
-| [Great Britain](http://gh-data.s3.nl-ams.scw.cloud/2018-09-25/great-britain.osm-gh.zip) | <a href="locus-actions://https/gh-data.s3.nl-ams.scw.cloud/2018-09-25/great-britain.locus.xml">Locus</a> | 912 MB | [coverage](https://download.geofabrik.de/europe/great-britain.html) |
-| [Greece](http://gh-data.s3.nl-ams.scw.cloud/2018-09-25/greece.osm-gh.zip) | <a href="locus-actions://https/gh-data.s3.nl-ams.scw.cloud/2018-09-25/greece.locus.xml">Locus</a> | 260 MB | [coverage](https://download.geofabrik.de/europe/greece.html) |
-| [Iceland](http://gh-data.s3.nl-ams.scw.cloud/2018-09-25/iceland.osm-gh.zip) | <a href="locus-actions://https/gh-data.s3.nl-ams.scw.cloud/2018-09-25/iceland.locus.xml">Locus</a> | 18.5 MB | [coverage](https://download.geofabrik.de/europe/iceland.html) |
-| [Ireland and Northern Ireland](http://gh-data.s3.nl-ams.scw.cloud/2018-09-25/ireland-and-northern-ireland.osm-gh.zip) | <a href="locus-actions://https/gh-data.s3.nl-ams.scw.cloud/2018-09-25/ireland-and-northern-ireland.locus.xml">Locus</a> | 126 MB | [coverage](https://download.geofabrik.de/europe/ireland-and-northern-ireland.html) |
-| [Italy](http://gh-data.s3.nl-ams.scw.cloud/2018-09-25/italy.osm-gh.zip) | <a href="locus-actions://https/gh-data.s3.nl-ams.scw.cloud/2018-09-25/italy.locus.xml">Locus</a> | 1.09 GB | [coverage](https://download.geofabrik.de/europe/italy.html) |
-| [Netherlands](http://gh-data.s3.nl-ams.scw.cloud/2018-09-25/netherlands.osm-gh.zip) | <a href="locus-actions://https/gh-data.s3.nl-ams.scw.cloud/2018-09-25/netherlands.locus.xml">Locus</a> | 345 MB | [coverage](https://download.geofabrik.de/europe/netherlands.html) |
-| [Poland](http://gh-data.s3.nl-ams.scw.cloud/2018-09-25/poland.osm-gh.zip) | <a href="locus-actions://https/gh-data.s3.nl-ams.scw.cloud/2018-09-25/poland.locus.xml">Locus</a> | 730 MB | [coverage](https://download.geofabrik.de/europe/poland.html) |
-| [Portugal and Spain](http://gh-data.s3.nl-ams.scw.cloud/2018-09-25/portugal-spain.osm-gh.zip) | <a href="locus-actions://https/gh-data.s3.nl-ams.scw.cloud/2018-09-25/portugal-spain.locus.xml">Locus</a> | 1.26 GB | [coverage](https://umap.openstreetmap.fr/en/map/portugal-and-spain_227651#5/38.400/-10.091) |
-| [Russia](http://gh-data.s3.nl-ams.scw.cloud/2018-09-25/russia.osm-gh.zip) | <a href="locus-actions://https/gh-data.s3.nl-ams.scw.cloud/2018-09-25/russia.locus.xml">Locus</a> | 1.65 GB | [coverage](https://download.geofabrik.de/russia.html) |
-| [Switzerland](http://gh-data.s3.nl-ams.scw.cloud/2018-09-25/switzerland.osm-gh.zip) | <a href="locus-actions://https/gh-data.s3.nl-ams.scw.cloud/2018-09-25/switzerland.locus.xml">Locus</a> | 255 MB | [coverage](https://download.geofabrik.de/europe/switzerland.html) |
-| [Turkey](http://gh-data.s3.nl-ams.scw.cloud/2018-09-25/turkey.osm-gh.zip) | <a href="locus-actions://https/gh-data.s3.nl-ams.scw.cloud/2018-09-25/turkey.locus.xml">Locus</a> | 465 MB | [coverage](https://download.geofabrik.de/europe/turkey.html) |
-| [Ukraine](http://gh-data.s3.nl-ams.scw.cloud/2018-09-25/ukraine.osm-gh.zip) | <a href="locus-actions://https/gh-data.s3.nl-ams.scw.cloud/2018-09-25/ukraine.locus.xml">Locus</a> | 440 MB | [coverage](https://download.geofabrik.de/europe/ukraine.html) |
+| [Alps](https://d.graphhopper.develar.org/2018-12-19/alps.osm-gh.zip) | <a href="locus-actions://https/d.graphhopper.develar.org/2018-12-19/alps.locus.xml">Locus</a> | 1.83 GB | [coverage](https://umap.openstreetmap.fr/en/map/alps-coverage_227659) |
+| [Austria](https://d.graphhopper.develar.org/2018-12-19/austria.osm-gh.zip) | <a href="locus-actions://https/d.graphhopper.develar.org/2018-12-19/austria.locus.xml">Locus</a> | 429 MB | [coverage](https://download.geofabrik.de/europe/austria.html) |
+| [Bayern (Germany), Austria, Czech Republic](https://d.graphhopper.develar.org/2018-12-19/bayern-at-cz.osm-gh.zip) | <a href="locus-actions://https/d.graphhopper.develar.org/2018-12-19/bayern-at-cz.locus.xml">Locus</a> | 1.29 GB | [coverage](https://download.geofabrik.de/europe/bayern-at-cz.html) |
+| [Belgium](https://d.graphhopper.develar.org/2018-12-19/belgium.osm-gh.zip) | <a href="locus-actions://https/d.graphhopper.develar.org/2018-12-19/belgium.locus.xml">Locus</a> | 239 MB | [coverage](https://download.geofabrik.de/europe/belgium.html) |
+| [Czech Republic](https://d.graphhopper.develar.org/2018-12-19/czech-republic.osm-gh.zip) | <a href="locus-actions://https/d.graphhopper.develar.org/2018-12-19/czech-republic.locus.xml">Locus</a> | 291 MB | [coverage](https://download.geofabrik.de/europe/czech-republic.html) |
+| Germany, Austria and Switzerland | <a href="locus-actions://https/d.graphhopper.develar.org/2018-12-19/de-at-ch.locus.xml">Locus</a> | 3.56 GB | [coverage](https://download.geofabrik.de/europe/dach.html) |
+| [Estonia, Latvia and Lithuania](https://d.graphhopper.develar.org/2018-12-19/estonia-latvia-lithuania.osm-gh.zip) | <a href="locus-actions://https/d.graphhopper.develar.org/2018-12-19/estonia-latvia-lithuania.locus.xml">Locus</a> | 182 MB | [coverage](https://umap.openstreetmap.fr/en/map/estonia-latvia-and-lithuania-coverage_227645#7/57.074/24.439) |
+| [France](https://d.graphhopper.develar.org/2018-12-19/france.osm-gh.zip) | <a href="locus-actions://https/d.graphhopper.develar.org/2018-12-19/france.locus.xml">Locus</a> | 2.14 GB | [coverage](https://download.geofabrik.de/europe/france.html) |
+| [Greece](https://d.graphhopper.develar.org/2018-12-19/greece.osm-gh.zip) | <a href="locus-actions://https/d.graphhopper.develar.org/2018-12-19/greece.locus.xml">Locus</a> | 296 MB | [coverage](https://download.geofabrik.de/europe/greece.html) |
+| [Italy](https://d.graphhopper.develar.org/2018-12-19/italy.osm-gh.zip) | <a href="locus-actions://https/d.graphhopper.develar.org/2018-12-19/italy.locus.xml">Locus</a> | 1.25 GB | [coverage](https://download.geofabrik.de/europe/italy.html) |
+| [Netherlands](https://d.graphhopper.develar.org/2018-12-19/netherlands.osm-gh.zip) | <a href="locus-actions://https/d.graphhopper.develar.org/2018-12-19/netherlands.locus.xml">Locus</a> | 400 MB | [coverage](https://download.geofabrik.de/europe/netherlands.html) |
+| [Poland](https://d.graphhopper.develar.org/2018-12-19/poland.osm-gh.zip) | <a href="locus-actions://https/d.graphhopper.develar.org/2018-12-19/poland.locus.xml">Locus</a> | 848 MB | [coverage](https://download.geofabrik.de/europe/poland.html) |
+| [Portugal and Spain](https://d.graphhopper.develar.org/2018-12-19/portugal-spain.osm-gh.zip) | <a href="locus-actions://https/d.graphhopper.develar.org/2018-12-19/portugal-spain.locus.xml">Locus</a> | 1.45 GB | [coverage](https://umap.openstreetmap.fr/en/map/portugal-and-spain_227651#5/38.400/-10.091) |
+| [Russia](https://d.graphhopper.develar.org/2018-12-19/russia.osm-gh.zip) | <a href="locus-actions://https/d.graphhopper.develar.org/2018-12-19/russia.locus.xml">Locus</a> | 1.82 GB | [coverage](https://download.geofabrik.de/russia.html) |
+| [Switzerland](https://d.graphhopper.develar.org/2018-12-19/switzerland.osm-gh.zip) | <a href="locus-actions://https/d.graphhopper.develar.org/2018-12-19/switzerland.locus.xml">Locus</a> | 284 MB | [coverage](https://download.geofabrik.de/europe/switzerland.html) |
+| [Turkey](https://d.graphhopper.develar.org/2018-12-19/turkey.osm-gh.zip) | <a href="locus-actions://https/d.graphhopper.develar.org/2018-12-19/turkey.locus.xml">Locus</a> | 538 MB | [coverage](https://download.geofabrik.de/europe/turkey.html) |
+| [Ukraine](https://d.graphhopper.develar.org/2018-12-19/ukraine.osm-gh.zip) | <a href="locus-actions://https/d.graphhopper.develar.org/2018-12-19/ukraine.locus.xml">Locus</a> | 490 MB | [coverage](https://download.geofabrik.de/europe/ukraine.html) |
+| [Albania, Bosnia-Herzegovina, Bulgaria, Croatia, Hungary, Kosovo, Macedonia, Moldova, Montenegro, Romania, Serbia, Slovakia and Slovenia](https://d.graphhopper.develar.org/2018-12-19/al-ba-bg-hr-hu-xk-mk-md-me-ro-rs-sk-si.osm-gh.zip) | <a href="locus-actions://https/d.graphhopper.develar.org/2018-12-19/al-ba-bg-hr-hu-xk-mk-md-me-ro-rs-sk-si.locus.xml">Locus</a> | 984 MB | [coverage](http://umap.openstreetmap.fr/en/map/al-ba-bg-hr-hu-xk-mk-md-me-ro-rs-sk-si-coverage_227665) |
+
+### Northern Europe
+| Region | Install | Size | Coverage |
+| --- | --- | --- | --- |
+| [Denmark](https://d.graphhopper.develar.org/2018-12-19/denmark.osm-gh.zip) | <a href="locus-actions://https/d.graphhopper.develar.org/2018-12-19/denmark.locus.xml">Locus</a> | 218 MB | [coverage](https://download.geofabrik.de/europe/denmark.html) |
+| [Finland, Norway and Sweden](https://d.graphhopper.develar.org/2018-12-19/finland-norway-sweden.osm-gh.zip) | <a href="locus-actions://https/d.graphhopper.develar.org/2018-12-19/finland-norway-sweden.locus.xml">Locus</a> | 964 MB | [coverage](https://umap.openstreetmap.fr/en/map/finland-norway-and-sweden_227901) |
+| [Finland](https://d.graphhopper.develar.org/2018-12-19/finland.osm-gh.zip) | <a href="locus-actions://https/d.graphhopper.develar.org/2018-12-19/finland.locus.xml">Locus</a> | 324 MB | [coverage](https://download.geofabrik.de/europe/finland.html) |
+| [Great Britain](https://d.graphhopper.develar.org/2018-12-19/great-britain.osm-gh.zip) | <a href="locus-actions://https/d.graphhopper.develar.org/2018-12-19/great-britain.locus.xml">Locus</a> | 1.03 GB | [coverage](https://download.geofabrik.de/europe/great-britain.html) |
+| [Iceland](https://d.graphhopper.develar.org/2018-12-19/iceland.osm-gh.zip) | <a href="locus-actions://https/d.graphhopper.develar.org/2018-12-19/iceland.locus.xml">Locus</a> | 20.5 MB | [coverage](https://download.geofabrik.de/europe/iceland.html) |
+| [Ireland and Northern Ireland](https://d.graphhopper.develar.org/2018-12-19/ireland-and-northern-ireland.osm-gh.zip) | <a href="locus-actions://https/d.graphhopper.develar.org/2018-12-19/ireland-and-northern-ireland.locus.xml">Locus</a> | 143 MB | [coverage](https://download.geofabrik.de/europe/ireland-and-northern-ireland.html) |
 
 ### North America
 | Region | Install | Size | Coverage |
 | --- | --- | --- | --- |
-| [Canada](http://gh-data.s3.nl-ams.scw.cloud/2018-09-25/canada.osm-gh.zip) | <a href="locus-actions://https/gh-data.s3.nl-ams.scw.cloud/2018-09-25/canada.locus.xml">Locus</a> | 572 MB | [coverage](https://download.geofabrik.de/north-america/canada.html) |
-| [US Midwest](http://gh-data.s3.nl-ams.scw.cloud/2018-09-25/us-midwest.osm-gh.zip) | <a href="locus-actions://https/gh-data.s3.nl-ams.scw.cloud/2018-09-25/us-midwest.locus.xml">Locus</a> | 1.46 GB | [coverage](https://download.geofabrik.de/north-america/us-midwest.html) |
-| [US Northeast](http://gh-data.s3.nl-ams.scw.cloud/2018-09-25/us-northeast.osm-gh.zip) | <a href="locus-actions://https/gh-data.s3.nl-ams.scw.cloud/2018-09-25/us-northeast.locus.xml">Locus</a> | 705 MB | [coverage](https://download.geofabrik.de/north-america/us-northeast.html) |
-| [US Pacific](http://gh-data.s3.nl-ams.scw.cloud/2018-09-25/us-pacific.osm-gh.zip) | <a href="locus-actions://https/gh-data.s3.nl-ams.scw.cloud/2018-09-25/us-pacific.locus.xml">Locus</a> | 23.2 MB | [coverage](https://download.geofabrik.de/north-america/us-pacific.html) |
-| US South | <a href="locus-actions://https/gh-data.s3.nl-ams.scw.cloud/2018-09-25/us-south.locus.xml">Locus</a> | 2.22 GB | [coverage](https://download.geofabrik.de/north-america/us-south.html) |
-| [US West](http://gh-data.s3.nl-ams.scw.cloud/2018-09-25/us-west.osm-gh.zip) | <a href="locus-actions://https/gh-data.s3.nl-ams.scw.cloud/2018-09-25/us-west.locus.xml">Locus</a> | 1.53 GB | [coverage](https://download.geofabrik.de/north-america/us-west.html) |
+| [Canada](https://d.graphhopper.develar.org/2018-12-19/canada.osm-gh.zip) | <a href="locus-actions://https/d.graphhopper.develar.org/2018-12-19/canada.locus.xml">Locus</a> | 654 MB | [coverage](https://download.geofabrik.de/north-america/canada.html) |
+| [US Midwest](https://d.graphhopper.develar.org/2018-12-19/us-midwest.osm-gh.zip) | <a href="locus-actions://https/d.graphhopper.develar.org/2018-12-19/us-midwest.locus.xml">Locus</a> | 1.7 GB | [coverage](https://download.geofabrik.de/north-america/us-midwest.html) |
+| [US Northeast](https://d.graphhopper.develar.org/2018-12-19/us-northeast.osm-gh.zip) | <a href="locus-actions://https/d.graphhopper.develar.org/2018-12-19/us-northeast.locus.xml">Locus</a> | 818 MB | [coverage](https://download.geofabrik.de/north-america/us-northeast.html) |
+| [US Pacific](https://d.graphhopper.develar.org/2018-12-19/us-pacific.osm-gh.zip) | <a href="locus-actions://https/d.graphhopper.develar.org/2018-12-19/us-pacific.locus.xml">Locus</a> | 26.6 MB | [coverage](https://download.geofabrik.de/north-america/us-pacific.html) |
+| US South | <a href="locus-actions://https/d.graphhopper.develar.org/2018-12-19/us-south.locus.xml">Locus</a> | 2.57 GB | [coverage](https://download.geofabrik.de/north-america/us-south.html) |
 
 ### Asia
 | Region | Install | Size | Coverage |
 | --- | --- | --- | --- |
-| [China](http://gh-data.s3.nl-ams.scw.cloud/2018-09-25/china.osm-gh.zip) | <a href="locus-actions://https/gh-data.s3.nl-ams.scw.cloud/2018-09-25/china.locus.xml">Locus</a> | 748 MB | [coverage](https://download.geofabrik.de/asia/china.html) |
-| [India](http://gh-data.s3.nl-ams.scw.cloud/2018-09-25/india.osm-gh.zip) | <a href="locus-actions://https/gh-data.s3.nl-ams.scw.cloud/2018-09-25/india.locus.xml">Locus</a> | 765 MB | [coverage](https://download.geofabrik.de/asia/india.html) |
-| [Indonesia](http://gh-data.s3.nl-ams.scw.cloud/2018-09-25/indonesia.osm-gh.zip) | <a href="locus-actions://https/gh-data.s3.nl-ams.scw.cloud/2018-09-25/indonesia.locus.xml">Locus</a> | 472 MB | [coverage](https://download.geofabrik.de/asia/indonesia.html) |
-| Japan | <a href="locus-actions://https/gh-data.s3.nl-ams.scw.cloud/2018-09-25/japan.locus.xml">Locus</a> | 1.95 GB | [coverage](https://download.geofabrik.de/asia/japan.html) |
-| [Thailand](http://gh-data.s3.nl-ams.scw.cloud/2018-09-25/thailand.osm-gh.zip) | <a href="locus-actions://https/gh-data.s3.nl-ams.scw.cloud/2018-09-25/thailand.locus.xml">Locus</a> | 424 MB | [coverage](https://download.geofabrik.de/asia/thailand.html) |
+| [China](https://d.graphhopper.develar.org/2018-12-19/china.osm-gh.zip) | <a href="locus-actions://https/d.graphhopper.develar.org/2018-12-19/china.locus.xml">Locus</a> | 942 MB | [coverage](https://download.geofabrik.de/asia/china.html) |
+| [India](https://d.graphhopper.develar.org/2018-12-19/india.osm-gh.zip) | <a href="locus-actions://https/d.graphhopper.develar.org/2018-12-19/india.locus.xml">Locus</a> | 922 MB | [coverage](https://download.geofabrik.de/asia/india.html) |
+| [Indonesia](https://d.graphhopper.develar.org/2018-12-19/indonesia.osm-gh.zip) | <a href="locus-actions://https/d.graphhopper.develar.org/2018-12-19/indonesia.locus.xml">Locus</a> | 613 MB | [coverage](https://download.geofabrik.de/asia/indonesia.html) |
+| Japan | <a href="locus-actions://https/d.graphhopper.develar.org/2018-12-19/japan.locus.xml">Locus</a> | 2.23 GB | [coverage](https://download.geofabrik.de/asia/japan.html) |
+| [Thailand](https://d.graphhopper.develar.org/2018-12-19/thailand.osm-gh.zip) | <a href="locus-actions://https/d.graphhopper.develar.org/2018-12-19/thailand.locus.xml">Locus</a> | 504 MB | [coverage](https://download.geofabrik.de/asia/thailand.html) |
 
 ### Other
 | Region | Install | Size | Coverage |
 | --- | --- | --- | --- |
-| Africa | <a href="locus-actions://https/gh-data.s3.nl-ams.scw.cloud/2018-09-25/africa.locus.xml">Locus</a> | 2.9 GB | [coverage](https://download.geofabrik.de/africa.html) |
-| [Australia](http://gh-data.s3.nl-ams.scw.cloud/2018-09-25/australia.osm-gh.zip) | <a href="locus-actions://https/gh-data.s3.nl-ams.scw.cloud/2018-09-25/australia.locus.xml">Locus</a> | 467 MB | [coverage](https://download.geofabrik.de/australia-oceania/australia.html) |
-| [Brazil](http://gh-data.s3.nl-ams.scw.cloud/2018-09-25/brazil.osm-gh.zip) | <a href="locus-actions://https/gh-data.s3.nl-ams.scw.cloud/2018-09-25/brazil.locus.xml">Locus</a> | 1.24 GB | [coverage](https://download.geofabrik.de/south-america/brazil.html) |
-| [Central America](http://gh-data.s3.nl-ams.scw.cloud/2018-09-25/central-america.osm-gh.zip) | <a href="locus-actions://https/gh-data.s3.nl-ams.scw.cloud/2018-09-25/central-america.locus.xml">Locus</a> | 316 MB | [coverage](https://download.geofabrik.de/central-america.html) |
-| [New Zealand](http://gh-data.s3.nl-ams.scw.cloud/2018-09-25/new-zealand.osm-gh.zip) | <a href="locus-actions://https/gh-data.s3.nl-ams.scw.cloud/2018-09-25/new-zealand.locus.xml">Locus</a> | 66.5 MB | [coverage](https://download.geofabrik.de/australia-oceania/new-zealand.html) |
-| South America | <a href="locus-actions://https/gh-data.s3.nl-ams.scw.cloud/2018-09-25/south-america.locus.xml">Locus</a> | 2.43 GB | [coverage](https://download.geofabrik.de/south-america.html) |
+| Africa | <a href="locus-actions://https/d.graphhopper.develar.org/2018-12-19/africa.locus.xml">Locus</a> | 3.53 GB | [coverage](https://download.geofabrik.de/africa.html) |
+| [Australia](https://d.graphhopper.develar.org/2018-12-19/australia.osm-gh.zip) | <a href="locus-actions://https/d.graphhopper.develar.org/2018-12-19/australia.locus.xml">Locus</a> | 539 MB | [coverage](https://download.geofabrik.de/australia-oceania/australia.html) |
+| [Brazil](https://d.graphhopper.develar.org/2018-12-19/brazil.osm-gh.zip) | <a href="locus-actions://https/d.graphhopper.develar.org/2018-12-19/brazil.locus.xml">Locus</a> | 1.49 GB | [coverage](https://download.geofabrik.de/south-america/brazil.html) |
+| [Central America](https://d.graphhopper.develar.org/2018-12-19/central-america.osm-gh.zip) | <a href="locus-actions://https/d.graphhopper.develar.org/2018-12-19/central-america.locus.xml">Locus</a> | 366 MB | [coverage](https://download.geofabrik.de/central-america.html) |
+| [New Zealand](https://d.graphhopper.develar.org/2018-12-19/new-zealand.osm-gh.zip) | <a href="locus-actions://https/d.graphhopper.develar.org/2018-12-19/new-zealand.locus.xml">Locus</a> | 79 MB | [coverage](https://download.geofabrik.de/australia-oceania/new-zealand.html) |
+| South America | <a href="locus-actions://https/d.graphhopper.develar.org/2018-12-19/south-america.locus.xml">Locus</a> | 2.88 GB | [coverage](https://download.geofabrik.de/south-america.html) |
 
 <!-- end of generated block -->

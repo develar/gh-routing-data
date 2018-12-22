@@ -36,3 +36,52 @@ rc-service netdata restart
 
 wget https://dl.minio.io/server/minio/release/linux-amd64/minio -O /usr/bin/minio
 chmod +x /usr/bin/minio
+
+
+####### caddy
+ulimit -n 8192
+caddy -host d.graphhopper.develar.org -root /var/lib/docker/volumes/site_gh-data/_data/gh-data -quic -email develar@gmail.com -agree -conf /etc/Caddyfile
+
+addgroup -S caddy 2>/dev/null
+adduser -S -D -h /var/lib/caddy -s /sbin/nologin -G caddy -g caddy caddy 2>/dev/null
+adduser caddy www-data 2>/dev/null
+
+# pkill -USR1 caddy (to restart)
+# tail /var/log/access.log
+
+cat <<EOF >/etc/Caddyfile
+:80, :443
+browse
+log /var/log/access.log {
+  except /not_found
+}
+
+rewrite {
+  ext .php
+  to /not_found
+}
+rewrite {
+  if {method} is POST
+  to /not_found
+}
+status 404 /not_found
+
+EOF
+
+cat <<EOF >/etc/init.d/caddy
+#!/sbin/openrc-run
+
+name="Caddy webserver"
+command="/usr/local/bin/caddy"
+command_args="-host d.graphhopper.develar.org -root /var/lib/docker/volumes/site_gh-data/_data/gh-data -quic -email develar@gmail.com -agree -conf /etc/Caddyfile"
+pidfile="/var/run/caddy.pid"
+command_background=yes
+start_stop_daemon_args="--user caddy --group caddy"
+
+depend() {
+	need net localmount
+	after firewall
+}
+EOF
+
+chmod +x /etc/init.d/caddy

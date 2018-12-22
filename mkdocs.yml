@@ -10,7 +10,6 @@ theme:
     accent: 'light blue'
 nav:
   - 'Hike and Bike': 'index.md'
-  - 'Car': 'car.md'
   - 'GraphHopper vs BRouter': 'gh-brouter.md'
 
 repo_name: 'develar/gh-routing-data'

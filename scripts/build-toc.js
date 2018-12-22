@@ -17,81 +17,91 @@ const regionIdToName = {
 
   "bayern-at-cz": "Bayern (Germany), Austria, Czech Republic",
   "ireland-and-northern-ireland": "Ireland and Northern Ireland",
-
-  "europe-region1": "Austria, Belgium, Croatia, Czech Republic, Denmark, France, Germany, Italy, Luxembourg, Montenegro, Netherlands, Portugal, Spain, Switzerland, Slovenia",
 }
 
-const prefix = ".osm-gh.zip"
-const bucketName = "gh-data"
-const rootUrlWithoutProtocol = "gh-data.s3.nl-ams.scw.cloud"
+const suffix = ".osm-gh.zip"
+const rootUrlWithoutProtocol = require("./info.js").rootUrlWithoutProtocol
 
-function collectFiles() {
+function collectFiles(locusFileToInfo) {
   // remove duplicates - later (several days) old items will be removed (cannot be remove on upload a new because old item can be downloaded at this moment)
   const nameToInfo = new Map()
 
-  // funny, but mc find much faster than mc stat
-  child_process.execFileSync("mc", ["find", `sw-gh-data/${bucketName}`, "--json"], {encoding: "utf-8"})
-    .trim()
-    .split("\n")
-    .map(it => {
-      const info = JSON.parse(it)
-      const key = info.key.substring(info.key.indexOf("/", info.key.indexOf("/") + 1) + 1)
-      const name = path.posix.basename(key)
-
-      if (name.includes("-part2")) {
-        const firstPartInfo = nameToInfo.get(name.replace("-part2", ""))
-        firstPartInfo.size = firstPartInfo.size + info.size
-        return null
+  function collectDir(dirName) {
+    // caddy output
+    const list = JSON.parse(child_process.execFileSync("curl", ["--silent", "--show-error", "-H", "Accept: application/json", `https://${rootUrlWithoutProtocol}/${dirName}/`], {encoding: "utf-8"}).trim())
+    l: for (const item of list) {
+      // noinspection JSUnresolvedVariable
+      if (item.IsDir) {
+        continue
       }
 
-      info.key = key
-      info.lastModified = Date.parse(info.lastModified)
+      // noinspection JSUnresolvedVariable
+      const name = item.Name
+
+      if (!name.endsWith(suffix)) {
+        if (name.endsWith(".locus.xml")) {
+          // full path to check that locus file in the same dir exists
+          locusFileToInfo.set(`${dirName}/${name}`, item)
+        }
+        continue
+      }
+
+      for (const index of ["2", "3"]) {
+        const suffix = `-part${index}`
+        if (name.includes(suffix)) {
+          const firstPartInfo = nameToInfo.get(name.replace(suffix, ""))
+          // noinspection JSUnresolvedVariable
+          firstPartInfo.totalSize += item.Size
+          firstPartInfo.hasMultipleParts = true
+          continue l
+        }
+      }
+
+      // noinspection JSUnresolvedVariable
+      item.totalSize = item.Size
+      // noinspection JSUnresolvedVariable
+      item.lastModified = Date.parse(item.ModTime)
 
       const mapKey = name.replace("-part1", "")
+      item.key = `${dirName}/${mapKey}`
+      item.name = mapKey
       const existingInfo = nameToInfo.get(mapKey)
-      if (existingInfo === undefined || info.lastModified > existingInfo.lastModified) {
-        nameToInfo.set(mapKey, info)
+      if (existingInfo === undefined || item.lastModified > existingInfo.lastModified) {
+        nameToInfo.set(mapKey, item)
       }
-      else {
-        return null
-      }
+    }
+  }
 
-      return info
-    })
-
+  collectDir("2018-12-19")
   return Array.from(nameToInfo.values())
 }
 
 async function main() {
-  const files = collectFiles()
+  const locusFileToInfo = new Map()
+  const files = collectFiles(locusFileToInfo)
   const keyToInfo = new Map()
   for (const file of files) {
-    if (!file.key.endsWith("/")) {
-      keyToInfo.set(file.key, file)
-    }
+    keyToInfo.set(file.key, file)
   }
 
-  const dataFiles = files.filter(it => {
-    const name = it.key
-    return name.endsWith(prefix)
+  files.sort((a, b) => {
+    if (a.name === `al-ba-bg-hr-hu-xk-mk-md-me-ro-rs-sk-si${suffix}`) {
+      return 1
+    }
+    if (b.name === `al-ba-bg-hr-hu-xk-mk-md-me-ro-rs-sk-si${suffix}`) {
+      return -1
+    }
+    return a.name.localeCompare(b.name)
   })
-  dataFiles.sort((a, b) => path.posix.basename(a.key).localeCompare(path.posix.basename(b.key)))
 
-  buildToC(dataFiles.filter(it => !isCarRoutingFile(it.key)), keyToInfo, "index.md")
-  buildToC(dataFiles.filter(it => isCarRoutingFile(it.key)), keyToInfo, "car.md")
+  buildToC(files, keyToInfo, "index.md", locusFileToInfo)
 }
 
-function isCarRoutingFile(fileName) {
-  return fileName.includes("europe-region1") || fileName.includes("we-ce-europe")
-}
-
-function buildToC(files, keyToInfo, resultFileName) {
+function buildToC(files, keyToInfo, resultFileName, locusFileToInfo) {
   const regionGroupToResult = new Map()
   for (const file of files) {
-    let name = path.posix.basename(file.key)
-    name = name.replace("-part1", "")
-
-    let regionId = name.substring(0, name.length - prefix.length)
+    const name = file.name
+    let regionId = name.substring(0, name.length - suffix.length)
     if (regionId === "we-ce-europe") {
       regionId = "europe-region1"
     }
@@ -112,23 +122,26 @@ function buildToC(files, keyToInfo, resultFileName) {
       result = ""
       result += "\n"
       result += `### ${regionScope}\n`
+      if (regionScope === "Europe") {
+        result += `\nSee [Northern Europe](#northern-europe) below.\n\n`
+      }
       result += "| Region | Install | Size | Coverage |\n"
       result += "| --- | --- | --- | --- |\n"
     }
 
-    const locusFile = path.dirname(file.key) + "/" + regionId + ".locus.xml"
-    if (!keyToInfo.has(locusFile)) {
+    const locusFile = `${path.posix.dirname(file.key)}/${regionId}.locus.xml`
+    if (!locusFileToInfo.has(locusFile)) {
       throw new Error(`Cannot find ${locusFile}`)
     }
 
-    if (file.key.includes("-part1")) {
+    if (file.hasMultipleParts) {
       result += `| ${regionName}`
     }
     else {
-      result += `| [${regionName}](http://${rootUrlWithoutProtocol}/${file.key})`
+      result += `| [${regionName}](https://${rootUrlWithoutProtocol}/${file.key})`
     }
     result += ` | <a href="locus-actions://https/${rootUrlWithoutProtocol}/${locusFile}">Locus</a>`
-    result += ` | ${prettyBytes(file.size)}`
+    result += ` | ${prettyBytes(file.totalSize)}`
 
 
     result += ` | [coverage](${getCoverageUrl(regionId)})`
@@ -136,12 +149,8 @@ function buildToC(files, keyToInfo, resultFileName) {
     regionGroupToResult.set(regionScope, result)
   }
 
-  let car = regionGroupToResult.get("europe-region1")
-  regionGroupToResult.delete("europe-region1")
-  replace(car, "car.md")
-
   // alphabetical order not suitable, so, list explicitly
-  const keys = ["Europe", "North America", "Asia", "Other"]
+  const keys = ["Europe", "Northern Europe", "North America", "Asia", "Other"]
   let result = ""
   // must be first
   for (const key of keys) {
@@ -166,9 +175,6 @@ function getCoverageUrl(regionId) {
   }
   if (regionId === "al-ba-bg-hr-hu-xk-mk-md-me-ro-rs-sk-si") {
     return "http://umap.openstreetmap.fr/en/map/al-ba-bg-hr-hu-xk-mk-md-me-ro-rs-sk-si-coverage_227665"
-  }
-  if (regionId === "europe-region1") {
-    return "https://umap.openstreetmap.fr/en/map/europe-region-1-coverage_228183"
   }
 
   let coveragePage = getCoverageDir(regionId)
@@ -228,11 +234,13 @@ function getRegionScopeName(regionId) {
   if (asiaRegions.includes(regionId)) {
     return "Asia"
   }
-  // if (regionId === "denmark" || regionId === "norway" || regionId === "finland" || regionId === "sweden" || regionId === "great-britain") {
-  //   return "Northern Europe"
-  // }
+  if (northernEuropeRegions.has(regionId) || regionId.startsWith("finland")) {
+    return "Northern Europe"
+  }
   return "Europe"
 }
+
+const northernEuropeRegions = new Set(["iceland", "great-britain", "sweden", "norway", "denmark", "ireland-and-northern-ireland"])
 
 main()
   .catch(e => {

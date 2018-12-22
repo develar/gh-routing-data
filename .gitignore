@@ -2,3 +2,4 @@
 /.idea/
 /site/
 configs/server/*.retry
+/tools/

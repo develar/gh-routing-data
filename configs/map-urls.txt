@@ -49,3 +49,5 @@ http://download.geofabrik.de/asia/china-latest.osm.pbf
 http://download.geofabrik.de/asia/indonesia-latest.osm.pbf
 http://download.geofabrik.de/asia/thailand-latest.osm.pbf
 http://download.geofabrik.de/europe/turkey-latest.osm.pbf
+
+http://download.geofabrik.de/europe/poland-latest.osm.pbf

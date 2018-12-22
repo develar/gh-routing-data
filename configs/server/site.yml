@@ -1,4 +1,5 @@
 # ansible-playbook -v -i configs/server/production.yml configs/server/site.yml
+# on first run don't forget to 1) create gh-bucket using web interface (host:9000) 2) set bucket policy for / to "Read Only""
 - hosts: all
   gather_facts: False
   vars:
@@ -14,14 +15,12 @@
       path: "{{ deploy_config_dir }}"
       state: directory
 
-  - name: Copy docker-compose.yml
+  - name: Copy files
     copy:
-      src: docker-compose.yml
-      dest: "{{ deploy_config_dir }}/docker-compose.yml"
-  - name: Copy nginx.conf
-    copy:
-      src: nginx.conf
-      dest: "{{ deploy_config_dir }}/nginx.conf"
+      src: "{{ item.name }}"
+      dest: "{{ deploy_config_dir }}/{{ item.name }}"
+    with_items:
+      - { name: docker-compose.yml }
 
   - name: Deploy stack
     command: docker stack deploy --prune --compose-file={{ deploy_config_dir }}/docker-compose.yml site

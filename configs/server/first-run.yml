@@ -57,6 +57,7 @@
       command: docker secret ls
       register: secret_list
       changed_when: false
+      ignore_errors: yes
 
     - name: Create swarm
       command: docker swarm init --advertise-addr "{{ advertise_addr.stdout }}"

@@ -1,5 +1,5 @@
 all:
   hosts:
     d-new:
-      ansible_host: 2001:bc8:4730:1a00::1
+      ansible_host: 2001:bc8:472c:3611::1
       ansible_user: root
