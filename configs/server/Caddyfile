@@ -1,0 +1,19 @@
+:80, :443
+tls develar@gmail.com
+
+browse
+
+log /var/log/access.log {
+  except /not_found
+}
+
+rewrite {
+  ext .php
+  to /not_found
+}
+rewrite {
+  if {method} is POST
+  to /not_found
+}
+
+status 404 /not_found

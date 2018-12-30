@@ -1,7 +1,7 @@
 .PHONY: deps site build coverage compute-geojson extract-maps toc site check-env
 
 deps:
-	brew install aria2 osmium-tool node minio/stable/minio
+	brew install aria2 osmium-tool node rsync
 	# required only to build site
 	brew install python
 	pip3 install mkdocs-material mkdocs pymdown-extensions --upgrade
@@ -14,7 +14,7 @@ compile-builder:
 
 # Java is required, download from https://www.oracle.com/technetwork/java/javase/downloads/jdk11-downloads-5066655.html as archive (not as installation media (e.g. dmg) to not pollute your OS),
 # unpack to some dir and prepend all commands with JAVA_HOME=<path/to/java/home> (or simply export JAVA_HOME env in current terminal window)
-# e.g.: export JAVA_HOME=~/Downloads/jdk-11.0.1.jdk/Contents/Home
+# e.g.: export JAVA_HOME=~/Downloads/jdk-12.jdk/Contents/Home
 build: compile-builder
 	./tools/builder --remove-osm
 
@@ -32,7 +32,8 @@ coverage:
 	node ./scripts/poly-to-geojson.js
 
 extract-maps: check-env
-	aria2c --file-allocation=none --max-connection-per-server=2 --dir="${MAP_DIR}" --conditional-get --allow-overwrite http://download.geofabrik.de/europe-latest.osm.pbf
+	# use download.openstreetmap.fr to avoid overloading of geofabrik.de
+	aria2c --file-allocation=none --max-connection-per-server=2 --dir="${MAP_DIR}" --conditional-get --allow-overwrite http://download.openstreetmap.fr/extracts/europe-latest.osm.pbf
 	osmium extract --overwrite --config=coverage/extracts.json --strategy=smart --directory="${MAP_DIR}" "${MAP_DIR}/europe-latest.osm.pbf"
 
 toc:

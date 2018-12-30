@@ -4,3 +4,4 @@ s3 22.1 MB/s in 45s
 
 So, scaleway is used (unmetered bandwidth).
 
+Instead of minio, rsync is used, because minio doesn't support several disk devices, but Scaleway provides 100 GB SSD as 2 volumes, not one, so, 2 minio servers started to upload data. So, additional volume simply mounted as /var/www/eu.

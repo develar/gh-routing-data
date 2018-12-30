@@ -1,20 +1,18 @@
 package main
 
 import (
-	"bufio"
 	"context"
-	"github.com/davecgh/go-spew/spew"
 	"github.com/develar/app-builder/pkg/util"
 	"github.com/develar/errors"
 	"github.com/develar/go-fs-util"
-	"github.com/logrusorgru/aurora"
 	"github.com/panjf2000/ants"
+	"go.uber.org/zap"
+	"go.uber.org/zap/zapcore"
 	"log"
+	"math"
 	"os"
 	"os/exec"
 	"path/filepath"
-	"runtime"
-	"sort"
 	"strconv"
 	"strings"
 	"sync"
@@ -40,6 +38,8 @@ type Builder struct {
 
 	uploadPool      *ants.PoolWithFunc
 	uploadWaitGroup sync.WaitGroup
+
+	logger *zap.Logger
 }
 
 func (t *Builder) Init() error {
@@ -49,7 +49,6 @@ func (t *Builder) Init() error {
 			return err
 		}
 	}
-
 	return nil
 }
 
@@ -66,7 +65,6 @@ func getNodeJsScriptDir() string {
 }
 
 func (t *Builder) appendError(message string) {
-	log.Println(aurora.Red(message))
 	t.errors = append(t.errors, message)
 }
 
@@ -93,7 +91,7 @@ func (t *Builder) build(regionFile string) error {
 	return nil
 }
 
-func (t *Builder) buildGraphData(regions []RegionInfo) error {
+func (t *Builder) buildGraphData(regions []*RegionInfo) error {
 	buckets, err := t.computeBuckets(regions)
 	if err != nil {
 		return err
@@ -107,29 +105,42 @@ func (t *Builder) buildGraphData(regions []RegionInfo) error {
 	defer func() {
 		err := os.Remove(commonConfigFile)
 		if err != nil {
-			log.Print(err)
+			t.logger.Error("cannot remove file", zap.String("file", commonConfigFile), zap.Error(err))
 		}
 	}()
 
+	//pool, _ := ants.NewPool(len(buckets[0].regions))
+	//defer func() {
+	//  err := pool.Release()
+	//  if err != nil {
+	//    t.logger.Error("cannot release pool", zap.Error(err))
+	//  }
+	//}()
+
 	for _, bucket := range buckets {
-		if bucket.threadCount <= 0 {
-			return errors.New("bucket threadCount must be greater than 0")
+		if bucket.chThreadCount <= 0 {
+			return errors.New("bucket chThreadCount " + strconv.Itoa(bucket.chThreadCount) + " must be greater than 0")
 		}
 
-		var regionNames strings.Builder
-		regionNames.WriteString("Import ")
-		for index, region := range bucket.regions {
-			if index > 0 {
-				regionNames.WriteString(", ")
+		t.logger.Info("import bucket", zap.Array("regions", zapcore.ArrayMarshalerFunc(func(encoder zapcore.ArrayEncoder) error {
+			for _, region := range bucket.regions {
+				encoder.AppendString(region.Name)
 			}
-			regionNames.WriteString(region.Name)
-		}
+			return nil
+		})))
 
-		log.Println(regionNames.String())
+		//for _, region := range bucket.regions {
+		//  pool.Submit(func() {
+		//    err := t.buildRegion(region, bucket, commonConfigFile)
+		//    if err != nil {
+		//      t.logger
+		//    }
+		//  })
+		//}
 
 		err = util.MapAsync(len(bucket.regions), func(taskIndex int) (i func() error, e error) {
 			return func() error {
-				return t.buildRegion(bucket.regions[taskIndex], *bucket, commonConfigFile)
+				return t.buildRegion(bucket.regions[taskIndex], bucket, commonConfigFile)
 			}, nil
 		})
 		if err != nil {
@@ -140,155 +151,75 @@ func (t *Builder) buildGraphData(regions []RegionInfo) error {
 	return nil
 }
 
-func (t *Builder) buildRegion(region RegionInfo, bucket Bucket, commonConfigFile string) error {
+func ghProperty(name string, value string) string {
+	//noinspection SpellCheckingInspection
+	return "-Dgraphhopper." + name + "=" + value
+}
+
+func (t *Builder) buildRegion(region *RegionInfo, bucket *Bucket, commonConfigFile string) error {
 	graphDir := filepath.Join(filepath.Dir(region.File), region.Name+".osm-gh")
 	err := fsutil.EnsureEmptyDir(graphDir)
 	if err != nil {
 		return err
 	}
 
-	//noinspection SpellCheckingInspection
-	command := exec.CommandContext(t.executeContext, getJavaExecutablePath(),
-		"-Xms1g", "-Xmx"+strconv.FormatInt(t.totalMemory, 10),
-		"-Dgraphhopper.datareader.file="+region.File,
-		"-Dgraphhopper.graph.location="+graphDir,
-		"-Dgraphhopper.graph.elevation.cache_dir="+t.elevationCacheDir,
-		"-Dgraphhopper.graph.elevation.provider=multi",
+	if region.requiredMemoryInMb <= 0 {
+		return errors.New(region.Name + " file size (mb) is invalid: " + strconv.Itoa(region.requiredMemoryInMb))
+	}
 
-		"-Dgraphhopper.graph.flag_encoders="+strings.Join(t.vehicles, ","),
-		"-Dgraphhopper.graph.bytes_for_flags=8",
-		"-Dgraphhopper.prepare.ch.threads="+strconv.Itoa(bucket.threadCount),
-		"-Dgraphhopper.prepare.ch.weightings=fastest",
+	xMax := strconv.Itoa(int(math.Ceil(float64(region.requiredMemoryInMb)/1024))) + "g"
+	chThreadCount := strconv.Itoa(bucket.chThreadCount)
+	logger := t.logger.With(zap.String("region", region.Name))
+	logger.Info("import region", zap.String("Xmx", xMax), zap.String("prepare.ch.threads", chThreadCount))
+	//command := exec.CommandContext(t.executeContext, "/Volumes/data/importer",
+	command := exec.CommandContext(t.executeContext, getJavaExecutablePath(),
+		"-Xms1g", "-Xmx"+xMax,
+		//"-XX:+UnlockExperimentalVMOptions",
+		//"-XX:+UseShenandoahGC",
+		ghProperty("datareader.file", region.File),
+		ghProperty("graph.location", graphDir),
+
+		ghProperty("graph.elevation.cache_dir", t.elevationCacheDir),
+		ghProperty("graph.elevation.provider", "multi"),
+
+		ghProperty("graph.flag_encoders", strings.Join(t.vehicles, ",")),
+		ghProperty("graph.bytes_for_flags", "8"),
+		ghProperty("prepare.ch.threads", chThreadCount),
+		ghProperty("prepare.ch.weightings", "fastest"),
 
 		// configure the memory access, use RAM_STORE for well equipped servers (default and recommended)
-		"-Dgraphhopper.graph.dataaccess=RAM_STORE",
+		ghProperty("graph.dataaccess", "RAM_STORE"),
 		// Sort the graph after import to make requests roughly ~10% faster. Note that this requires significantly more RAM on import.
-		"-Dgraphhopper.graph.do_sort=true",
+		ghProperty("graph.do_sort", "true"),
 
 		"-jar", t.graphhopperWebJar,
-		"import", commonConfigFile)
+		"import", commonConfigFile,
+	)
 
-	err = outputWithPrefix(command, region.Name)
+	logFile, err := os.Create(filepath.Join(filepath.Dir(region.File), region.Name+".log"))
 	if err != nil {
-		return err
+		return errors.WithStack(err)
 	}
+	defer util.Close(logFile)
+
+	command.Stdout = logFile
+	command.Stderr = logFile
 
 	err = command.Run()
 	if err != nil {
+		logger.Error("cannot build", zap.Error(err))
 		return errors.WithStack(err)
 	}
 
 	t.addFileToUploadQueue(region.Name)
 
-	logPrefix := region.Name + " | "
-	log.Println(aurora.Green(logPrefix + "imported").Bold())
+	logger.Info("imported")
 	if t.isRemoveOsmOnImport {
-		log.Println(logPrefix + "remove " + region.File + " to save disk space")
+		logger.Info("remove OSM file to save disk space", zap.String("file", region.File))
 		err = os.Remove(region.File)
 		if err != nil {
 			return errors.WithStack(err)
 		}
 	}
 	return nil
-}
-
-// pack into processing buckets to consume as mush machine resources as possible to build graphhopper data as faster as possible
-func (t *Builder) computeBuckets(regions []RegionInfo) ([]*Bucket, error) {
-	// sort from small to large (any error will be discovered faster)
-	sort.Slice(regions, func(i, j int) bool {
-		return regions[i].FileSize < regions[j].FileSize
-	})
-
-	var buckets []*Bucket
-
-	totalThreadCount := runtime.NumCPU()
-	recommendedThreadCount := int64(min(len(t.vehicles), totalThreadCount))
-
-	currentBucket := &Bucket{
-		threadCount: int(recommendedThreadCount),
-	}
-	buckets = append(buckets, currentBucket)
-
-	// take in account only available memory, ignore CPU requirement for now
-	availableMemory := t.totalMemory
-	for _, region := range regions {
-		requiredMemory := recommendedThreadCount * region.FileSize
-		if availableMemory > requiredMemory {
-		} else {
-			if len(currentBucket.regions) == 0 {
-				return nil, errors.New("File is too big (todo: can be handled using reduced number of threads, not implemented)")
-			}
-
-			// current bucket not suitable because memory not enough - create a new one
-			currentBucket = &Bucket{
-				threadCount: int(recommendedThreadCount),
-			}
-			availableMemory = t.totalMemory
-			buckets = append(buckets, currentBucket)
-		}
-
-		currentBucket.regions = append(currentBucket.regions, region)
-		availableMemory -= requiredMemory
-	}
-
-	spew.Dump(buckets)
-	return buckets, nil
-}
-
-func (t *Builder) readRegions(regionFile string) ([]RegionInfo, error) {
-	file, err := os.Open(regionFile)
-	if err != nil {
-		return nil, errors.WithStack(err)
-	}
-
-	defer util.Close(file)
-
-	scanner := bufio.NewScanner(file)
-	var regions []RegionInfo
-	for scanner.Scan() {
-		line := strings.TrimSpace(scanner.Text())
-		if len(line) != 0 && line[0] != '#' {
-			names := strings.SplitN(line, " ", 2)
-			var name string
-			if len(names) == 2 {
-				name = names[1]
-			} else {
-				name = strings.TrimSuffix(names[0], "-latest")
-			}
-
-			regions = append(regions, RegionInfo{
-				File: filepath.Join(t.mapDir, names[0]+".osm.pbf"),
-				Name: name,
-			})
-		}
-	}
-
-	err = util.MapAsync(len(regions), func(taskIndex int) (i func() error, e error) {
-		return func() error {
-			fileInfo, err := os.Stat(regions[taskIndex].File)
-			if err != nil {
-				return nil
-			}
-
-			regions[taskIndex].FileSize = fileInfo.Size()
-			return nil
-		}, nil
-	})
-	if err != nil {
-		return nil, errors.WithStack(err)
-	}
-
-	return regions, nil
-}
-
-type RegionInfo struct {
-	File string
-	Name string
-
-	FileSize int64
-}
-
-type Bucket struct {
-	regions     []RegionInfo
-	threadCount int
 }

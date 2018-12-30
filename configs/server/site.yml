@@ -17,10 +17,11 @@
 
   - name: Copy files
     copy:
-      src: "{{ item.name }}"
+      src: "{{ item }}"
       dest: "{{ deploy_config_dir }}/{{ item.name }}"
     with_items:
-      - { name: docker-compose.yml }
+      - docker-compose.yml
+      - Caddyfile
 
   - name: Deploy stack
     command: docker stack deploy --prune --compose-file={{ deploy_config_dir }}/docker-compose.yml site

@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+# https://www.scaleway.com/docs/attach-and-detach-a-volume-to-an-existing-server/
+
 #apt-get update -qq
 #apt-get upgrade -qq
 #apt-get install -qq nginx
@@ -52,7 +54,7 @@ adduser caddy www-data 2>/dev/null
 cat <<EOF >/etc/Caddyfile
 :80, :443
 browse
-log /var/log/access.log {
+log /var/log/caddy/access.log {
   except /not_found
 }
 
@@ -68,12 +70,14 @@ status 404 /not_found
 
 EOF
 
+# mkdir /var/log/caddy && chown caddy:caddy /var/log/caddy
+
 cat <<EOF >/etc/init.d/caddy
 #!/sbin/openrc-run
 
-name="Caddy webserver"
-command="/usr/local/bin/caddy"
-command_args="-host d.graphhopper.develar.org -root /var/lib/docker/volumes/site_gh-data/_data/gh-data -quic -email develar@gmail.com -agree -conf /etc/Caddyfile"
+name="Caddy web-server"
+command="/usr/sbin/caddy"
+command_args="-host d2.graphhopper.develar.org -log /var/log/caddy/caddy.log -root /var/www -quic -email develar@gmail.com -agree -conf /etc/Caddyfile"
 pidfile="/var/run/caddy.pid"
 command_background=yes
 start_stop_daemon_args="--user caddy --group caddy"

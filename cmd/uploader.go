@@ -1,11 +1,14 @@
 package main
 
 import (
+	"bytes"
 	"github.com/develar/errors"
 	"github.com/panjf2000/ants"
+	"go.uber.org/zap"
 	"os"
 	"os/exec"
 	"path/filepath"
+	"strings"
 )
 
 func (t *Builder) upload(regionName string) error {
@@ -15,9 +18,36 @@ func (t *Builder) upload(regionName string) error {
 
 	// do not in parallel (no sense because build is skipped)
 	command := exec.CommandContext(t.executeContext, "node", filepath.Join(getNodeJsScriptDir(), "locus-action-generator.js"), regionName)
-	// don't prefix otherwise mc coloring is broken
-	command.Stdout = os.Stderr
+
+	var stdout bytes.Buffer
+	command.Stdout = &stdout
 	command.Stderr = os.Stderr
+	err := command.Run()
+	if err != nil {
+		return errors.WithStack(err)
+	}
+
+	filesToUpload := strings.Split(stdout.String(), "\n")
+	remoteDir := "/var/www/" + filesToUpload[0]
+	err = t.uploadUsingRsync(remoteDir, filesToUpload[1:])
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (t *Builder) uploadUsingRsync(remoteDir string, filesToUpload []string) error {
+	var args []string
+	args = append(args, "--rsync-path='sudo -u caddy mkdir -p "+remoteDir+" && rsync'", "--chown=caddy:caddy", "--human-readable", "--progress")
+	args = append(args, filesToUpload...)
+	args = append(args, "root@[2001:bc8:4728:da09::1]:"+remoteDir+"/")
+
+	command := exec.CommandContext(t.executeContext, "/bin/sh", "-c", "rsync "+strings.Join(args, " "))
+
+	command.Stdout = os.Stdout
+	command.Stderr = os.Stderr
+
 	err := command.Run()
 	if err != nil {
 		return errors.WithStack(err)
@@ -31,11 +61,13 @@ func (t *Builder) addFileToUploadQueue(regionName string) {
 		return
 	}
 
+	t.uploadWaitGroup.Add(1)
+
 	go func() {
-		t.uploadWaitGroup.Add(1)
 		err := t.uploadPool.Serve(regionName)
 		if err != nil && err != ants.ErrPoolClosed {
 			t.uploadWaitGroup.Done()
+			t.logger.Error("cannot upload", zap.String("region", regionName), zap.Error(err))
 			t.appendError("cannot upload " + regionName + ": " + err.Error())
 		}
 	}()
@@ -49,6 +81,7 @@ func (t *Builder) initUploadPool() error {
 		regionName := payload.(string)
 		err = t.upload(regionName)
 		if err != nil {
+			t.logger.Error("cannot upload", zap.String("region", regionName), zap.Error(err))
 			t.appendError("cannot upload " + regionName + ": " + err.Error())
 		}
 	})

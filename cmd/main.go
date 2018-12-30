@@ -4,12 +4,11 @@ import (
 	"github.com/alecthomas/kingpin"
 	"github.com/davecgh/go-spew/spew"
 	"github.com/develar/app-builder/pkg/util"
-	"github.com/logrusorgru/aurora"
 	"github.com/pbnjay/memory"
+	"go.uber.org/zap"
 	"log"
 	"os"
 	"path/filepath"
-	"strings"
 )
 
 // do not use `osmium merge` to merge OSM maps for graphhopper, it leads to incorrect routing data.
@@ -33,6 +32,16 @@ func main() {
 
 	executeContext, cancelExecute := util.CreateContext()
 
+	logger, err := createLogger()
+	if err != nil {
+		log.Fatalf("%+v\n", err)
+		return
+	}
+
+	defer func() {
+		_ = logger.Sync()
+	}()
+
 	builder := Builder{
 		mapDir:            *mapDir,
 		elevationCacheDir: *elevationCacheDir,
@@ -46,6 +55,8 @@ func main() {
 		isRemoveOsmOnImport: *isRemoveOsmOnImport,
 
 		graphhopperWebJar: *graphhopperWebJar,
+
+		logger: logger,
 	}
 
 	if len(builder.elevationCacheDir) == 0 {
@@ -58,17 +69,25 @@ func main() {
 		builder.graphhopperWebJar = filepath.Join(builder.mapDir, "..", "graphhopper-web-0.12.0-pre2.jar")
 	}
 
-	err := doBuild(builder)
+	err = doBuild(&builder)
 	if len(builder.errors) != 0 {
-		log.Println(aurora.Red("Errors:\n\n" + strings.Join(builder.errors, "\n")))
+		logger.Error("errors occurred", zap.Strings("errors", builder.errors))
 	}
 	if err != nil {
 		cancelExecute()
+		// don't use logger fatal here - error stacktrace is not aligned correctly (newlines)
 		log.Fatalf("%+v\n", err)
 	}
 }
 
-func doBuild(builder Builder) error {
+func createLogger() (*zap.Logger, error) {
+	config := zap.NewDevelopmentConfig()
+	config.DisableCaller = true
+	config.Encoding = util.GetEnvOrDefault("LOG_ENCODING", "console")
+	return config.Build(zap.AddStacktrace(zap.ErrorLevel))
+}
+
+func doBuild(builder *Builder) error {
 	err := builder.Init()
 	if err != nil {
 		return err

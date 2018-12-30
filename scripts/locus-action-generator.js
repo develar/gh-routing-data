@@ -6,32 +6,36 @@ const patterns = ["*_bike2", "*_mtb", "*_racingbike"]
 const patterns2 = ["*_car", "*_hike"]
 const bucketName = "gh-data"
 const serverAlias = "sw"
-const serverUrl = `https://${require("./info.js").rootUrlWithoutProtocol}`
+const util = require("./info.js")
+const serverUrl = `https://${util.rootUrlWithoutProtocol}`
 
 function unlinkIfExists(file) {
- try {
-   fs.unlinkSync(file)
- }
- catch (ignore) {
- }
+  try {
+    fs.unlinkSync(file)
+  } catch (ignore) {
+  }
 }
 
 function statOrNull(file) {
- try {
-   return fs.statSync(file)
- }
- catch (e) {
-   if (e.code === "ENOENT") {
-     return null
-   }
-   throw e
- }
+  try {
+    return fs.statSync(file)
+  } catch (e) {
+    if (e.code === "ENOENT") {
+      return null
+    }
+    throw e
+  }
 }
 
 function spawn(command, args, data) {
   process.stderr.write(`${command} ${args.join(" ")}\n`)
   return new Promise((resolve, reject) => {
-    const child = child_process.spawn(command, args, data == null ? {stdio: ["ignore", process.stdout, process.stderr], cwd: mapDir} : {stdio: ["pipe", process.stdout, process.stderr], cwd: mapDir})
+    const options = data == null ? {stdio: ["ignore", process.stderr, process.stderr], cwd: mapDir} : {stdio: ["pipe", process.stdout, process.stderr], cwd: mapDir}
+    if (command === "rsync") {
+      // strange, but otherwise rsync fails to upload
+      options.shell = true
+    }
+    const child = child_process.spawn(command, args, options)
     child.on("error", reject)
     child.on("close", code => {
       if (code === 0) {
@@ -72,10 +76,6 @@ async function main(resultName) {
     return
   }
 
-  if (process.env.SKIP_FILE_UPLOAD == null) {
-    await builder.uploadFiles()
-  }
-
   let data = "<locusActions>"
   for (const file of builder.fileNames) {
     const remotePath = `${builder.remoteDir}/${file}`
@@ -88,7 +88,19 @@ async function main(resultName) {
   }
   data += "</locusActions>"
 
-  await spawn("mc", ["pipe", builder.getRemotePathSpec(`${resultName}.locus.xml`)], data)
+  const locusFileName = `${resultName}.locus.xml`
+  if (util.isUseS3) {
+    await spawn("mc", ["pipe", builder.getRemotePathSpec(locusFileName)], data)
+  }
+  else {
+    const locusFilePath = path.join(mapDir, locusFileName);
+    fs.writeFileSync(locusFilePath, data)
+    builder.filesToUpload.push(locusFilePath)
+  }
+
+
+  process.stdout.write(builder.remoteDir + "\n")
+  process.stdout.write(builder.filesToUpload.join("\n"))
 }
 
 function escapeXml(value) {
@@ -113,8 +125,14 @@ class Builder {
     this.resultName = resultName
     this.dirName = `${resultName}.osm-gh`
 
-    this.remoteDir = new Date().toISOString().substr(0, 10)
-    // this.remoteDir = "2018-12-19"
+    // const dirName = new Date().toISOString().substr(0, 10)
+    const dirName = "2018-12-19"
+    if (util.isUseS3) {
+      this.remoteDir = dirName
+    }
+    else {
+      this.remoteDir = `${(util.getRegionScopeName(resultName).includes("Europe") ? "eu" : "other")}/${dirName}`
+    }
 
     this.fileNames = []
     this.filesToUpload = []
@@ -146,12 +164,22 @@ class Builder {
     return `${serverAlias}/${bucketName}/${this.remoteDir}/${file}`
   }
 
-  uploadFiles() {
-    const args = ["cp"]
-    args.push(...this.filesToUpload)
-    args.push(this.getRemotePathSpec(this.filesToUpload.length === 1 ? path.basename(this.filesToUpload[0]) : ""))
-    return spawn("mc", args)
-  }
+  // uploadFiles() {
+  //   if (util.isUseS3) {
+  //     const args = ["cp"]
+  //     args.push(...this.filesToUpload)
+  //     args.push(this.getRemotePathSpec(this.filesToUpload.length === 1 ? path.basename(this.filesToUpload[0]) : ""))
+  //     return spawn("mc", args)
+  //   }
+  //   else {
+  //     const remoteDir = `/var/www/${this.remoteDir}`
+  //     return spawn("rsync", ["--chown=caddy:caddy", "--human-readable", "--progress",
+  //       `--rsync-path="sudo -u caddy mkdir -p '${remoteDir}' && rsync"`,
+  //       ...this.filesToUpload,
+  //       `root@[2001:bc8:4728:da09::1]:${remoteDir}/`,
+  //     ])
+  //   }
+  // }
 
   getPartFileName(index) {
     return `${this.resultName}-part${index}.osm-gh.zip`

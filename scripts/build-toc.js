@@ -20,7 +20,8 @@ const regionIdToName = {
 }
 
 const suffix = ".osm-gh.zip"
-const rootUrlWithoutProtocol = require("./info.js").rootUrlWithoutProtocol
+const util = require("./info.js")
+const rootUrlWithoutProtocol = util.rootUrlWithoutProtocol
 
 function collectFiles(locusFileToInfo) {
   // remove duplicates - later (several days) old items will be removed (cannot be remove on upload a new because old item can be downloaded at this moment)
@@ -72,7 +73,9 @@ function collectFiles(locusFileToInfo) {
     }
   }
 
-  collectDir("2018-12-19")
+  const date = "2018-12-19"
+  collectDir(`eu/${date}`)
+  collectDir(`other/${date}`)
   return Array.from(nameToInfo.values())
 }
 
@@ -115,7 +118,7 @@ function buildToC(files, keyToInfo, resultFileName, locusFileToInfo) {
       }
     }
 
-    const regionScope = getRegionScopeName(regionId)
+    const regionScope = util.getRegionScopeName(regionId)
 
     let result = regionGroupToResult.get(regionScope)
     if (result == null) {
@@ -200,8 +203,6 @@ function replace(content, fileName) {
   }
 }
 
-const asiaRegions = ["japan", "india", "china", "indonesia", "thailand"]
-
 function getCoverageDir(regionId) {
   if (regionId.startsWith("us-") || regionId === "canada") {
     return "north-america"
@@ -215,7 +216,7 @@ function getCoverageDir(regionId) {
   if (regionId === "brazil") {
     return "south-america"
   }
-  if (asiaRegions.includes(regionId)) {
+  if (util.asiaRegions.includes(regionId)) {
     return "asia"
   }
   if (regionId === "europe-region1") {
@@ -223,24 +224,6 @@ function getCoverageDir(regionId) {
   }
   return "europe"
 }
-
-function getRegionScopeName(regionId) {
-  if (regionId.startsWith("us-") || regionId === "canada") {
-    return "North America"
-  }
-  if (regionId === "australia" || regionId === "new-zealand" || regionId === "africa" || regionId === "south-america" || regionId === "brazil" || regionId === "central-america") {
-    return "Other"
-  }
-  if (asiaRegions.includes(regionId)) {
-    return "Asia"
-  }
-  if (northernEuropeRegions.has(regionId) || regionId.startsWith("finland")) {
-    return "Northern Europe"
-  }
-  return "Europe"
-}
-
-const northernEuropeRegions = new Set(["iceland", "great-britain", "sweden", "norway", "denmark", "ireland-and-northern-ireland"])
 
 main()
   .catch(e => {
