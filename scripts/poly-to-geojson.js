@@ -43,13 +43,7 @@ function build(files, outFile) {
   if (result.type !== "FeatureCollection") {
     throw new Error("root object must be FeatureCollection")
   }
-  if (result.features.length !== 1) {
-    throw new Error("root object must contain the one Feature")
-  }
-  if (result.features.length !== 1) {
-    throw new Error("root object must contain the one Feature")
-  }
-  fs.writeFileSync(path.join(coverageDir, outFile), JSON.stringify(result.features[0]))
+  fs.writeFileSync(path.join(coverageDir, outFile), JSON.stringify(result.features.length === 1 ? result.features[0] : result))
 }
 
 let poly

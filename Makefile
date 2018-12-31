@@ -28,7 +28,7 @@ upload-only-locus-files: compile-builder
 	SKIP_ZIP=true SKIP_FILE_UPLOAD=true ./tools/builder --no-build
 
 coverage:
-	aria2c --max-connection-per-server=2 --max-concurrent-downloads=2 --input-file=coverage/urls.txt --dir=coverage/input --conditional-get --allow-overwrite
+	aria2c --max-connection-per-server=2 --max-concurrent-downloads=2 --input-file=configs/map-poly-urls.txt --dir=coverage/input --conditional-get --allow-overwrite
 	node ./scripts/poly-to-geojson.js
 
 extract-maps: check-env
