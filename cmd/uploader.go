@@ -11,6 +11,8 @@ import (
 	"strings"
 )
 
+const serverIpV6 = "2001:bc8:4728:da09::1"
+
 func (t *Builder) upload(regionName string) error {
 	if t.executeContext.Err() != nil {
 		return nil
@@ -41,7 +43,7 @@ func (t *Builder) uploadUsingRsync(remoteDir string, filesToUpload []string) err
 	var args []string
 	args = append(args, "--rsync-path='sudo -u caddy mkdir -p "+remoteDir+" && rsync'", "--chown=caddy:caddy", "--human-readable", "--progress")
 	args = append(args, filesToUpload...)
-	args = append(args, "root@[2001:bc8:4728:da09::1]:"+remoteDir+"/")
+	args = append(args, "root@["+serverIpV6+"]:"+remoteDir+"/")
 
 	command := exec.CommandContext(t.executeContext, "/bin/sh", "-c", "rsync "+strings.Join(args, " "))
 

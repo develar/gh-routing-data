@@ -1,19 +1,24 @@
 :80, :443
-tls develar@gmail.com
 
 browse
 
-log /var/log/access.log {
-  except /not_found
+log / /var/log/caddy/access.log "{combined}" {
+  except /not_found /ping
+  rotate_age 180
 }
 
 rewrite {
   ext .php
   to /not_found
 }
+
 rewrite {
   if {method} is POST
   to /not_found
 }
 
 status 404 /not_found
+status 200 /ping
+
+# exclude fs service dir
+internal /eu/lost+found

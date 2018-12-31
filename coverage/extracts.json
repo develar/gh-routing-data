@@ -25,7 +25,7 @@
       "output": "finland-norway-sweden.osm.pbf",
       "output_format": "pbf",
       "multipolygon": {
-        "file_name": "finland-norway-sweden.poly"
+        "file_name": "input/finland-norway-sweden.poly"
       }
     },
     {

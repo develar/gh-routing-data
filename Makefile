@@ -41,6 +41,7 @@ toc:
 
 site: toc
 	mkdocs build --clean
+	rm -rf site/geojson && mkdir -p site/geojson && cp coverage/*.geojson site/geojson/ && unlink site/geojson/map.geojson
 	netlifyctl deploy --publish-directory site --yes
 
 check-env:

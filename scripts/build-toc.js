@@ -163,28 +163,20 @@ function buildToC(files, keyToInfo, resultFileName, locusFileToInfo) {
   replace(result, resultFileName)
 }
 
+const ownCoverage = new Set(util.polyFiles.concat(["bayern-at-cz"]))
+
 function getCoverageUrl(regionId) {
-  if (regionId === "estonia-latvia-lithuania") {
-    return "https://umap.openstreetmap.fr/en/map/estonia-latvia-and-lithuania-coverage_227645#7/57.074/24.439"
-  }
-  if (regionId === "portugal-spain") {
-    return "https://umap.openstreetmap.fr/en/map/portugal-and-spain_227651#5/38.400/-10.091"
-  }
-  if (regionId === "alps") {
-    return "https://umap.openstreetmap.fr/en/map/alps-coverage_227659"
-  }
-  if (regionId === "finland-norway-sweden") {
-    return "https://umap.openstreetmap.fr/en/map/finland-norway-and-sweden_227901"
-  }
-  if (regionId === "al-ba-bg-hr-hu-xk-mk-md-me-ro-rs-sk-si") {
-    return "http://umap.openstreetmap.fr/en/map/al-ba-bg-hr-hu-xk-mk-md-me-ro-rs-sk-si-coverage_227665"
+  const regionCoverageId = regionId === "de-at-ch" ? "dach" : regionId
+
+  if (ownCoverage.has(regionCoverageId)) {
+    return `/coverage.html#${regionCoverageId}`
   }
 
   let coveragePage = getCoverageDir(regionId)
   if (coveragePage.length > 0) {
     coveragePage += "/"
   }
-  coveragePage += regionId === "de-at-ch" ? "dach" : regionId
+  coveragePage += regionCoverageId
   return `https://download.geofabrik.de/${coveragePage}.html`
 }
 

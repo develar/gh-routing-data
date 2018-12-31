@@ -3,28 +3,10 @@ const path = require("path")
 const helpers = require("@turf/helpers")
 const dissolve = require("@turf/dissolve")
 
-const euRegion1 = [
-  "germany.poly",
-  "austria.poly",
-  "czech-republic.poly",
-  "switzerland.poly",
-
-  "italy.poly",
-  "croatia.poly",
-  "montenegro.poly",
-
-  "france.poly",
-  "luxembourg.poly",
-  "belgium.poly",
-  "denmark.poly",
-  "netherlands.poly",
-  "spain.poly",
-  "portugal.poly",
-  "slovenia.poly",
-]
-
 function main() {
-  build(euRegion1, "europe-region1.geojson")
+  for (const name of require("./info.js").polyFiles) {
+    build(`${name}.poly`, `${name}.geojson`)
+  }
   build([
     "bayern.poly",
     "austria.poly",
@@ -34,6 +16,10 @@ function main() {
 
 function build(files, outFile) {
   const coverageDir = path.join(__dirname, "../coverage")
+
+  if (!Array.isArray(files)) {
+    files = [files]
+  }
 
   const polyList = []
   for (const file of files) {

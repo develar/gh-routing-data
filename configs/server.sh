@@ -51,26 +51,9 @@ adduser caddy www-data 2>/dev/null
 # pkill -USR1 caddy (to restart)
 # tail /var/log/access.log
 
-cat <<EOF >/etc/Caddyfile
-:80, :443
-browse
-log /var/log/caddy/access.log {
-  except /not_found
-}
-
-rewrite {
-  ext .php
-  to /not_found
-}
-rewrite {
-  if {method} is POST
-  to /not_found
-}
-status 404 /not_found
-
-EOF
-
 # mkdir /var/log/caddy && chown caddy:caddy /var/log/caddy
+
+scp ~/Documents/gh-routing-data/configs/server/Caddyfile root@[2001:bc8:4728:da09::1]:/etc/Caddyfile
 
 cat <<EOF >/etc/init.d/caddy
 #!/sbin/openrc-run
