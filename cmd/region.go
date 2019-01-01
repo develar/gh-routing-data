@@ -79,9 +79,12 @@ func (t *Builder) readRegions(regionFile string) ([]*RegionInfo, error) {
 			} else if fileSizeInMb < 2048 {
 				// south-america-latest.osm.pbf 1497
 				empiricalCoefficient = 6.6
-			} else if fileSizeInMb < 3072 {
+			} else if fileSizeInMb < 2800 {
 				// africa-latest  2691 MB requires more >= 14 GB
 				empiricalCoefficient = 5.5
+			} else if fileSizeInMb < 3072 {
+				// africa-latest  2691 MB requires more >= 14 GB
+				empiricalCoefficient = 5
 			} else {
 				empiricalCoefficient = 4
 			}

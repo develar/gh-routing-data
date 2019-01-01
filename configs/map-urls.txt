@@ -23,6 +23,7 @@ http://download.geofabrik.de/europe/france-latest.osm.pbf
 
 http://download.geofabrik.de/europe/great-britain-latest.osm.pbf
 http://download.geofabrik.de/europe/greece-latest.osm.pbf
+http://download.geofabrik.de/europe/germany-latest.osm.pbf
 
 http://download.geofabrik.de/europe/ireland-and-northern-ireland-latest.osm.pbf
 http://download.geofabrik.de/europe/iceland-latest.osm.pbf

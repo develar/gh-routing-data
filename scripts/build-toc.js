@@ -137,17 +137,19 @@ function buildToC(files, keyToInfo, resultFileName, locusFileToInfo) {
       throw new Error(`Cannot find ${locusFile}`)
     }
 
+    const downloadUrl = `https://${rootUrlWithoutProtocol}/${file.key}`
     if (file.hasMultipleParts) {
       result += `| ${regionName}`
     }
     else {
-      result += `| [${regionName}](https://${rootUrlWithoutProtocol}/${file.key})`
+      result += `| [${regionName}](${downloadUrl})`
     }
-    result += ` | <a href="locus-actions://https/${rootUrlWithoutProtocol}/${locusFile}">Locus</a>`
+
+    const locusInstallUrl = `locus-actions://https/${rootUrlWithoutProtocol}/${locusFile}`
+    result += ` | <a href="${locusInstallUrl}">Locus</a>`
     result += ` | ${prettyBytes(file.totalSize)}`
 
-
-    result += ` | [coverage](${getCoverageUrl(regionId)})`
+    result += ` | [coverage](${getCoverageUrl(regionId, locusInstallUrl, downloadUrl, file.hasMultipleParts)})`
     result += ` |\n`
     regionGroupToResult.set(regionScope, result)
   }
@@ -165,10 +167,22 @@ function buildToC(files, keyToInfo, resultFileName, locusFileToInfo) {
 
 const ownCoverage = new Set(util.polyFiles.concat(["bayern-at-cz"]))
 
-function getCoverageUrl(regionId) {
+function getCoverageUrl(regionId, locusInstallUrl, downloadUrl, hasMultipleParts) {
   const regionCoverageId = regionId === "de-at-ch" ? "dach" : regionId
 
   if (ownCoverage.has(regionCoverageId)) {
+    const geoJsonFile = path.join(__dirname, "..", "coverage", regionCoverageId + ".geojson");
+    const geoJson = JSON.parse(fs.readFileSync(geoJsonFile, "utf8"))
+    if (geoJson.properties == null || geoJson.properties.locusInstall !== locusInstallUrl || geoJson.properties.zipUrls == null) {
+      // https://gis.stackexchange.com/questions/25279/is-it-valid-to-have-a-properties-element-in-an-geojson-featurecollection
+      // but... in any case we add `properties` for FeatureCollection
+      if (geoJson.properties == null) {
+        geoJson.properties = {}
+      }
+      geoJson.properties.locusInstall = locusInstallUrl
+      geoJson.properties.zipUrls = hasMultipleParts ? Array(3).fill(downloadUrl).map((v, index) => v.replace(".osm-gh.zip", `-part${index + 1}.osm-gh.zip`)) : [downloadUrl]
+      fs.writeFileSync(geoJsonFile, JSON.stringify(geoJson))
+    }
     return `/coverage.html#${regionCoverageId}`
   }
 
