@@ -1,23 +1,27 @@
-let map = L.map("map")
-let layer = null
+mapboxgl.accessToken = 'pk.eyJ1IjoiZGV2ZWxhciIsImEiOiJjanFjazlweHMwM2p5NDNvM3Rydm1tZ3dzIn0.y2NW7B5vRxESYaBC5NbEgQ';
+const map = new mapboxgl.Map({
+  container: "map",
+  style: "mapbox://styles/mapbox/outdoors-v10",
+})
+map.addControl(new mapboxgl.FullscreenControl({container: document.querySelector("body")}))
+map.addControl(new mapboxgl.NavigationControl())
+map.addControl(new mapboxgl.GeolocateControl({
+  positionOptions: {
+    enableHighAccuracy: true,
+  },
+}))
 
-L.tileLayer("https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}", {
-  attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
-  maxZoom: 18,
-  id: "mapbox.run-bike-hike",
-  accessToken: "pk.eyJ1IjoiZGV2ZWxhciIsImEiOiJjanFjazlweHMwM2p5NDNvM3Rydm1tZ3dzIn0.y2NW7B5vRxESYaBC5NbEgQ"
-}).addTo(map)
+let previousLayerId = null
 
-function onEachFeature(feature, layer) {
-  if (feature.properties) {
-    layer.bindPopup(Object.entries(feature.properties).map(it => it.join(": ")).join("<br />"))
-  }
-}
+map.on('load', function () {
+  updateGeoJson()
+  window.onhashchange = updateGeoJson
+})
 
 function updateGeoJson() {
-  if (layer != null) {
-    map.removeLayer(layer)
-    layer = null
+  if (previousLayerId != null) {
+    map.removeLayer(previousLayerId)
+    previousLayerId = null
   }
 
   const regionId = window.location.hash.slice(1)
@@ -27,14 +31,29 @@ function updateGeoJson() {
     return
   }
 
-  fetch("/geojson/" + regionId + ".geojson", {cors: true})
+  fetch("/geojson/" + regionId + ".geojson", {mode: "same-origin"})
     .then(it => it.json())
-    .then(it => {
-      layer = L.geoJson(it, {onEachFeature}).addTo(map)
-      map.fitBounds(layer.getBounds())
+    .then(geojson => {
+      previousLayerId = regionId
+      // https://github.com/mapbox/mapbox-gl-js/issues/4087
+      // https://github.com/mapbox/mapbox-gl-js/issues/4088
+      // https://stackoverflow.com/questions/50351902/in-a-mapbox-gl-js-layer-of-type-fill-can-we-control-the-stroke-thickness
+      // https://www.mapbox.com/mapbox-gl-js/style-spec
+      map.addLayer({
+        id: regionId,
+        type: "fill",
+        paint: {
+          "fill-color": "#3388ff",
+          "fill-opacity": 0.1,
+        },
+        source: {
+          type: "geojson",
+          data: geojson,
+        },
+      })
+      // https://www.mapbox.com/mapbox-gl-js/example/zoomto-linestring/
+      // https://stackoverflow.com/questions/35586360/mapbox-gl-js-getbounds-fitbounds
+      map.fitBounds(turf.bbox(geojson))
     })
-    .catch(() => alert(`Error loading or parsing GeoJSON for region ${regionId}`))
+    .catch(e => alert(`Error loading or parsing GeoJSON for region ${regionId}: ${e}`))
 }
-
-updateGeoJson()
-window.onhashchange = updateGeoJson
