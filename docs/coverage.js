@@ -20,6 +20,7 @@ function addControls() {
   }))
 
   map.addControl(infoControl)
+  map.addControl(new MapboxLanguage())
 }
 
 let currentLayerId = null

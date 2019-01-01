@@ -15,16 +15,18 @@ class MapboxInfoBoxControl {
   show(geojson) {
     this.controlContainer.style.display = "block"
     let html = ""
+    let downloadText = "Download"
     if (/(android)/i.test(navigator.userAgent)) {
-      html = `<a href="${geojson.properties.locusInstall}">Install on Locus</a> (android only)<br />`
+      html = `<a href="${geojson.properties.locusInstall}">Install on Locus</a> or `
+      downloadText = downloadText.toLowerCase()
     }
 
     const zipUrls = geojson.properties.zipUrls
     if (zipUrls.length === 1) {
-      html += `<a href="${zipUrls[0]}">Download</a>`
+      html += `<a href="${zipUrls[0]}">${downloadText}</a>`
     }
     else {
-      html += `Download ${zipUrls.map((v, index) => `<a href="${v}">part ${index + 1}</a>`).join(", ")}`
+      html += `${downloadText} ${zipUrls.map((v, index) => `<a href="${v}">part ${index + 1}</a>`).join(", ")}`
     }
     this.controlContainer.innerHTML = html
   }

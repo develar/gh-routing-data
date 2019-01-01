@@ -4,12 +4,17 @@
   <meta charset="utf-8"/>
   <title>Coverage of region</title>
   <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no'/>
-  <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.52.0/mapbox-gl.js' integrity="sha384-GHN7aGcFxNmXE2z1QDMPmE8h3MifSIX9vdhMhAidYOL/VX7qIBYPQB+RtUqquJxj" crossorigin="anonymous"></script>
-  <script src="turf_bbox_v5.1.6.min.js" ></script>
-  <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.52.0/mapbox-gl.css' rel='stylesheet' integrity="sha384-ei25zfDKEm02PZ4scqaFN+x8TVgtttFnO4Ff3GxVHxb3s+PXoRdozrPo4TYJ898z" crossorigin="anonymous" />
+  <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.52.0/mapbox-gl.js' integrity="sha384-GHN7aGcFxNmXE2z1QDMPmE8h3MifSIX9vdhMhAidYOL/VX7qIBYPQB+RtUqquJxj"
+          crossorigin="anonymous"></script>
+  <script src='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-language/v0.10.0/mapbox-gl-language.js'></script>
+  <script src="turf_bbox_v5.1.6.min.js"></script>
+  <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.52.0/mapbox-gl.css' rel='stylesheet' integrity="sha384-ei25zfDKEm02PZ4scqaFN+x8TVgtttFnO4Ff3GxVHxb3s+PXoRdozrPo4TYJ898z"
+        crossorigin="anonymous"/>
 
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/mapbox-gl-style-switcher@1.0.1/styles.css" integrity="sha256-gFU033cpNqH6sZbaMGTW14aOLNe6qFrjd3/lFr3Ouyc=" crossorigin="anonymous">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/mapbox-gl-infobox@1.0.3/styles.css" integrity="sha256-0JfiPDkYv/tZSCdt0YvxA0joHy9jqdTUwU11zKni1ds=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/mapbox-gl-style-switcher@1.0.1/styles.css" integrity="sha256-gFU033cpNqH6sZbaMGTW14aOLNe6qFrjd3/lFr3Ouyc="
+        crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/mapbox-gl-infobox@1.0.3/styles.css" integrity="sha256-0JfiPDkYv/tZSCdt0YvxA0joHy9jqdTUwU11zKni1ds="
+        crossorigin="anonymous">
 
   <style>
     body {
@@ -23,11 +28,19 @@
       bottom: 0;
       width: 100%;
     }
+
+    .mapboxgl-info-box-ctrl a {
+      text-decoration: none;
+    }
+
+    .mapboxgl-info-box-ctrl a:hover {
+      text-decoration: underline;
+    }
   </style>
 </head>
 <body>
-  <div id="map"></div>
-  <script src="./map-controls.js"></script>
-  <script src="./coverage.js"></script>
+<div id="map"></div>
+<script src="./map-controls.js"></script>
+<script src="./coverage.js"></script>
 </body>
 </html>
