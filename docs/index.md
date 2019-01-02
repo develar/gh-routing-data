@@ -13,7 +13,7 @@ Click a "Locus" link to install on Locus (will be automatically downloaded and e
 
 !!! question "Which vehicles are supported?"
     * pedestrian or walking with priority for more beautiful hiking tours (`hike`),
-    * trekking bike avoiding hills (`bike2`),`
+    * trekking bike avoiding hills (`bike2`),
     * mountain bike,
     * racing bike,
     * car.

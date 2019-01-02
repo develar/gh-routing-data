@@ -32,7 +32,7 @@
       "output": "bayern-at-cz.osm.pbf",
       "output_format": "pbf",
       "multipolygon": {
-        "file_name": "bayern-at-cz.geojson"
+        "file_name": "../docs/geojson/bayern-at-cz.geojson"
       }
     }
   ]

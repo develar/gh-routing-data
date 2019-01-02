@@ -43,7 +43,7 @@ function build(files, outFile) {
   if (result.type !== "FeatureCollection") {
     throw new Error("root object must be FeatureCollection")
   }
-  fs.writeFileSync(path.join(coverageDir, outFile), JSON.stringify(result.features.length === 1 ? result.features[0] : result))
+  fs.writeFileSync(path.join(__dirname, "../docs/geojson", outFile), JSON.stringify(result.features.length === 1 ? result.features[0] : result))
 }
 
 let poly

@@ -171,7 +171,7 @@ function getCoverageUrl(regionId, locusInstallUrl, downloadUrl, hasMultipleParts
   const regionCoverageId = regionId === "de-at-ch" ? "dach" : regionId
 
   if (ownCoverage.has(regionCoverageId)) {
-    const geoJsonFile = path.join(__dirname, "..", "coverage", regionCoverageId + ".geojson");
+    const geoJsonFile = path.join(__dirname, "../docs/geojson", regionCoverageId + ".geojson");
     const geoJson = JSON.parse(fs.readFileSync(geoJsonFile, "utf8"))
     if (geoJson.properties == null || geoJson.properties.locusInstall !== locusInstallUrl || geoJson.properties.zipUrls == null) {
       // https://gis.stackexchange.com/questions/25279/is-it-valid-to-have-a-properties-element-in-an-geojson-featurecollection

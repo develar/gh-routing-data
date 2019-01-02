@@ -1,19 +1,25 @@
+"use strict"
+
 // https://github.com/el/infobox-control/blob/master/dist/index.js
 class MapboxInfoBoxControl {
-  constructor() {
-    this.controlContainer = document.createElement("div")
-    this.controlContainer.classList.add("mapboxgl-ctrl")
-    this.controlContainer.classList.add("mapboxgl-ctrl-group")
-    this.controlContainer.classList.add("mapboxgl-ctrl-icon")
-    this.controlContainer.classList.add("mapboxgl-info-box-ctrl")
-  }
-
   getDefaultPosition() {
     return "top-left"
   }
 
+  onAdd(map) {
+    this.container = document.createElement("div")
+    this.container.classList.add("mapboxgl-ctrl", "mapboxgl-ctrl-group", "mapboxgl-ctrl-icon", "mapboxgl-info-box-ctrl")
+    this.container.style.display = "none"
+    return this.container
+  }
+
+  onRemove() {
+    this.container.parentNode.removeChild(this.container)
+    this.container = null
+  }
+
   show(geojson) {
-    this.controlContainer.style.display = "block"
+    this.container.style.display = "block"
     let html = ""
     let downloadText = "Download"
     if (/(android)/i.test(navigator.userAgent)) {
@@ -28,95 +34,75 @@ class MapboxInfoBoxControl {
     else {
       html += `${downloadText} ${zipUrls.map((v, index) => `<a href="${v}">part ${index + 1}</a>`).join(", ")}`
     }
-    this.controlContainer.innerHTML = html
-  }
-
-  onAdd(map) {
-    this.controlContainer.style.display = "none"
-    // map.on("mouseenter", this.layerId, () => {
-    //   map.getCanvas().style.cursor = "pointer";
-    // });
-    // map.on("mousemove", this.layerId, (e) => {
-    //   if (!e.features || !e.features.length) {
-    //     return;
-    //   }
-    //   const [feature] = e.features;
-    //   this.controlContainer.style.display = "block";
-    //   this.controlContainer.innerHTML = this.formatter(feature.properties);
-    // });
-    // map.on("mouseleave", this.layerId, () => {
-    //   map.getCanvas().style.cursor = "";
-    //   this.controlContainer.style.display = "none";
-    // });
-    return this.controlContainer
-  }
-
-  onRemove() {
-    return
+    this.container.innerHTML = html
   }
 }
 
 // https://github.com/el/style-switcher/blob/master/dist/index.js
 class MapboxStyleSwitcherControl {
-  constructor(styles) {
-    this.styles = styles || MapboxStyleSwitcherControl.DEFAULT_STYLES;
+  constructor(defaultStyleUri, styles) {
+    this.defaultStyleUri = defaultStyleUri
+    this.styles = styles || MapboxStyleSwitcherControl.DEFAULT_STYLES
   }
 
   getDefaultPosition() {
-    return "top-right";
+    return "top-right"
   }
 
   onAdd(map) {
-    this.controlContainer = document.createElement("div");
-    this.controlContainer.classList.add("mapboxgl-ctrl");
-    this.controlContainer.classList.add("mapboxgl-ctrl-group");
-    const mapStyleContainer = document.createElement("div");
-    const styleButton = document.createElement("button");
-    mapStyleContainer.classList.add("mapboxgl-style-list");
+    this.container = document.createElement("div")
+    const container = this.container
+    container.classList.add("mapboxgl-ctrl", "mapboxgl-ctrl-group")
+    const mapStyleContainer = document.createElement("div")
+    const styleButton = document.createElement("button")
+    mapStyleContainer.classList.add("mapboxgl-style-list")
     for (const style of this.styles) {
-      const styleElement = document.createElement("button");
-      styleElement.innerText = style.title;
-      styleElement.classList.add(style.title);
-      styleElement.dataset.uri = style.uri;
+      const styleElement = document.createElement("button")
+      styleElement.innerText = style.title
+      styleElement.classList.add(style.title)
+      styleElement.dataset.uri = style.uri
       styleElement.addEventListener("click", event => {
-        const srcElement = event.srcElement;
-        map.setStyle(srcElement.dataset.uri);
-        mapStyleContainer.style.display = "none";
-        styleButton.style.display = "block";
-        const elms = mapStyleContainer.getElementsByClassName("active");
-        while (elms[0]) {
-          elms[0].classList.remove("active");
+        const srcElement = event.srcElement
+        map.setStyle(srcElement.dataset.uri)
+        mapStyleContainer.style.display = "none"
+        styleButton.style.display = "block"
+        const elements = mapStyleContainer.getElementsByClassName("active")
+        while (elements[0] != null) {
+          elements[0].classList.remove("active")
         }
-        srcElement.classList.add("active");
-      });
-      if (style.title === MapboxStyleSwitcherControl.DEFAULT_STYLE) {
-        styleElement.classList.add("active");
+        srcElement.classList.add("active")
+      })
+
+      if (style.uri === this.defaultStyleUri) {
+        styleElement.classList.add("active")
       }
-      mapStyleContainer.appendChild(styleElement);
+      mapStyleContainer.appendChild(styleElement)
     }
-    styleButton.classList.add("mapboxgl-ctrl-icon");
-    styleButton.classList.add("mapboxgl-style-switcher");
+
+    styleButton.classList.add("mapboxgl-ctrl-icon", "mapboxgl-style-switcher")
     styleButton.addEventListener("click", () => {
-      styleButton.style.display = "none";
-      mapStyleContainer.style.display = "block";
-    });
+      styleButton.style.display = "none"
+      mapStyleContainer.style.display = "block"
+    })
+
     document.addEventListener("click", event => {
-      if (!this.controlContainer.contains(event.target)) {
-        mapStyleContainer.style.display = "none";
-        styleButton.style.display = "block";
+      if (!this.container.contains(event.target)) {
+        mapStyleContainer.style.display = "none"
+        styleButton.style.display = "block"
       }
-    });
-    this.controlContainer.appendChild(styleButton);
-    this.controlContainer.appendChild(mapStyleContainer);
-    return this.controlContainer;
+    })
+
+    container.appendChild(styleButton)
+    container.appendChild(mapStyleContainer)
+    return container
   }
 
   onRemove() {
-    return;
+    this.container.parentNode.removeChild(this.container)
+    this.container = null
   }
 }
 
-MapboxStyleSwitcherControl.DEFAULT_STYLE = "Streets";
 // https://www.mapbox.com/api-documentation/#styles
 MapboxStyleSwitcherControl.DEFAULT_STYLES = [
   {title: "Outdoors", uri: "mapbox://styles/mapbox/outdoors-v10"},
@@ -124,4 +110,4 @@ MapboxStyleSwitcherControl.DEFAULT_STYLES = [
   {title: "Dark", uri: "mapbox://styles/mapbox/dark-v9"},
   {title: "Light", uri: "mapbox://styles/mapbox/light-v9"},
   {title: "Satellite", uri: "mapbox://styles/mapbox/satellite-streets-v10"},
-];
+]
