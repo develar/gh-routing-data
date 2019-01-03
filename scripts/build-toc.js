@@ -149,7 +149,7 @@ function buildToC(files, keyToInfo, resultFileName, locusFileToInfo) {
     result += ` | <a href="${locusInstallUrl}">Locus</a>`
     result += ` | ${prettyBytes(file.totalSize)}`
 
-    result += ` | [coverage](${getCoverageUrl(regionId, locusInstallUrl, downloadUrl, file.hasMultipleParts)})`
+    result += ` | [coverage](${getCoverageUrlAndChangeGeoJsonIfNeed(regionId, regionName, locusInstallUrl, downloadUrl, file.hasMultipleParts)})`
     result += ` |\n`
     regionGroupToResult.set(regionScope, result)
   }
@@ -167,31 +167,26 @@ function buildToC(files, keyToInfo, resultFileName, locusFileToInfo) {
 
 const ownCoverage = new Set(util.polyFiles.concat(["bayern-at-cz"]))
 
-function getCoverageUrl(regionId, locusInstallUrl, downloadUrl, hasMultipleParts) {
+function getCoverageUrlAndChangeGeoJsonIfNeed(regionId, regionName, locusInstallUrl, downloadUrl, hasMultipleParts) {
   const regionCoverageId = regionId === "de-at-ch" ? "dach" : regionId
+  if (!ownCoverage.has(regionCoverageId)) {
+    throw new Error(`GeoJSON not provided for ${regionId}`)
+  }
 
-  if (ownCoverage.has(regionCoverageId)) {
-    const geoJsonFile = path.join(__dirname, "../docs/geojson", regionCoverageId + ".geojson");
-    const geoJson = JSON.parse(fs.readFileSync(geoJsonFile, "utf8"))
-    if (geoJson.properties == null || geoJson.properties.locusInstall !== locusInstallUrl || geoJson.properties.zipUrls == null) {
-      // https://gis.stackexchange.com/questions/25279/is-it-valid-to-have-a-properties-element-in-an-geojson-featurecollection
-      // but... in any case we add `properties` for FeatureCollection
-      if (geoJson.properties == null) {
-        geoJson.properties = {}
-      }
-      geoJson.properties.locusInstall = locusInstallUrl
-      geoJson.properties.zipUrls = hasMultipleParts ? Array(3).fill(downloadUrl).map((v, index) => v.replace(".osm-gh.zip", `-part${index + 1}.osm-gh.zip`)) : [downloadUrl]
-      fs.writeFileSync(geoJsonFile, JSON.stringify(geoJson))
+  const geoJsonFile = path.join(__dirname, "../docs/geojson", regionCoverageId + ".geojson")
+  const geoJson = JSON.parse(fs.readFileSync(geoJsonFile, "utf8"))
+  if (geoJson.properties == null || geoJson.properties.locusInstall !== locusInstallUrl || geoJson.properties.zipUrls == null || geoJson.properties.regionName == null) {
+    // https://gis.stackexchange.com/questions/25279/is-it-valid-to-have-a-properties-element-in-an-geojson-featurecollection
+    // but... in any case we add `properties` for FeatureCollection
+    if (geoJson.properties == null) {
+      geoJson.properties = {}
     }
-    return `/coverage.html#${regionCoverageId}`
+    geoJson.properties.locusInstall = locusInstallUrl
+    geoJson.properties.zipUrls = hasMultipleParts ? Array(3).fill(downloadUrl).map((v, index) => v.replace(".osm-gh.zip", `-part${index + 1}.osm-gh.zip`)) : [downloadUrl]
+    geoJson.properties.regionName = regionName
+    fs.writeFileSync(geoJsonFile, JSON.stringify(geoJson))
   }
-
-  let coveragePage = getCoverageDir(regionId)
-  if (coveragePage.length > 0) {
-    coveragePage += "/"
-  }
-  coveragePage += regionCoverageId
-  return `https://download.geofabrik.de/${coveragePage}.html`
+  return `/coverage.html#${regionCoverageId}`
 }
 
 function replace(content, fileName) {
@@ -207,28 +202,6 @@ function replace(content, fileName) {
   else {
     return fs.writeFileSync(file, content)
   }
-}
-
-function getCoverageDir(regionId) {
-  if (regionId.startsWith("us-") || regionId === "canada") {
-    return "north-america"
-  }
-  if (regionId === "australia" || regionId === "new-zealand") {
-    return "australia-oceania"
-  }
-  if (regionId === "africa" || regionId === "south-america"  || regionId === "central-america" || regionId === "russia") {
-    return ""
-  }
-  if (regionId === "brazil") {
-    return "south-america"
-  }
-  if (util.asiaRegions.includes(regionId)) {
-    return "asia"
-  }
-  if (regionId === "europe-region1") {
-    return "car"
-  }
-  return "europe"
 }
 
 main()

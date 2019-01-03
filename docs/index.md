@@ -1,4 +1,6 @@
-Routing data for [GraphHopper](https://www.graphhopper.com) for offline navigation in the best outdoor navigation app [Locus Map](http://www.locusmap.eu).
+# Routing data for GraphHopper
+
+Routing data for [GraphHopper](https://www.graphhopper.com) for offline navigation. With one-click installation on the best outdoor navigation app [Locus Map](http://www.locusmap.eu).
 
 File [issue](https://github.com/develar/gh-routing-data/issues) if routing data not provided for wanted country or region.
 
@@ -7,7 +9,11 @@ File [issue](https://github.com/develar/gh-routing-data/issues) if routing data 
 
 ## Installation
 
-Click a "Locus" link to install on Locus (will be automatically downloaded and extracted to `mapsVector/`). In the [GraphHopper Add-on](https://github.com/asamm/locus-addon-graphhopper/releases/latest) choose which file you want to use.
+Click a "Locus" link to install on Locus (will be automatically downloaded and extracted to `mapsVector/`).
+In the [GraphHopper Add-on](https://github.com/asamm/locus-addon-graphhopper/releases/latest) choose which file you want to use.
+
+Or simply download zip file to install manually.
+As most zip libraries for Android doesn't support files more than 2GB, large regions split into 3 parts.
 
 ## Maps
 

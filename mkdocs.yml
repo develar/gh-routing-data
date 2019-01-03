@@ -9,8 +9,8 @@ theme:
     primary: 'light blue'
     accent: 'light blue'
 nav:
-  - 'Hike and Bike': 'index.md'
-  - 'GraphHopper vs BRouter': 'gh-brouter.md'
+  - Introduction: index.md
+  - 'GraphHopper vs BRouter': gh-brouter.md
 
 repo_name: 'develar/gh-routing-data'
 repo_url: 'https://github.com/develar/gh-routing-data'

@@ -22,12 +22,13 @@ class MapboxInfoBoxControl {
     this.container.style.display = "block"
     let html = ""
     let downloadText = "Download"
+    const properties = geojson.properties
     if (/(android)/i.test(navigator.userAgent)) {
-      html = `<a href="${geojson.properties.locusInstall}">Install on Locus</a> or `
+      html = `<a href="${properties.locusInstall}">Install on Locus</a> or `
       downloadText = downloadText.toLowerCase()
     }
 
-    const zipUrls = geojson.properties.zipUrls
+    const zipUrls = properties.zipUrls
     if (zipUrls.length === 1) {
       html += `<a href="${zipUrls[0]}">${downloadText}</a>`
     }
@@ -35,6 +36,8 @@ class MapboxInfoBoxControl {
       html += `${downloadText} ${zipUrls.map((v, index) => `<a href="${v}">part ${index + 1}</a>`).join(", ")}`
     }
     this.container.innerHTML = html
+
+    document.title = `Coverage of ${properties.regionName}`
   }
 }
 
