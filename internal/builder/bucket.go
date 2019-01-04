@@ -1,4 +1,4 @@
-package main
+package builder
 
 import (
 	"github.com/davecgh/go-spew/spew"
@@ -26,12 +26,12 @@ func (t *Builder) computeBuckets(regions []*RegionInfo) ([]*Bucket, error) {
 
 	totalThreadCount := runtime.NumCPU()
 	maxRegionsPerBucket := max(totalThreadCount-2, 1)
-	recommendedThreadCount := min(len(t.vehicles), totalThreadCount)
+	recommendedThreadCount := min(len(t.Vehicles), totalThreadCount)
 
 	var processedRegions intsets.Sparse
 
 	// take in account only available memory, ignore CPU requirement for now
-	totalMemoryInMb := int(t.totalMemory / (1024 * 1024))
+	totalMemoryInMb := int(t.TotalMemory / (1024 * 1024))
 
 	for indexOfLargestRegion := len(regions) - 1; indexOfLargestRegion >= 0; indexOfLargestRegion-- {
 		var currentBucket *Bucket

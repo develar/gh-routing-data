@@ -1,4 +1,4 @@
-package main
+package builder
 
 import (
 	"bufio"
@@ -41,13 +41,13 @@ func (t *Builder) readRegions(regionFile string) ([]*RegionInfo, error) {
 			}
 
 			regions = append(regions, &RegionInfo{
-				File: filepath.Join(t.mapDir, names[0]+".osm.pbf"),
+				File: filepath.Join(t.MapDir, names[0]+".osm.pbf"),
 				Name: name,
 			})
 		}
 	}
 
-	if !t.isBuild {
+	if !t.IsBuild {
 		return regions, nil
 	}
 
@@ -57,7 +57,7 @@ func (t *Builder) readRegions(regionFile string) ([]*RegionInfo, error) {
 			fileInfo, err := os.Stat(region.File)
 			if err != nil {
 				if os.IsNotExist(err) {
-					t.logger.Warn("file not found, skip region", zap.String("region", region.Name), zap.String("file", region.File))
+					t.Logger.Warn("file not found, skip region", zap.String("region", region.Name), zap.String("file", region.File))
 					return nil
 				}
 				return errors.WithStack(err)

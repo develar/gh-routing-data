@@ -1,7 +1,7 @@
 const path = require("path")
 const fs = require("fs")
 const prettyBytes = require("pretty-bytes")
-const child_process = require("child_process")
+const execFileSync = require("child_process").execFileSync
 
 const regionIdToName = {
   "us-midwest": "US Midwest",
@@ -23,14 +23,24 @@ const suffix = ".osm-gh.zip"
 const util = require("./info.js")
 const rootUrlWithoutProtocol = util.rootUrlWithoutProtocol
 
+function commonCurlArgs() {
+  return [
+    "--silent",
+    "--show-error",
+    // to exclude from access log
+    "-A", "GhRoutingData",
+  ]
+}
+
 function collectFiles(locusFileToInfo) {
   // remove duplicates - later (several days) old items will be removed (cannot be remove on upload a new because old item can be downloaded at this moment)
   const nameToInfo = new Map()
 
   function collectDir(dirName) {
     // caddy output
-    const list = JSON.parse(child_process.execFileSync("curl", ["--silent", "--show-error", "-H", "Accept: application/json", `https://${rootUrlWithoutProtocol}/${dirName}/`], {encoding: "utf-8"}).trim())
-    l: for (const item of list) {
+    const parentDirUrl = `https://${rootUrlWithoutProtocol}/${dirName}`
+    const list = JSON.parse(execFileSync("curl", commonCurlArgs().concat(["-H", "Accept: application/json", `${parentDirUrl}/`]), {encoding: "utf-8"}).trim())
+    for (const item of list) {
       // noinspection JSUnresolvedVariable
       if (item.IsDir) {
         continue
@@ -47,14 +57,22 @@ function collectFiles(locusFileToInfo) {
         continue
       }
 
-      for (const index of ["2", "3"]) {
-        const suffix = `-part${index}`
-        if (name.includes(suffix)) {
-          const firstPartInfo = nameToInfo.get(name.replace(suffix, ""))
+      let mapKey = name
+
+      item.parentDirUrl = parentDirUrl
+
+      const match = /-part([\d{1}])/.exec(name)
+      // noinspection JSValidateTypes
+      if (match != null) {
+        const partIndex = match[1]
+        // first part will be registered, other parts not
+        mapKey = name.replace(`-part${partIndex}`, "")
+        if (partIndex !== "1") {
+          const firstPartInfo = nameToInfo.get(mapKey)
           // noinspection JSUnresolvedVariable
           firstPartInfo.totalSize += item.Size
-          firstPartInfo.hasMultipleParts = true
-          continue l
+          firstPartInfo.parts.push(name)
+          continue
         }
       }
 
@@ -63,7 +81,8 @@ function collectFiles(locusFileToInfo) {
       // noinspection JSUnresolvedVariable
       item.lastModified = Date.parse(item.ModTime)
 
-      const mapKey = name.replace("-part1", "")
+      item.parts = [name]
+
       item.key = `${dirName}/${mapKey}`
       item.name = mapKey
       const existingInfo = nameToInfo.get(mapKey)
@@ -132,24 +151,22 @@ function buildToC(files, keyToInfo, resultFileName, locusFileToInfo) {
       result += "| --- | --- | --- | --- |\n"
     }
 
-    const locusFile = `${path.posix.dirname(file.key)}/${regionId}.locus.xml`
-    if (!locusFileToInfo.has(locusFile)) {
-      throw new Error(`Cannot find ${locusFile}`)
+    const locusFileName = `${regionId}.locus.xml`
+    if (!locusFileToInfo.has(`${path.posix.dirname(file.key)}/${locusFileName}`)) {
+      throw new Error(`Cannot find ${locusFileName}`)
     }
 
-    const downloadUrl = `https://${rootUrlWithoutProtocol}/${file.key}`
-    if (file.hasMultipleParts) {
-      result += `| ${regionName}`
+    if (file.parts.length === 1) {
+      result += `| [${regionName}](${file.parentDirUrl}/${file.name})`
     }
     else {
-      result += `| [${regionName}](${downloadUrl})`
+      result += `| ${regionName}`
     }
 
-    const locusInstallUrl = `locus-actions://https/${rootUrlWithoutProtocol}/${locusFile}`
+    const locusInstallUrl = `locus-actions://${file.parentDirUrl.replace("://", "/")}/${locusFileName}`
     result += ` | <a href="${locusInstallUrl}">Locus</a>`
     result += ` | ${prettyBytes(file.totalSize)}`
-
-    result += ` | [coverage](${getCoverageUrlAndChangeGeoJsonIfNeed(regionId, regionName, locusInstallUrl, downloadUrl, file.hasMultipleParts)})`
+    result += ` | [coverage](${getCoverageUrlAndChangeGeoJsonIfNeed(regionId, regionName, locusInstallUrl, file)})`
     result += ` |\n`
     regionGroupToResult.set(regionScope, result)
   }
@@ -157,17 +174,16 @@ function buildToC(files, keyToInfo, resultFileName, locusFileToInfo) {
   // alphabetical order not suitable, so, list explicitly
   const keys = ["Europe", "Northern Europe", "North America", "Asia", "Other"]
   let result = ""
-  // must be first
   for (const key of keys) {
     result += regionGroupToResult.get(key)
   }
 
-  replace(result, resultFileName)
+  replaceFileContent(result, resultFileName)
 }
 
 const ownCoverage = new Set(util.polyFiles.concat(["bayern-at-cz"]))
 
-function getCoverageUrlAndChangeGeoJsonIfNeed(regionId, regionName, locusInstallUrl, downloadUrl, hasMultipleParts) {
+function getCoverageUrlAndChangeGeoJsonIfNeed(regionId, regionName, locusInstallUrl, info) {
   const regionCoverageId = regionId === "de-at-ch" ? "dach" : regionId
   if (!ownCoverage.has(regionCoverageId)) {
     throw new Error(`GeoJSON not provided for ${regionId}`)
@@ -175,21 +191,22 @@ function getCoverageUrlAndChangeGeoJsonIfNeed(regionId, regionName, locusInstall
 
   const geoJsonFile = path.join(__dirname, "../docs/geojson", regionCoverageId + ".geojson")
   const geoJson = JSON.parse(fs.readFileSync(geoJsonFile, "utf8"))
-  if (geoJson.properties == null || geoJson.properties.locusInstall !== locusInstallUrl || geoJson.properties.zipUrls == null || geoJson.properties.regionName == null) {
+  const properties = geoJson.properties
+  if (properties == null || properties.locusInstall !== locusInstallUrl || properties.zipUrls == null || properties.regionName == null) {
     // https://gis.stackexchange.com/questions/25279/is-it-valid-to-have-a-properties-element-in-an-geojson-featurecollection
     // but... in any case we add `properties` for FeatureCollection
-    if (geoJson.properties == null) {
+    if (properties == null) {
       geoJson.properties = {}
     }
-    geoJson.properties.locusInstall = locusInstallUrl
-    geoJson.properties.zipUrls = hasMultipleParts ? Array(3).fill(downloadUrl).map((v, index) => v.replace(".osm-gh.zip", `-part${index + 1}.osm-gh.zip`)) : [downloadUrl]
-    geoJson.properties.regionName = regionName
+    properties.locusInstall = locusInstallUrl
+    properties.zipUrls = info.parts.map(it => `${info.parentDirUrl}/${it}`)
+    properties.regionName = regionName
     fs.writeFileSync(geoJsonFile, JSON.stringify(geoJson))
   }
   return `/coverage.html#${regionCoverageId}`
 }
 
-function replace(content, fileName) {
+function replaceFileContent(content, fileName) {
   const file = path.join(__dirname, "/../docs/" + fileName)
   const existingContent = fs.readFileSync(file, "utf8")
   const startMarker = "<!-- do not edit. start of generated block -->"

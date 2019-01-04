@@ -1,4 +1,4 @@
-package main
+package builder
 
 import (
 	"bytes"
@@ -14,12 +14,12 @@ import (
 const serverIpV6 = "2001:bc8:4728:da09::1"
 
 func (t *Builder) upload(regionName string) error {
-	if t.executeContext.Err() != nil {
+	if t.ExecuteContext.Err() != nil {
 		return nil
 	}
 
 	// do not in parallel (no sense because build is skipped)
-	command := exec.CommandContext(t.executeContext, "node", filepath.Join(getNodeJsScriptDir(), "locus-action-generator.js"), regionName)
+	command := exec.CommandContext(t.ExecuteContext, "node", filepath.Join(getNodeJsScriptDir(), "locus-action-generator.js"), regionName)
 
 	var stdout bytes.Buffer
 	command.Stdout = &stdout
@@ -45,7 +45,7 @@ func (t *Builder) uploadUsingRsync(remoteDir string, filesToUpload []string) err
 	args = append(args, filesToUpload...)
 	args = append(args, "root@["+serverIpV6+"]:"+remoteDir+"/")
 
-	command := exec.CommandContext(t.executeContext, "/bin/sh", "-c", "rsync "+strings.Join(args, " "))
+	command := exec.CommandContext(t.ExecuteContext, "/bin/sh", "-c", "rsync "+strings.Join(args, " "))
 
 	command.Stdout = os.Stdout
 	command.Stderr = os.Stderr
@@ -59,7 +59,7 @@ func (t *Builder) uploadUsingRsync(remoteDir string, filesToUpload []string) err
 }
 
 func (t *Builder) addFileToUploadQueue(regionName string) {
-	if !t.isUpload {
+	if !t.IsUpload {
 		return
 	}
 
@@ -69,7 +69,7 @@ func (t *Builder) addFileToUploadQueue(regionName string) {
 		err := t.uploadPool.Serve(regionName)
 		if err != nil && err != ants.ErrPoolClosed {
 			t.uploadWaitGroup.Done()
-			t.logger.Error("cannot upload", zap.String("region", regionName), zap.Error(err))
+			t.Logger.Error("cannot upload", zap.String("region", regionName), zap.Error(err))
 			t.appendError("cannot upload " + regionName + ": " + err.Error())
 		}
 	}()
@@ -83,7 +83,7 @@ func (t *Builder) initUploadPool() error {
 		regionName := payload.(string)
 		err = t.upload(regionName)
 		if err != nil {
-			t.logger.Error("cannot upload", zap.String("region", regionName), zap.Error(err))
+			t.Logger.Error("cannot upload", zap.String("region", regionName), zap.Error(err))
 			t.appendError("cannot upload " + regionName + ": " + err.Error())
 		}
 	})
@@ -94,11 +94,11 @@ func (t *Builder) initUploadPool() error {
 }
 
 func (t *Builder) WaitAndCloseUploadPool() error {
-	if !t.isUpload {
+	if !t.IsUpload {
 		return nil
 	}
 
-	if t.executeContext.Err() == nil {
+	if t.ExecuteContext.Err() == nil {
 		t.uploadWaitGroup.Wait()
 	}
 	return t.uploadPool.Release()

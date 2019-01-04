@@ -4,6 +4,7 @@ import (
 	"github.com/alecthomas/kingpin"
 	"github.com/davecgh/go-spew/spew"
 	"github.com/develar/app-builder/pkg/util"
+	b "github.com/develar/gh-routing-data/internal/builder"
 	"github.com/pbnjay/memory"
 	"go.uber.org/zap"
 	"log"
@@ -42,36 +43,36 @@ func main() {
 		_ = logger.Sync()
 	}()
 
-	builder := Builder{
-		mapDir:            *mapDir,
-		elevationCacheDir: *elevationCacheDir,
-		vehicles:          []string{"bike2", "mtb", "racingbike", "hike", "car"},
+	builder := b.Builder{
+		MapDir:            *mapDir,
+		ElevationCacheDir: *elevationCacheDir,
+		Vehicles:          []string{"bike2", "mtb", "racingbike", "hike", "car"},
 
-		totalMemory:    int64(memory.TotalMemory()) - (1024 * 1024 * 1024 /* leave at least 1 GB for system */),
-		executeContext: executeContext,
+		TotalMemory:    int64(memory.TotalMemory()) - (1024 * 1024 * 1024 /* leave at least 1 GB for system */),
+		ExecuteContext: executeContext,
 
-		isBuild:             *isBuild,
-		isUpload:            *isUpload,
-		isRemoveOsmOnImport: *isRemoveOsmOnImport,
+		IsBuild:             *isBuild,
+		IsUpload:            *isUpload,
+		IsRemoveOsmOnImport: *isRemoveOsmOnImport,
 
-		graphhopperWebJar: *graphhopperWebJar,
+		GraphhopperWebJar: *graphhopperWebJar,
 
-		logger: logger,
+		Logger: logger,
 	}
 
-	if len(builder.elevationCacheDir) == 0 {
-		builder.elevationCacheDir = filepath.Join(*mapDir, "..", "elevation")
+	if len(builder.ElevationCacheDir) == 0 {
+		builder.ElevationCacheDir = filepath.Join(*mapDir, "..", "elevation")
 	}
 
 	// https://search.maven.org/search?q=a:graphhopper-web
 	// https://search.maven.org/remotecontent?filepath=com/graphhopper/graphhopper-web/0.12.0-pre2/graphhopper-web-0.12.0-pre2.jar
-	if builder.graphhopperWebJar == "" {
-		builder.graphhopperWebJar = filepath.Join(builder.mapDir, "..", "graphhopper-web-0.12.0-pre2.jar")
+	if builder.GraphhopperWebJar == "" {
+		builder.GraphhopperWebJar = filepath.Join(builder.MapDir, "..", "graphhopper-web-0.12.0-pre2.jar")
 	}
 
 	err = doBuild(&builder)
-	if len(builder.errors) != 0 {
-		logger.Error("errors occurred", zap.Strings("errors", builder.errors))
+	if len(builder.Errors) != 0 {
+		logger.Error("errors occurred", zap.Strings("errors", builder.Errors))
 	}
 	if err != nil {
 		cancelExecute()
@@ -87,13 +88,13 @@ func createLogger() (*zap.Logger, error) {
 	return config.Build(zap.AddStacktrace(zap.ErrorLevel))
 }
 
-func doBuild(builder *Builder) error {
+func doBuild(builder *b.Builder) error {
 	err := builder.Init()
 	if err != nil {
 		return err
 	}
 
-	err = builder.build(filepath.Join("./configs/regions.yaml"))
+	err = builder.Build(filepath.Join("./configs/regions.yaml"))
 	if err != nil {
 		return err
 	}

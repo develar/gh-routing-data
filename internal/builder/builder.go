@@ -1,4 +1,4 @@
-package main
+package builder
 
 import (
 	"context"
@@ -19,31 +19,31 @@ import (
 )
 
 type Builder struct {
-	graphhopperWebJar string
+	GraphhopperWebJar string
 
-	mapDir            string
-	elevationCacheDir string
-	vehicles          []string
+	MapDir            string
+	ElevationCacheDir string
+	Vehicles          []string
 
 	// print errors in the end as total summary
-	errors []string
+	Errors []string
 
-	totalMemory int64
+	TotalMemory int64
 
-	executeContext context.Context
+	ExecuteContext context.Context
 
-	isBuild             bool
-	isUpload            bool
-	isRemoveOsmOnImport bool
+	IsBuild             bool
+	IsUpload            bool
+	IsRemoveOsmOnImport bool
 
 	uploadPool      *ants.PoolWithFunc
 	uploadWaitGroup sync.WaitGroup
 
-	logger *zap.Logger
+	Logger *zap.Logger
 }
 
 func (t *Builder) Init() error {
-	if t.isUpload {
+	if t.IsUpload {
 		err := t.initUploadPool()
 		if err != nil {
 			return err
@@ -65,16 +65,16 @@ func getNodeJsScriptDir() string {
 }
 
 func (t *Builder) appendError(message string) {
-	t.errors = append(t.errors, message)
+	t.Errors = append(t.Errors, message)
 }
 
-func (t *Builder) build(regionFile string) error {
+func (t *Builder) Build(regionFile string) error {
 	regions, err := t.readRegions(regionFile)
 	if err != nil {
 		return err
 	}
 
-	if t.isBuild {
+	if t.IsBuild {
 		err = t.buildGraphData(regions)
 		if err != nil {
 			return err
@@ -105,7 +105,7 @@ func (t *Builder) buildGraphData(regions []*RegionInfo) error {
 	defer func() {
 		err := os.Remove(commonConfigFile)
 		if err != nil {
-			t.logger.Error("cannot remove file", zap.String("file", commonConfigFile), zap.Error(err))
+			t.Logger.Error("cannot remove file", zap.String("file", commonConfigFile), zap.Error(err))
 		}
 	}()
 
@@ -122,7 +122,7 @@ func (t *Builder) buildGraphData(regions []*RegionInfo) error {
 			return errors.New("bucket chThreadCount " + strconv.Itoa(bucket.chThreadCount) + " must be greater than 0")
 		}
 
-		t.logger.Info("import bucket", zap.Array("regions", zapcore.ArrayMarshalerFunc(func(encoder zapcore.ArrayEncoder) error {
+		t.Logger.Info("import bucket", zap.Array("regions", zapcore.ArrayMarshalerFunc(func(encoder zapcore.ArrayEncoder) error {
 			for _, region := range bucket.regions {
 				encoder.AppendString(region.Name)
 			}
@@ -169,20 +169,20 @@ func (t *Builder) buildRegion(region *RegionInfo, bucket *Bucket, commonConfigFi
 
 	xMax := strconv.Itoa(int(math.Ceil(float64(region.requiredMemoryInMb)/1024))) + "g"
 	chThreadCount := strconv.Itoa(bucket.chThreadCount)
-	logger := t.logger.With(zap.String("region", region.Name))
+	logger := t.Logger.With(zap.String("region", region.Name))
 	logger.Info("import region", zap.String("Xmx", xMax), zap.String("prepare.ch.threads", chThreadCount))
 	//command := exec.CommandContext(t.executeContext, "/Volumes/data/importer",
-	command := exec.CommandContext(t.executeContext, getJavaExecutablePath(),
+	command := exec.CommandContext(t.ExecuteContext, getJavaExecutablePath(),
 		"-Xms1g", "-Xmx"+xMax,
 		//"-XX:+UnlockExperimentalVMOptions",
 		//"-XX:+UseShenandoahGC",
 		ghProperty("datareader.file", region.File),
 		ghProperty("graph.location", graphDir),
 
-		ghProperty("graph.elevation.cache_dir", t.elevationCacheDir),
+		ghProperty("graph.elevation.cache_dir", t.ElevationCacheDir),
 		ghProperty("graph.elevation.provider", "multi"),
 
-		ghProperty("graph.flag_encoders", strings.Join(t.vehicles, ",")),
+		ghProperty("graph.flag_encoders", strings.Join(t.Vehicles, ",")),
 		ghProperty("graph.bytes_for_flags", "8"),
 		ghProperty("prepare.ch.threads", chThreadCount),
 		ghProperty("prepare.ch.weightings", "fastest"),
@@ -192,7 +192,7 @@ func (t *Builder) buildRegion(region *RegionInfo, bucket *Bucket, commonConfigFi
 		// Sort the graph after import to make requests roughly ~10% faster. Note that this requires significantly more RAM on import.
 		ghProperty("graph.do_sort", "true"),
 
-		"-jar", t.graphhopperWebJar,
+		"-jar", t.GraphhopperWebJar,
 		"import", commonConfigFile,
 	)
 
@@ -214,7 +214,7 @@ func (t *Builder) buildRegion(region *RegionInfo, bucket *Bucket, commonConfigFi
 	t.addFileToUploadQueue(region.Name)
 
 	logger.Info("imported")
-	if t.isRemoveOsmOnImport {
+	if t.IsRemoveOsmOnImport {
 		logger.Info("remove OSM file to save disk space", zap.String("file", region.File))
 		err = os.Remove(region.File)
 		if err != nil {
