@@ -28,13 +28,14 @@ class MapboxInfoBoxControl {
       downloadText = downloadText.toLowerCase()
     }
 
-    const zipUrls = properties.zipUrls
+    const zipUrls = properties.download.zipUrls
     if (zipUrls.length === 1) {
       html += `<a href="${zipUrls[0]}">${downloadText}</a>`
     }
     else {
       html += `${downloadText} ${zipUrls.map((v, index) => `<a href="${v}">part ${index + 1}</a>`).join(", ")}`
     }
+    html += ` (${properties.download.totalSizePretty})`
     this.container.innerHTML = html
 
     document.title = `Coverage of ${properties.regionName}`

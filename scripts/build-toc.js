@@ -163,9 +163,11 @@ function buildToC(files, keyToInfo, resultFileName, locusFileToInfo) {
       result += `| ${regionName}`
     }
 
+    file.totalSizePretty = prettyBytes(file.totalSize)
+
     const locusInstallUrl = `locus-actions://${file.parentDirUrl.replace("://", "/")}/${locusFileName}`
     result += ` | <a href="${locusInstallUrl}">Locus</a>`
-    result += ` | ${prettyBytes(file.totalSize)}`
+    result += ` | ${file.totalSizePretty}`
     result += ` | [coverage](${getCoverageUrlAndChangeGeoJsonIfNeed(regionId, regionName, locusInstallUrl, file)})`
     result += ` |\n`
     regionGroupToResult.set(regionScope, result)
@@ -192,14 +194,18 @@ function getCoverageUrlAndChangeGeoJsonIfNeed(regionId, regionName, locusInstall
   const geoJsonFile = path.join(__dirname, "../docs/geojson", regionCoverageId + ".geojson")
   const geoJson = JSON.parse(fs.readFileSync(geoJsonFile, "utf8"))
   const properties = geoJson.properties
-  if (properties == null || properties.locusInstall !== locusInstallUrl || properties.zipUrls == null || properties.regionName == null) {
+  if (properties == null || properties.locusInstall !== locusInstallUrl || properties.download == null || properties.regionName == null) {
     // https://gis.stackexchange.com/questions/25279/is-it-valid-to-have-a-properties-element-in-an-geojson-featurecollection
     // but... in any case we add `properties` for FeatureCollection
     if (properties == null) {
       geoJson.properties = {}
     }
     properties.locusInstall = locusInstallUrl
-    properties.zipUrls = info.parts.map(it => `${info.parentDirUrl}/${it}`)
+    properties.download = {
+      zipUrls: info.parts.map(it => `${info.parentDirUrl}/${it}`),
+      totalSize: info.totalSize,
+      totalSizePretty: info.totalSizePretty,
+    }
     properties.regionName = regionName
     fs.writeFileSync(geoJsonFile, JSON.stringify(geoJson))
   }
