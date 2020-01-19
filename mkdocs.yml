@@ -8,6 +8,10 @@ theme:
   palette:
     primary: 'light blue'
     accent: 'light blue'
+extra_javascript:
+  - info-row.js
+extra_css:
+  - info-row.css
 nav:
   - Introduction: index.md
   - 'GraphHopper vs BRouter': gh-brouter.md

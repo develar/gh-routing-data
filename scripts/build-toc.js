@@ -121,8 +121,8 @@ async function main() {
 
 function buildToC(files, keyToInfo, resultFileName, locusFileToInfo) {
   const regionGroupToResult = new Map()
-  for (const file of files) {
-    const name = file.name
+  for (const info of files) {
+    const name = info.name
     let regionId = name.substring(0, name.length - suffix.length)
     if (regionId === "we-ce-europe") {
       regionId = "europe-region1"
@@ -152,23 +152,19 @@ function buildToC(files, keyToInfo, resultFileName, locusFileToInfo) {
     }
 
     const locusFileName = `${regionId}.locus.xml`
-    if (!locusFileToInfo.has(`${path.posix.dirname(file.key)}/${locusFileName}`)) {
+    if (!locusFileToInfo.has(`${path.posix.dirname(info.key)}/${locusFileName}`)) {
       throw new Error(`Cannot find ${locusFileName}`)
     }
 
-    if (file.parts.length === 1) {
-      result += `| [${regionName}](${file.parentDirUrl}/${file.name})`
-    }
-    else {
-      result += `| ${regionName}`
-    }
+    // https://ux.stackexchange.com/a/98437
+    result += `| <span class="regionInfo" data-parent-dir-url="${info.parentDirUrl}" data-zip-urls="${info.parts.join(",")}">${regionName}</span>`
 
-    file.totalSizePretty = prettyBytes(file.totalSize)
+    info.totalSizePretty = prettyBytes(info.totalSize)
 
-    const locusInstallUrl = `locus-actions://${file.parentDirUrl.replace("://", "/")}/${locusFileName}`
+    const locusInstallUrl = `locus-actions://${info.parentDirUrl.replace("://", "/")}/${locusFileName}`
     result += ` | <a href="${locusInstallUrl}">Locus</a>`
-    result += ` | ${file.totalSizePretty}`
-    result += ` | [coverage](${getCoverageUrlAndChangeGeoJsonIfNeed(regionId, regionName, locusInstallUrl, file)})`
+    result += ` | ${info.totalSizePretty}`
+    result += ` | [coverage](${getCoverageUrlAndChangeGeoJsonIfNeed(regionId, regionName, locusInstallUrl, info)})`
     result += ` |\n`
     regionGroupToResult.set(regionScope, result)
   }

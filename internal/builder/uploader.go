@@ -66,7 +66,7 @@ func (t *Builder) addFileToUploadQueue(regionName string) {
 	t.uploadWaitGroup.Add(1)
 
 	go func() {
-		err := t.uploadPool.Serve(regionName)
+		err := t.uploadPool.Invoke(regionName)
 		if err != nil && err != ants.ErrPoolClosed {
 			t.uploadWaitGroup.Done()
 			t.Logger.Error("cannot upload", zap.String("region", regionName), zap.Error(err))
@@ -101,5 +101,6 @@ func (t *Builder) WaitAndCloseUploadPool() error {
 	if t.ExecuteContext.Err() == nil {
 		t.uploadWaitGroup.Wait()
 	}
-	return t.uploadPool.Release()
+	t.uploadPool.Release()
+	return nil
 }
