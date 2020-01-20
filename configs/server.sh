@@ -1,9 +1,8 @@
 #!/usr/bin/env bash
 
-# https://www.scaleway.com/docs/attach-and-detach-a-volume-to-an-existing-server/
+# https://www.scaleway.com/en/docs/how-to-mount-and-format-a-block-volume/
 
-#apt-get update -qq
-#apt-get upgrade -qq
+#apt-get update -qq && apt-get upgrade -qq
 #apt-get install -qq nginx
 
 #cat <<EOF >/etc/apk/repositories
@@ -36,24 +35,28 @@ rc-service netdata restart
 
 /etc/init.d/sshd restart
 
-wget https://dl.minio.io/server/minio/release/linux-amd64/minio -O /usr/bin/minio
-chmod +x /usr/bin/minio
-
-
 ####### caddy
+# curl -L https://github.com/caddyserver/caddy/releases/download/v1.0.4/caddy_v1.0.4_linux_amd64.tar.gz | tar xvz && mv caddy /usr/bin/caddy && chmod +x /usr/bin/caddy
 ulimit -n 8192
-caddy -host d.graphhopper.develar.org -root /var/lib/docker/volumes/site_gh-data/_data/gh-data -quic -email develar@gmail.com -agree -conf /etc/Caddyfile
+caddy -host d.graphhopper.develar.org -root /mnt/gh-data -email develar@gmail.com -agree -conf /etc/Caddyfile
 
-addgroup -S caddy 2>/dev/null
-adduser -S -D -h /var/lib/caddy -s /sbin/nologin -G caddy -g caddy caddy 2>/dev/null
-adduser caddy www-data 2>/dev/null
+groupadd --system caddy
+useradd --system \
+	--gid caddy \
+	--create-home \
+	--home-dir /var/lib/caddy \
+	--shell /usr/sbin/nologin \
+	--comment "Caddy web server" \
+	caddy
+#addgroup -S caddy 2>/dev/null
+#adduser -S -D -h /var/lib/caddy -s /sbin/nologin -G caddy -g caddy caddy 2>/dev/null
+#adduser caddy www-data 2>/dev/null
 
 # pkill -USR1 caddy (to restart)
 # tail /var/log/access.log
 
-# mkdir /var/log/caddy && chown caddy:caddy /var/log/caddy
-
-scp ~/Documents/gh-routing-data/configs/server/Caddyfile root@[2001:bc8:4728:da09::1]:/etc/Caddyfile
+mkdir /var/log/caddy && chown caddy:caddy /var/log/caddy
+scp ~/Documents/gh-routing-data/configs/server/Caddyfile root@51.15.100.144:/etc/Caddyfile
 
 cat <<EOF >/etc/init.d/caddy
 #!/sbin/openrc-run

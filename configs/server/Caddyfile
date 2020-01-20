@@ -21,4 +21,4 @@ status 404 /not_found
 status 200 /ping
 
 # exclude fs service dir
-internal /eu/lost+found
+internal /lost+found
