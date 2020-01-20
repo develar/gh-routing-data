@@ -2,6 +2,7 @@ package builder
 
 import (
 	"github.com/davecgh/go-spew/spew"
+	"github.com/deanishe/go-env"
 	"github.com/develar/errors"
 	"golang.org/x/tools/container/intsets"
 	"runtime"
@@ -25,7 +26,7 @@ func (t *Builder) computeBuckets(regions []*RegionInfo) ([]*Bucket, error) {
 	var buckets []*Bucket
 
 	totalThreadCount := runtime.NumCPU()
-	maxRegionsPerBucket := max(totalThreadCount-2, 1)
+	maxRegionsPerBucket := env.GetInt("BUILD_WORKER_COUNT", max(totalThreadCount-2, 1))
 	recommendedThreadCount := min(len(t.Vehicles), totalThreadCount)
 
 	var processedRegions intsets.Sparse

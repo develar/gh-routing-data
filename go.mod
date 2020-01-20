@@ -9,6 +9,7 @@ require (
 	github.com/apex/log v1.1.1 // indirect
 	github.com/bmizerany/assert v0.0.0-20160611221934-b7ed37b82869 // indirect
 	github.com/davecgh/go-spew v1.1.1
+	github.com/deanishe/go-env v0.4.0
 	github.com/develar/app-builder v2.0.0+incompatible
 	github.com/develar/errors v0.9.0
 	github.com/develar/go-fs-util v2.0.0+incompatible

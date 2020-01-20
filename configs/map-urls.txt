@@ -3,6 +3,10 @@
 # 1. geofabrik anyway uses smart extract
 # 2. in any case for user better to not hope that route will be covered, but download merged area (several countries) to be sure
 
+# use download.openstreetmap.fr to avoid overloading of geofabrik.de
+extract-maps: check-env
+http://download.openstreetmap.fr/extracts/europe-latest.osm.pbf
+
 http://download.geofabrik.de/africa-latest.osm.pbf
 http://download.geofabrik.de/europe/alps-latest.osm.pbf
 http://download.geofabrik.de/australia-oceania/australia-latest.osm.pbf
@@ -32,12 +36,12 @@ http://download.geofabrik.de/europe/italy-latest.osm.pbf
 http://download.geofabrik.de/europe/netherlands-latest.osm.pbf
 http://download.geofabrik.de/australia-oceania/new-zealand-latest.osm.pbf
 
-http://be.gis-lab.info/data/osm_dump/dump/latest/RU.osm.pbf
+http://download.geofabrik.de/russia-latest.osm.pbf
 
 http://download.geofabrik.de/south-america-latest.osm.pbf
 http://download.geofabrik.de/europe/switzerland-latest.osm.pbf
 
-http://be.gis-lab.info/data/osm_dump/dump/latest/UA.osm.pbf
+http://download.geofabrik.de/europe/ukraine-latest.osm.pbf
 http://download.geofabrik.de/north-america/us-midwest-latest.osm.pbf
 http://download.geofabrik.de/north-america/us-northeast-latest.osm.pbf
 http://download.geofabrik.de/north-america/us-pacific-latest.osm.pbf

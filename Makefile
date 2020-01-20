@@ -7,19 +7,23 @@ deps:
 	pip3 install mkdocs-material mkdocs pymdown-extensions --upgrade
 
 download: check-env
+	aria2c --file-allocation=none --max-connection-per-server=2 --dir="${MAP_DIR}" --conditional-get --allow-overwrite 'https://repo1.maven.org/maven2/com/graphhopper/graphhopper-web/0.13.0/graphhopper-web-0.13.0.jar'
 	aria2c --file-allocation=none --max-connection-per-server=2 --max-concurrent-downloads=2 --input-file=configs/map-urls.txt --dir="${MAP_DIR}" --conditional-get --allow-overwrite
 
 compile-builder:
 	go build -ldflags='-s -w' -o tools/builder ./cmd
 
-# Java is required, download from https://www.oracle.com/technetwork/java/javase/downloads/jdk11-downloads-5066655.html as archive (not as installation media (e.g. dmg) to not pollute your OS),
-# unpack to some dir and prepend all commands with JAVA_HOME=<path/to/java/home> (or simply export JAVA_HOME env in current terminal window)
-# e.g.: export JAVA_HOME=~/Downloads/jdk-12.jdk/Contents/Home
+# env BUILD_WORKER_COUNT must set to 1 if elevation data is not yet downloaded, because graphhopper cannot download it in parallel
+
+# Java is required, download from https://github.com/AdoptOpenJDK/openjdk13-binaries/releases/download/jdk-13.0.1%2B9/OpenJDK13U-jre_x64_mac_hotspot_13.0.1_9.tar.gz as archive (not as installation media (e.g. dmg) to not pollute your OS),
+# unpack (do not use Archive Utility (otherwise will be marked as untrusted)) to some dir and prepend all commands with JAVA_HOME=<path/to/java/home> (or simply export JAVA_HOME env in current terminal window)
+# e.g.: export JAVA_HOME=~/Downloads/jdk-13.0.1+9-jre/Contents/Home
 build: compile-builder
-	./tools/builder --remove-osm
+	BUILD_WORKER_COUNT=1 ./tools/builder --remove-osm
 
 build-only: compile-builder
-	./tools/builder --no-upload
+	BUILD_WORKER_COUNT=1 ./tools/builder --no-upload
+	# ./tools/builder --no-upload --remove-osm
 
 upload-only: compile-builder
 	SKIP_ZIP=true ./tools/builder --no-build
@@ -32,8 +36,6 @@ coverage:
 	node ./scripts/poly-to-geojson.js
 
 extract-maps: check-env
-	# use download.openstreetmap.fr to avoid overloading of geofabrik.de
-	aria2c --file-allocation=none --max-connection-per-server=2 --dir="${MAP_DIR}" --conditional-get --allow-overwrite http://download.openstreetmap.fr/extracts/europe-latest.osm.pbf
 	osmium extract --overwrite --config=coverage/extracts.json --strategy=smart --directory="${MAP_DIR}" "${MAP_DIR}/europe-latest.osm.pbf"
 
 toc:

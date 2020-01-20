@@ -187,7 +187,7 @@ func (t *Builder) buildRegion(region *RegionInfo, bucket *Bucket, commonConfigFi
 		ghProperty("prepare.ch.threads", chThreadCount),
 		ghProperty("prepare.ch.weightings", "fastest"),
 
-		// configure the memory access, use RAM_STORE for well equipped servers (default and recommended)
+		// configure the memory access, use RAM_STORE for well-equipped servers (default and recommended)
 		ghProperty("graph.dataaccess", "RAM_STORE"),
 		// Sort the graph after import to make requests roughly ~10% faster. Note that this requires significantly more RAM on import.
 		ghProperty("graph.do_sort", "true"),
@@ -196,7 +196,8 @@ func (t *Builder) buildRegion(region *RegionInfo, bucket *Bucket, commonConfigFi
 		"import", commonConfigFile,
 	)
 
-	logFile, err := os.Create(filepath.Join(filepath.Dir(region.File), region.Name+".log"))
+	logFilePath := filepath.Join(filepath.Dir(region.File), region.Name+".log")
+	logFile, err := os.Create(logFilePath)
 	if err != nil {
 		return errors.WithStack(err)
 	}
@@ -207,8 +208,8 @@ func (t *Builder) buildRegion(region *RegionInfo, bucket *Bucket, commonConfigFi
 
 	err = command.Run()
 	if err != nil {
-		logger.Error("cannot build", zap.Error(err))
-		return errors.WithStack(err)
+		logger.Error("cannot build", zap.String("log", logFilePath), zap.Error(err))
+		return err
 	}
 
 	t.addFileToUploadQueue(region.Name)
