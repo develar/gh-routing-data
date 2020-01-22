@@ -52,6 +52,10 @@ func (t *Builder) computeBuckets(regions []*RegionInfo) ([]*Bucket, error) {
 		currentBucket = &Bucket{
 			chThreadCount: recommendedThreadCount,
 		}
+		if region.requiredMemoryInMb > 3000 {
+			//currentBucket.chThreadCount = min(1 + (len(t.Vehicles) / 2), totalThreadCount)
+		}
+
 		currentBucket.regions = append(currentBucket.regions, region)
 		availableMemoryInMb = totalMemoryInMb - region.requiredMemoryInMb
 		buckets = append(buckets, currentBucket)

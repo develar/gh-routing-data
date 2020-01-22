@@ -3,7 +3,7 @@ const asiaRegions = ["japan", "india", "china", "indonesia", "thailand"]
 const path = require("path")
 
 module.exports = {
-  rootUrlWithoutProtocol: "d2.graphhopper.develar.org",
+  rootUrlWithoutProtocol: "d.graphhopper.develar.org",
   asiaRegions,
   isUseS3: false,
 

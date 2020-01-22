@@ -2,8 +2,8 @@ const fs = require("fs")
 const path = require("path")
 const child_process = require("child_process")
 
-const patterns = ["*_bike2", "*_mtb", "*_racingbike"]
-const patterns2 = ["*_car", "*_hike"]
+const patterns = ["*_bike2_node", "*_mtb_node", "*_racingbike_node"]
+const patterns2 = ["*_car_node", "*_hike_node"]
 const bucketName = "gh-data"
 const serverAlias = "sw"
 const util = require("./info.js")
@@ -12,14 +12,16 @@ const serverUrl = `https://${util.rootUrlWithoutProtocol}`
 function unlinkIfExists(file) {
   try {
     fs.unlinkSync(file)
-  } catch (ignore) {
+  }
+  catch (ignore) {
   }
 }
 
 function statOrNull(file) {
   try {
     return fs.statSync(file)
-  } catch (e) {
+  }
+  catch (e) {
     if (e.code === "ENOENT") {
       return null
     }
@@ -52,8 +54,8 @@ function spawn(command, args, data) {
   })
 }
 
-// if > 600 MB, compress as 3 zip files (because now car is provided and africa requires at least 3 parts)
-const maxFileSize = 600000000
+// if > 600 MB, compress as 3 ZIPs files (because now car is provided and africa requires at least 3 parts)
+const maxFileSize = 600_000_000
 const mapDir = process.env.MAP_DIR
 
 // 7za very slow - compression ratio doesn't worth spent time (2m52.212s vs 11m16.306s)
@@ -126,13 +128,9 @@ class Builder {
     this.dirName = `${resultName}.osm-gh`
 
     // const dirName = new Date().toISOString().substr(0, 10)
-    const dirName = "2018-12-19"
-    if (util.isUseS3) {
-      this.remoteDir = dirName
-    }
-    else {
-      this.remoteDir = `${(util.getRegionScopeName(resultName).includes("Europe") ? "eu" : "other")}/${dirName}`
-    }
+    // noinspection UnnecessaryLocalVariableJS
+    const dirName = "2019-01-21"
+    this.remoteDir = dirName
 
     this.fileNames = []
     this.filesToUpload = []
@@ -186,7 +184,7 @@ class Builder {
   }
 
   isUseParts() {
-    const fileStat = statOrNull(path.join(mapDir, this.dirName, "shortcuts_fastest_bike2"))
+    const fileStat = statOrNull(path.join(mapDir, this.dirName, "shortcuts_fastest_bike2_node"))
     if (fileStat == null) {
       // gh data dir removed and only previously archived file exists
       return statOrNull(path.join(mapDir, this.getPartFileName(1))) != null

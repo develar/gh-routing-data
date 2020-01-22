@@ -109,14 +109,6 @@ func (t *Builder) buildGraphData(regions []*RegionInfo) error {
 		}
 	}()
 
-	//pool, _ := ants.NewPool(len(buckets[0].regions))
-	//defer func() {
-	//  err := pool.Release()
-	//  if err != nil {
-	//    t.logger.Error("cannot release pool", zap.Error(err))
-	//  }
-	//}()
-
 	for _, bucket := range buckets {
 		if bucket.chThreadCount <= 0 {
 			return errors.New("bucket chThreadCount " + strconv.Itoa(bucket.chThreadCount) + " must be greater than 0")
@@ -128,15 +120,6 @@ func (t *Builder) buildGraphData(regions []*RegionInfo) error {
 			}
 			return nil
 		})))
-
-		//for _, region := range bucket.regions {
-		//  pool.Submit(func() {
-		//    err := t.buildRegion(region, bucket, commonConfigFile)
-		//    if err != nil {
-		//      t.logger
-		//    }
-		//  })
-		//}
 
 		err = util.MapAsync(len(bucket.regions), func(taskIndex int) (i func() error, e error) {
 			return func() error {
@@ -173,9 +156,10 @@ func (t *Builder) buildRegion(region *RegionInfo, bucket *Bucket, commonConfigFi
 	logger.Info("import region", zap.String("Xmx", xMax), zap.String("prepare.ch.threads", chThreadCount))
 	//command := exec.CommandContext(t.executeContext, "/Volumes/data/importer",
 	command := exec.CommandContext(t.ExecuteContext, getJavaExecutablePath(),
-		"-Xms1g", "-Xmx"+xMax,
-		//"-XX:+UnlockExperimentalVMOptions",
-		//"-XX:+UseShenandoahGC",
+		"-Xms1g",
+		"-Xmx"+xMax,
+		"-XX:+UnlockExperimentalVMOptions",
+		"-XX:+UseShenandoahGC",
 		ghProperty("datareader.file", region.File),
 		ghProperty("graph.location", graphDir),
 

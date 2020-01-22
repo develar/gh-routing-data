@@ -7,7 +7,7 @@ deps:
 	pip3 install mkdocs-material mkdocs pymdown-extensions --upgrade
 
 download: check-env
-	aria2c --file-allocation=none --max-connection-per-server=2 --dir="${MAP_DIR}" --conditional-get --allow-overwrite 'https://repo1.maven.org/maven2/com/graphhopper/graphhopper-web/0.13.0/graphhopper-web-0.13.0.jar'
+	aria2c --file-allocation=none --max-connection-per-server=2 --dir="${MAP_DIR}" --conditional-get --allow-overwrite 'https://repo1.maven.org/maven2/com/graphhopper/graphhopper-web/1.0-pre17/graphhopper-web-1.0-pre17.jar'
 	aria2c --file-allocation=none --max-connection-per-server=2 --max-concurrent-downloads=2 --input-file=configs/map-urls.txt --dir="${MAP_DIR}" --conditional-get --allow-overwrite
 
 compile-builder:
