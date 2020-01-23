@@ -23,6 +23,7 @@ function build(files, outFile) {
 
   const polyList = []
   for (const file of files) {
+    console.log(`convert ${file}`)
     const lines = fs.readFileSync(path.join(coverageDir, "input", file), "utf-8").split("\n")
     // skip first line, "The first line contains the name of the file."
     const n = lines.length - 1

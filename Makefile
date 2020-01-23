@@ -59,7 +59,7 @@ lint:
 
 dev-site:
 	# chrome://flags/#allow-insecure-localhost to tell Chrome to ignore cert warnings on localhost
-	caddy -root docs -quic -port 8080 -host localhost "ext .html" "log stdout" "tls self_signed" "bind 127.0.0.1"
+	caddy -root site -quic -port 8080 -host localhost "ext .html" "log stdout" "tls self_signed" "bind 127.0.0.1"
 
 update-deps:
 	go get -u ./...

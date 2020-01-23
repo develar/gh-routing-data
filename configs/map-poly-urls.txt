@@ -43,6 +43,7 @@ https://download.geofabrik.de/asia/india.poly
 https://download.geofabrik.de/asia/china.poly
 https://download.geofabrik.de/asia/indonesia.poly
 https://download.geofabrik.de/asia/thailand.poly
+https://download.geofabrik.de/asia/taiwan.poly
 https://download.geofabrik.de/europe/turkey.poly
 
 https://download.geofabrik.de/europe/poland.poly

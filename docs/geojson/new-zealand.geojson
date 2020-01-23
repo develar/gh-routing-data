@@ -1,1 +1,41 @@
-{"type":"Feature","properties":{"locusInstall":"locus-actions://https/d2.graphhopper.develar.org/other/2018-12-19/new-zealand.locus.xml","zipUrls":["https://d2.graphhopper.develar.org/other/2018-12-19/new-zealand.osm-gh.zip"],"regionName":"New Zealand","download":{"zipUrls":["https://d2.graphhopper.develar.org/other/2018-12-19/new-zealand.osm-gh.zip"],"totalSize":79165849,"totalSizePretty":"79.2 MB"}},"geometry":{"type":"Polygon","coordinates":[[[179.8167,-32.667],[179.7681,-48.77],[162.096,-48.77],[162.096,-32.667],[179.8167,-32.667]]]}}
+{
+  "type": "Feature",
+  "properties": {
+    "locusInstall": "locus-actions://https/d.graphhopper.develar.org/2019-01-21/new-zealand.locus.xml",
+    "download": {
+      "zipUrls": [
+        "https://d.graphhopper.develar.org/2019-01-21/new-zealand.osm-gh.zip"
+      ],
+      "totalSize": 78957403,
+      "totalSizePretty": "79 MB"
+    },
+    "regionName": "New Zealand"
+  },
+  "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+      [
+        [
+          179.9999,
+          -32.667
+        ],
+        [
+          179.9999,
+          -48.77
+        ],
+        [
+          162.096,
+          -48.77
+        ],
+        [
+          162.096,
+          -32.667
+        ],
+        [
+          179.9999,
+          -32.667
+        ]
+      ]
+    ]
+  }
+}

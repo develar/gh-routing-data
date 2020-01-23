@@ -83,8 +83,8 @@ func (t *Builder) readRegions(regionFile string) ([]*RegionInfo, error) {
 				empiricalCoefficient = 7
 			}
 
-			region.requiredMemoryInMb = int(float64(fileSizeInMb) * empiricalCoefficient)
-			//region.requiredMemoryInMb = fileSizeInMb * empiricalCoefficient
+			// e.g. us-pacific requires > 1 GB
+			region.requiredMemoryInMb = max(int(float64(fileSizeInMb)*empiricalCoefficient), 2048)
 			return nil
 		}, nil
 	})

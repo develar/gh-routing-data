@@ -13,7 +13,7 @@ central-america-latest
 czech-republic-latest
 china-latest
 
-#dach-latest de-at-ch
+dach-latest de-at-ch
 denmark-latest
 
 estonia-latvia-lithuania
@@ -27,7 +27,7 @@ great-britain-latest
 greece-latest
 
 ireland-and-northern-ireland-latest
-#iceland-latest
+iceland-latest
 italy-latest
 india-latest
 indonesia-latest
@@ -38,7 +38,7 @@ new-zealand-latest
 poland-latest
 portugal-spain
 
-russia-latest russia
+#russia-latest russia
 
 south-america-latest
 switzerland-latest
@@ -53,4 +53,5 @@ us-west-latest
 
 japan-latest
 thailand-latest
+taiwan-latest
 turkey-latest

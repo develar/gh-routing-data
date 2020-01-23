@@ -39,6 +39,7 @@ function collectFiles(locusFileToInfo) {
   function collectDir(dirName) {
     // caddy output
     const parentDirUrl = `https://${rootUrlWithoutProtocol}/${dirName}`
+    console.log(`Get ${parentDirUrl}`)
     const list = JSON.parse(execFileSync("curl", commonCurlArgs().concat(["-H", "Accept: application/json", `${parentDirUrl}/`]), {encoding: "utf-8"}).trim())
     for (const item of list) {
       // noinspection JSUnresolvedVariable
@@ -92,9 +93,8 @@ function collectFiles(locusFileToInfo) {
     }
   }
 
-  const date = "2018-12-19"
-  collectDir(`eu/${date}`)
-  collectDir(`other/${date}`)
+  const date = "2019-01-21"
+  collectDir(`${date}`)
   return Array.from(nameToInfo.values())
 }
 
@@ -189,12 +189,14 @@ function getCoverageUrlAndChangeGeoJsonIfNeed(regionId, regionName, locusInstall
 
   const geoJsonFile = path.join(__dirname, "../docs/geojson", regionCoverageId + ".geojson")
   const geoJson = JSON.parse(fs.readFileSync(geoJsonFile, "utf8"))
-  const properties = geoJson.properties
+  let properties = geoJson.properties
   if (properties == null || properties.locusInstall !== locusInstallUrl || properties.download == null || properties.regionName == null) {
     // https://gis.stackexchange.com/questions/25279/is-it-valid-to-have-a-properties-element-in-an-geojson-featurecollection
-    // but... in any case we add `properties` for FeatureCollection
+    // in any case we add `properties` for FeatureCollection
     if (properties == null) {
-      geoJson.properties = {}
+      properties = {}
+      console.warn(`No properties in ${geoJsonFile}`)
+      geoJson.properties = properties
     }
     properties.locusInstall = locusInstallUrl
     properties.download = {
@@ -203,8 +205,9 @@ function getCoverageUrlAndChangeGeoJsonIfNeed(regionId, regionName, locusInstall
       totalSizePretty: info.totalSizePretty,
     }
     properties.regionName = regionName
-    fs.writeFileSync(geoJsonFile, JSON.stringify(geoJson))
+    fs.writeFileSync(geoJsonFile, JSON.stringify(geoJson, null, 2))
   }
+
   return `/coverage.html#${regionCoverageId}`
 }
 

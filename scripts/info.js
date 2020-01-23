@@ -1,5 +1,5 @@
 const northernEuropeRegions = new Set(["iceland", "great-britain", "sweden", "norway", "denmark", "ireland-and-northern-ireland"])
-const asiaRegions = ["japan", "india", "china", "indonesia", "thailand"]
+const asiaRegions = ["japan", "india", "china", "indonesia", "thailand", "taiwan"]
 const path = require("path")
 
 module.exports = {

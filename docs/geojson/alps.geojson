@@ -1,1 +1,41 @@
-{"type":"Feature","properties":{"locusInstall":"locus-actions://https/d2.graphhopper.develar.org/eu/2018-12-19/alps.locus.xml","zipUrls":["https://d2.graphhopper.develar.org/eu/2018-12-19/alps.osm-gh.zip"],"regionName":"Alps","download":{"zipUrls":["https://d2.graphhopper.develar.org/eu/2018-12-19/alps.osm-gh.zip"],"totalSize":1833648470,"totalSizePretty":"1.83 GB"}},"geometry":{"type":"Polygon","coordinates":[[[5.57178,48.65412],[16.68994,48.65412],[16.68994,45.25882],[5.57178,45.25882],[5.57178,48.65412]]]}}
+{
+  "type": "Feature",
+  "properties": {
+    "locusInstall": "locus-actions://https/d.graphhopper.develar.org/2019-01-21/alps.locus.xml",
+    "download": {
+      "zipUrls": [
+        "https://d.graphhopper.develar.org/2019-01-21/alps.osm-gh.zip"
+      ],
+      "totalSize": 1689010702,
+      "totalSizePretty": "1.69 GB"
+    },
+    "regionName": "Alps"
+  },
+  "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+      [
+        [
+          5.57178,
+          48.65412
+        ],
+        [
+          16.68994,
+          48.65412
+        ],
+        [
+          16.68994,
+          45.25882
+        ],
+        [
+          5.57178,
+          45.25882
+        ],
+        [
+          5.57178,
+          48.65412
+        ]
+      ]
+    ]
+  }
+}

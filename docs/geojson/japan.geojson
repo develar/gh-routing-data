@@ -1,1 +1,75 @@
-{"type":"Feature","properties":{"locusInstall":"locus-actions://https/d2.graphhopper.develar.org/other/2018-12-19/japan.locus.xml","zipUrls":["https://d2.graphhopper.develar.org/other/2018-12-19/japan-part1.osm-gh.zip","https://d2.graphhopper.develar.org/other/2018-12-19/japan-part2.osm-gh.zip","https://d2.graphhopper.develar.org/other/2018-12-19/japan-part3.osm-gh.zip"],"regionName":"Japan","download":{"zipUrls":["https://d2.graphhopper.develar.org/other/2018-12-19/japan-part1.osm-gh.zip","https://d2.graphhopper.develar.org/other/2018-12-19/japan-part2.osm-gh.zip","https://d2.graphhopper.develar.org/other/2018-12-19/japan-part3.osm-gh.zip"],"totalSize":2227501219,"totalSizePretty":"2.23 GB"}},"geometry":{"type":"Polygon","coordinates":[[[149.1253,22.84563],[142.0845,22.06271],[141.5486,21.23422],[136.1323,20.08228],[122.5954,23.51966],[122.5607,25.84146],[128.8145,34.74835],[129.3966,35.09403],[135.3079,37.5474],[140.5769,45.70648],[149.1891,45.80245],[154.4709,23.98253],[149.1253,22.84563]]]}}
+{
+  "type": "Feature",
+  "properties": {
+    "locusInstall": "locus-actions://https/d.graphhopper.develar.org/2019-01-21/japan.locus.xml",
+    "download": {
+      "zipUrls": [
+        "https://d.graphhopper.develar.org/2019-01-21/japan-part1.osm-gh.zip",
+        "https://d.graphhopper.develar.org/2019-01-21/japan-part2.osm-gh.zip",
+        "https://d.graphhopper.develar.org/2019-01-21/japan-part3.osm-gh.zip"
+      ],
+      "totalSize": 2034244248,
+      "totalSizePretty": "2.03 GB"
+    },
+    "regionName": "Japan"
+  },
+  "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+      [
+        [
+          149.1253,
+          22.84562
+        ],
+        [
+          142.0845,
+          22.06271
+        ],
+        [
+          141.5486,
+          21.23422
+        ],
+        [
+          136.1323,
+          20.08228
+        ],
+        [
+          122.5954,
+          23.51966
+        ],
+        [
+          122.5607,
+          25.84146
+        ],
+        [
+          128.8145,
+          34.74835
+        ],
+        [
+          129.3966,
+          35.09403
+        ],
+        [
+          135.3079,
+          37.5474
+        ],
+        [
+          140.5769,
+          45.70648
+        ],
+        [
+          149.1891,
+          45.80245
+        ],
+        [
+          154.4709,
+          23.98253
+        ],
+        [
+          149.1253,
+          22.84562
+        ]
+      ]
+    ]
+  }
+}
