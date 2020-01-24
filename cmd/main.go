@@ -66,7 +66,7 @@ func main() {
 
 	// https://search.maven.org/search?q=a:graphhopper-web
 	if builder.GraphhopperWebJar == "" {
-		builder.GraphhopperWebJar = filepath.Join(builder.MapDir, "graphhopper-web-1.0-pre17.jar")
+		builder.GraphhopperWebJar = filepath.Join(builder.MapDir, "gh-importer.jar")
 	}
 
 	err = doBuild(&builder)

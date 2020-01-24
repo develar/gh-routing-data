@@ -3,9 +3,7 @@
 # 1. geofabrik anyway uses smart extract
 # 2. in any case for user better to not hope that route will be covered, but download merged area (several countries) to be sure
 
-# use download.openstreetmap.fr to avoid overloading of geofabrik.de
-extract-maps: check-env
-http://download.openstreetmap.fr/extracts/europe-latest.osm.pbf
+http://download.geofabrik.de/europe-latest.osm.pbf
 
 http://download.geofabrik.de/africa-latest.osm.pbf
 http://download.geofabrik.de/europe/alps-latest.osm.pbf

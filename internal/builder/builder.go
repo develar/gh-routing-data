@@ -14,7 +14,6 @@ import (
 	"os/exec"
 	"path/filepath"
 	"strconv"
-	"strings"
 	"sync"
 )
 
@@ -97,18 +96,6 @@ func (t *Builder) buildGraphData(regions []*RegionInfo) error {
 		return err
 	}
 
-	commonConfigFile, err := createCommonConfigFile()
-	if err != nil {
-		return errors.WithStack(err)
-	}
-
-	defer func() {
-		err := os.Remove(commonConfigFile)
-		if err != nil {
-			t.Logger.Error("cannot remove file", zap.String("file", commonConfigFile), zap.Error(err))
-		}
-	}()
-
 	for _, bucket := range buckets {
 		if bucket.chThreadCount <= 0 {
 			return errors.New("bucket chThreadCount " + strconv.Itoa(bucket.chThreadCount) + " must be greater than 0")
@@ -123,7 +110,7 @@ func (t *Builder) buildGraphData(regions []*RegionInfo) error {
 
 		err = util.MapAsync(len(bucket.regions), func(taskIndex int) (i func() error, e error) {
 			return func() error {
-				return t.buildRegion(bucket.regions[taskIndex], bucket, commonConfigFile)
+				return t.buildRegion(bucket.regions[taskIndex], bucket)
 			}, nil
 		})
 		if err != nil {
@@ -136,10 +123,10 @@ func (t *Builder) buildGraphData(regions []*RegionInfo) error {
 
 func ghProperty(name string, value string) string {
 	//noinspection SpellCheckingInspection
-	return "-Dgraphhopper." + name + "=" + value
+	return "-D" + name + "=" + value
 }
 
-func (t *Builder) buildRegion(region *RegionInfo, bucket *Bucket, commonConfigFile string) error {
+func (t *Builder) buildRegion(region *RegionInfo, bucket *Bucket) error {
 	graphDir := filepath.Join(filepath.Dir(region.File), region.Name+".osm-gh")
 	err := fsutil.EnsureEmptyDir(graphDir)
 	if err != nil {
@@ -154,7 +141,6 @@ func (t *Builder) buildRegion(region *RegionInfo, bucket *Bucket, commonConfigFi
 	chThreadCount := strconv.Itoa(bucket.chThreadCount)
 	logger := t.Logger.With(zap.String("region", region.Name))
 	logger.Info("import region", zap.String("Xmx", xMax), zap.String("prepare.ch.threads", chThreadCount))
-	//command := exec.CommandContext(t.executeContext, "/Volumes/data/importer",
 	command := exec.CommandContext(t.ExecuteContext, getJavaExecutablePath(),
 		"-Xms1g",
 		"-Xmx"+xMax,
@@ -164,20 +150,10 @@ func (t *Builder) buildRegion(region *RegionInfo, bucket *Bucket, commonConfigFi
 		ghProperty("graph.location", graphDir),
 
 		ghProperty("graph.elevation.cache_dir", t.ElevationCacheDir),
-		ghProperty("graph.elevation.provider", "multi"),
 
-		ghProperty("graph.flag_encoders", strings.Join(t.Vehicles, ",")),
-		ghProperty("graph.bytes_for_flags", "8"),
 		ghProperty("prepare.ch.threads", chThreadCount),
-		ghProperty("prepare.ch.weightings", "fastest"),
-
-		// configure the memory access, use RAM_STORE for well-equipped servers (default and recommended)
-		ghProperty("graph.dataaccess", "RAM_STORE"),
-		// Sort the graph after import to make requests roughly ~10% faster. Note that this requires significantly more RAM on import.
-		ghProperty("graph.do_sort", "true"),
 
 		"-jar", t.GraphhopperWebJar,
-		"import", commonConfigFile,
 	)
 
 	logFilePath := filepath.Join(filepath.Dir(region.File), region.Name+".log")
