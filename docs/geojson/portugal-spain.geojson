@@ -1,13 +1,13 @@
 {
   "type": "Feature",
   "properties": {
-    "locusInstall": "locus-actions://https/d.graphhopper.develar.org/2019-01-21/portugal-spain.locus.xml",
+    "locusInstall": "locus-actions://https/s3.eu-central-1.wasabisys.com/gh-routing-data/portugal-spain.locus.xml",
     "download": {
       "zipUrls": [
-        "https://d.graphhopper.develar.org/2019-01-21/portugal-spain.osm-gh.zip"
+        "https://s3.eu-central-1.wasabisys.com/gh-routing-data/portugal-spain.osm-gh.zip"
       ],
-      "totalSize": 1394263708,
-      "totalSizePretty": "1.39 GB"
+      "totalSize": 1396601077,
+      "totalSizePretty": "1.4 GB"
     },
     "regionName": "Portugal and Spain"
   },

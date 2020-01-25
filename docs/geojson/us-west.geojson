@@ -1,12 +1,12 @@
 {
   "type": "Feature",
   "properties": {
-    "locusInstall": "locus-actions://https/d.graphhopper.develar.org/2019-01-21/us-west.locus.xml",
+    "locusInstall": "locus-actions://https/s3.eu-central-1.wasabisys.com/gh-routing-data/us-west.locus.xml",
     "download": {
       "zipUrls": [
-        "https://d.graphhopper.develar.org/2019-01-21/us-west.osm-gh.zip"
+        "https://s3.eu-central-1.wasabisys.com/gh-routing-data/us-west.osm-gh.zip"
       ],
-      "totalSize": 1666093971,
+      "totalSize": 1671335843,
       "totalSizePretty": "1.67 GB"
     },
     "regionName": "US West"

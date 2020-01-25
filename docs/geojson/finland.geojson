@@ -1,13 +1,13 @@
 {
   "type": "Feature",
   "properties": {
-    "locusInstall": "locus-actions://https/d.graphhopper.develar.org/2019-01-21/finland.locus.xml",
+    "locusInstall": "locus-actions://https/s3.eu-central-1.wasabisys.com/gh-routing-data/finland.locus.xml",
     "download": {
       "zipUrls": [
-        "https://d.graphhopper.develar.org/2019-01-21/finland.osm-gh.zip"
+        "https://s3.eu-central-1.wasabisys.com/gh-routing-data/finland.osm-gh.zip"
       ],
-      "totalSize": 314749805,
-      "totalSizePretty": "315 MB"
+      "totalSize": 316097164,
+      "totalSizePretty": "316 MB"
     },
     "regionName": "Finland"
   },

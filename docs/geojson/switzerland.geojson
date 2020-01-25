@@ -1,13 +1,13 @@
 {
   "type": "Feature",
   "properties": {
-    "locusInstall": "locus-actions://https/d.graphhopper.develar.org/2019-01-21/switzerland.locus.xml",
+    "locusInstall": "locus-actions://https/s3.eu-central-1.wasabisys.com/gh-routing-data/switzerland.locus.xml",
     "download": {
       "zipUrls": [
-        "https://d.graphhopper.develar.org/2019-01-21/switzerland.osm-gh.zip"
+        "https://s3.eu-central-1.wasabisys.com/gh-routing-data/switzerland.osm-gh.zip"
       ],
-      "totalSize": 265301000,
-      "totalSizePretty": "265 MB"
+      "totalSize": 266287627,
+      "totalSizePretty": "266 MB"
     },
     "regionName": "Switzerland"
   },

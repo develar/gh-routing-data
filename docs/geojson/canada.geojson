@@ -1,13 +1,13 @@
 {
   "type": "Feature",
   "properties": {
-    "locusInstall": "locus-actions://https/d.graphhopper.develar.org/2019-01-21/canada.locus.xml",
+    "locusInstall": "locus-actions://https/s3.eu-central-1.wasabisys.com/gh-routing-data/canada.locus.xml",
     "download": {
       "zipUrls": [
-        "https://d.graphhopper.develar.org/2019-01-21/canada.osm-gh.zip"
+        "https://s3.eu-central-1.wasabisys.com/gh-routing-data/canada.osm-gh.zip"
       ],
-      "totalSize": 627148433,
-      "totalSizePretty": "627 MB"
+      "totalSize": 630789814,
+      "totalSizePretty": "631 MB"
     },
     "regionName": "Canada"
   },

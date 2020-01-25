@@ -1,13 +1,13 @@
 {
   "type": "Feature",
   "properties": {
-    "locusInstall": "locus-actions://https/d.graphhopper.develar.org/2019-01-21/ukraine.locus.xml",
+    "locusInstall": "locus-actions://https/s3.eu-central-1.wasabisys.com/gh-routing-data/ukraine.locus.xml",
     "download": {
       "zipUrls": [
-        "https://d.graphhopper.develar.org/2019-01-21/ukraine.osm-gh.zip"
+        "https://s3.eu-central-1.wasabisys.com/gh-routing-data/ukraine.osm-gh.zip"
       ],
-      "totalSize": 471705846,
-      "totalSizePretty": "472 MB"
+      "totalSize": 472874626,
+      "totalSizePretty": "473 MB"
     },
     "regionName": "Ukraine"
   },

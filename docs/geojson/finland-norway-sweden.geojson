@@ -1,13 +1,13 @@
 {
   "type": "Feature",
   "properties": {
-    "locusInstall": "locus-actions://https/d.graphhopper.develar.org/2019-01-21/finland-norway-sweden.locus.xml",
+    "locusInstall": "locus-actions://https/s3.eu-central-1.wasabisys.com/gh-routing-data/finland-norway-sweden.locus.xml",
     "download": {
       "zipUrls": [
-        "https://d.graphhopper.develar.org/2019-01-21/finland-norway-sweden.osm-gh.zip"
+        "https://s3.eu-central-1.wasabisys.com/gh-routing-data/finland-norway-sweden.osm-gh.zip"
       ],
-      "totalSize": 940456463,
-      "totalSizePretty": "940 MB"
+      "totalSize": 942778522,
+      "totalSizePretty": "943 MB"
     },
     "regionName": "Finland, Norway and Sweden"
   },

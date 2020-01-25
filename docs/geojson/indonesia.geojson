@@ -1,13 +1,13 @@
 {
   "type": "Feature",
   "properties": {
-    "locusInstall": "locus-actions://https/d.graphhopper.develar.org/2019-01-21/indonesia.locus.xml",
+    "locusInstall": "locus-actions://https/s3.eu-central-1.wasabisys.com/gh-routing-data/indonesia.locus.xml",
     "download": {
       "zipUrls": [
-        "https://d.graphhopper.develar.org/2019-01-21/indonesia.osm-gh.zip"
+        "https://s3.eu-central-1.wasabisys.com/gh-routing-data/indonesia.osm-gh.zip"
       ],
-      "totalSize": 951363504,
-      "totalSizePretty": "951 MB"
+      "totalSize": 952372708,
+      "totalSizePretty": "952 MB"
     },
     "regionName": "Indonesia"
   },

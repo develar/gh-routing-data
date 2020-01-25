@@ -1,12 +1,12 @@
 {
   "type": "Feature",
   "properties": {
-    "locusInstall": "locus-actions://https/d.graphhopper.develar.org/2019-01-21/ireland-and-northern-ireland.locus.xml",
+    "locusInstall": "locus-actions://https/s3.eu-central-1.wasabisys.com/gh-routing-data/ireland-and-northern-ireland.locus.xml",
     "download": {
       "zipUrls": [
-        "https://d.graphhopper.develar.org/2019-01-21/ireland-and-northern-ireland.osm-gh.zip"
+        "https://s3.eu-central-1.wasabisys.com/gh-routing-data/ireland-and-northern-ireland.osm-gh.zip"
       ],
-      "totalSize": 143890411,
+      "totalSize": 144288991,
       "totalSizePretty": "144 MB"
     },
     "regionName": "Ireland and Northern Ireland"

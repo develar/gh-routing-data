@@ -3,9 +3,12 @@ const asiaRegions = ["japan", "india", "china", "indonesia", "thailand", "taiwan
 const path = require("path")
 
 module.exports = {
-  rootUrlWithoutProtocol: "d.graphhopper.develar.org",
+  rootUrlWithoutProtocol: "s3.eu-central-1.wasabisys.com/gh-routing-data",
   asiaRegions,
-  isUseS3: false,
+  isUseS3: true,
+
+  bucketName: "gh-routing-data",
+  serverAlias: "gh",
 
   getRegionScopeName: function (regionId) {
     if (regionId.startsWith("us-") || regionId === "canada") {

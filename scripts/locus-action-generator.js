@@ -4,8 +4,7 @@ const child_process = require("child_process")
 
 const patterns = ["*_bike2_node", "*_mtb_node", "*_racingbike_node"]
 const patterns2 = ["*_car_node", "*_hike_node"]
-const bucketName = "gh-data"
-const serverAlias = "sw"
+
 const util = require("./info.js")
 const serverUrl = `https://${util.rootUrlWithoutProtocol}`
 
@@ -80,7 +79,7 @@ async function main(resultName) {
 
   let data = "<locusActions>"
   for (const file of builder.fileNames) {
-    const remotePath = `${builder.remoteDir}/${file}`
+    const remotePath = `${builder.remoteDir}${file}`
     data += `<download>
 <source>${escapeXml(`${serverUrl}/${remotePath}`)}</source>
 <dest>/mapsVector/${escapeXml(resultName)}</dest>
@@ -99,7 +98,6 @@ async function main(resultName) {
     fs.writeFileSync(locusFilePath, data)
     builder.filesToUpload.push(locusFilePath)
   }
-
 
   process.stdout.write(builder.remoteDir + "\n")
   process.stdout.write(builder.filesToUpload.join("\n"))
@@ -129,8 +127,8 @@ class Builder {
 
     // const dirName = new Date().toISOString().substr(0, 10)
     // noinspection UnnecessaryLocalVariableJS
-    const dirName = "2019-01-21"
-    this.remoteDir = dirName
+    // const dirName = "2019-01-21"
+    this.remoteDir = "/"
 
     this.fileNames = []
     this.filesToUpload = []
@@ -159,7 +157,7 @@ class Builder {
   }
 
   getRemotePathSpec(file) {
-    return `${serverAlias}/${bucketName}/${this.remoteDir}/${file}`
+    return `${(util.serverAlias)}/${(util.bucketName)}/${this.remoteDir}${file}`
   }
 
   // uploadFiles() {

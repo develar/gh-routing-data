@@ -1,13 +1,13 @@
 {
   "type": "Feature",
   "properties": {
-    "locusInstall": "locus-actions://https/d.graphhopper.develar.org/2019-01-21/poland.locus.xml",
+    "locusInstall": "locus-actions://https/s3.eu-central-1.wasabisys.com/gh-routing-data/poland.locus.xml",
     "download": {
       "zipUrls": [
-        "https://d.graphhopper.develar.org/2019-01-21/poland.osm-gh.zip"
+        "https://s3.eu-central-1.wasabisys.com/gh-routing-data/poland.osm-gh.zip"
       ],
-      "totalSize": 813719162,
-      "totalSizePretty": "814 MB"
+      "totalSize": 815709431,
+      "totalSizePretty": "816 MB"
     },
     "regionName": "Poland"
   },

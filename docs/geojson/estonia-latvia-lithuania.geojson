@@ -1,13 +1,13 @@
 {
   "type": "Feature",
   "properties": {
-    "locusInstall": "locus-actions://https/d.graphhopper.develar.org/2019-01-21/estonia-latvia-lithuania.locus.xml",
+    "locusInstall": "locus-actions://https/s3.eu-central-1.wasabisys.com/gh-routing-data/estonia-latvia-lithuania.locus.xml",
     "download": {
       "zipUrls": [
-        "https://d.graphhopper.develar.org/2019-01-21/estonia-latvia-lithuania.osm-gh.zip"
+        "https://s3.eu-central-1.wasabisys.com/gh-routing-data/estonia-latvia-lithuania.osm-gh.zip"
       ],
-      "totalSize": 173317394,
-      "totalSizePretty": "173 MB"
+      "totalSize": 173629276,
+      "totalSizePretty": "174 MB"
     },
     "regionName": "Estonia, Latvia and Lithuania"
   },

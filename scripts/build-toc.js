@@ -21,16 +21,6 @@ const regionIdToName = {
 
 const suffix = ".osm-gh.zip"
 const util = require("./info.js")
-const rootUrlWithoutProtocol = util.rootUrlWithoutProtocol
-
-function commonCurlArgs() {
-  return [
-    "--silent",
-    "--show-error",
-    // to exclude from access log
-    "-A", "GhRoutingData",
-  ]
-}
 
 function collectFiles(locusFileToInfo) {
   // remove duplicates - later (several days) old items will be removed (cannot be remove on upload a new because old item can be downloaded at this moment)
@@ -38,22 +28,23 @@ function collectFiles(locusFileToInfo) {
 
   function collectDir(dirName) {
     // caddy output
-    const parentDirUrl = `https://${rootUrlWithoutProtocol}/${dirName}`
+    const parentDirUrl = `https://${util.rootUrlWithoutProtocol}${dirName.length === 0 ? "" : `/${dirName}`}`
     console.log(`Get ${parentDirUrl}`)
-    const list = JSON.parse(execFileSync("curl", commonCurlArgs().concat(["-H", "Accept: application/json", `${parentDirUrl}/`]), {encoding: "utf-8"}).trim())
+    // const list = JSON.parse(execFileSync("curl", commonCurlArgs().concat(["-H", "Accept: application/json", `${parentDirUrl}/`]), {encoding: "utf-8"}).trim())
+    const list = JSON.parse("[" + execFileSync("mc", ["ls", "--json", `${util.serverAlias}/${util.bucketName}/${dirName}`], {encoding: "utf8"}).trim().split("\n").join(",") + "]")
     for (const item of list) {
       // noinspection JSUnresolvedVariable
-      if (item.IsDir) {
+      if (item.type !== "file") {
         continue
       }
 
       // noinspection JSUnresolvedVariable
-      const name = item.Name
+      const name = item.key
 
       if (!name.endsWith(suffix)) {
         if (name.endsWith(".locus.xml")) {
           // full path to check that locus file in the same dir exists
-          locusFileToInfo.set(`${dirName}/${name}`, item)
+          locusFileToInfo.set(dirName.length === 0 ? name : `${dirName}/${name}`, item)
         }
         continue
       }
@@ -71,20 +62,20 @@ function collectFiles(locusFileToInfo) {
         if (partIndex !== "1") {
           const firstPartInfo = nameToInfo.get(mapKey)
           // noinspection JSUnresolvedVariable
-          firstPartInfo.totalSize += item.Size
+          firstPartInfo.totalSize += item.size
           firstPartInfo.parts.push(name)
           continue
         }
       }
 
       // noinspection JSUnresolvedVariable
-      item.totalSize = item.Size
+      item.totalSize = item.size
       // noinspection JSUnresolvedVariable
-      item.lastModified = Date.parse(item.ModTime)
+      item.lastModified = Date.parse(item.lastModified)
 
       item.parts = [name]
 
-      item.key = `${dirName}/${mapKey}`
+      item.key = dirName.length === 0 ? mapKey : `${dirName}/${mapKey}`
       item.name = mapKey
       const existingInfo = nameToInfo.get(mapKey)
       if (existingInfo === undefined || item.lastModified > existingInfo.lastModified) {
@@ -93,8 +84,8 @@ function collectFiles(locusFileToInfo) {
     }
   }
 
-  const date = "2019-01-21"
-  collectDir(`${date}`)
+  // const date = "2019-01-21"
+  collectDir("")
   return Array.from(nameToInfo.values())
 }
 
@@ -152,7 +143,8 @@ function buildToC(files, keyToInfo, resultFileName, locusFileToInfo) {
     }
 
     const locusFileName = `${regionId}.locus.xml`
-    if (!locusFileToInfo.has(`${path.posix.dirname(info.key)}/${locusFileName}`)) {
+    const itemDir = path.posix.dirname(info.key)
+    if (!locusFileToInfo.has(itemDir.length === 0 || itemDir === "." ? locusFileName : `${itemDir}/${locusFileName}`)) {
       if (locusFileName === "austria-18-50.locus.xml") {
         continue
       }

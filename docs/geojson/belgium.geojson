@@ -1,13 +1,13 @@
 {
   "type": "Feature",
   "properties": {
-    "locusInstall": "locus-actions://https/d.graphhopper.develar.org/2019-01-21/belgium.locus.xml",
+    "locusInstall": "locus-actions://https/s3.eu-central-1.wasabisys.com/gh-routing-data/belgium.locus.xml",
     "download": {
       "zipUrls": [
-        "https://d.graphhopper.develar.org/2019-01-21/belgium.osm-gh.zip"
+        "https://s3.eu-central-1.wasabisys.com/gh-routing-data/belgium.osm-gh.zip"
       ],
-      "totalSize": 215188618,
-      "totalSizePretty": "215 MB"
+      "totalSize": 215734208,
+      "totalSizePretty": "216 MB"
     },
     "regionName": "Belgium"
   },

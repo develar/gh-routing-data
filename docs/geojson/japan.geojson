@@ -1,15 +1,15 @@
 {
   "type": "Feature",
   "properties": {
-    "locusInstall": "locus-actions://https/d.graphhopper.develar.org/2019-01-21/japan.locus.xml",
+    "locusInstall": "locus-actions://https/s3.eu-central-1.wasabisys.com/gh-routing-data/japan.locus.xml",
     "download": {
       "zipUrls": [
-        "https://d.graphhopper.develar.org/2019-01-21/japan-part1.osm-gh.zip",
-        "https://d.graphhopper.develar.org/2019-01-21/japan-part2.osm-gh.zip",
-        "https://d.graphhopper.develar.org/2019-01-21/japan-part3.osm-gh.zip"
+        "https://s3.eu-central-1.wasabisys.com/gh-routing-data/japan-part1.osm-gh.zip",
+        "https://s3.eu-central-1.wasabisys.com/gh-routing-data/japan-part2.osm-gh.zip",
+        "https://s3.eu-central-1.wasabisys.com/gh-routing-data/japan-part3.osm-gh.zip"
       ],
-      "totalSize": 2034244248,
-      "totalSizePretty": "2.03 GB"
+      "totalSize": 2036222127,
+      "totalSizePretty": "2.04 GB"
     },
     "regionName": "Japan"
   },

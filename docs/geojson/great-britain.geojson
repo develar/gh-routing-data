@@ -1,13 +1,13 @@
 {
   "type": "Feature",
   "properties": {
-    "locusInstall": "locus-actions://https/d.graphhopper.develar.org/2019-01-21/great-britain.locus.xml",
+    "locusInstall": "locus-actions://https/s3.eu-central-1.wasabisys.com/gh-routing-data/great-britain.locus.xml",
     "download": {
       "zipUrls": [
-        "https://d.graphhopper.develar.org/2019-01-21/great-britain.osm-gh.zip"
+        "https://s3.eu-central-1.wasabisys.com/gh-routing-data/great-britain.osm-gh.zip"
       ],
-      "totalSize": 995723959,
-      "totalSizePretty": "996 MB"
+      "totalSize": 998923558,
+      "totalSizePretty": "999 MB"
     },
     "regionName": "Great Britain"
   },

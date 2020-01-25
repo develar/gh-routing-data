@@ -1,15 +1,15 @@
 {
   "type": "Feature",
   "properties": {
-    "locusInstall": "locus-actions://https/d.graphhopper.develar.org/2019-01-21/us-south.locus.xml",
+    "locusInstall": "locus-actions://https/s3.eu-central-1.wasabisys.com/gh-routing-data/us-south.locus.xml",
     "download": {
       "zipUrls": [
-        "https://d.graphhopper.develar.org/2019-01-21/us-south-part1.osm-gh.zip",
-        "https://d.graphhopper.develar.org/2019-01-21/us-south-part2.osm-gh.zip",
-        "https://d.graphhopper.develar.org/2019-01-21/us-south-part3.osm-gh.zip"
+        "https://s3.eu-central-1.wasabisys.com/gh-routing-data/us-south-part1.osm-gh.zip",
+        "https://s3.eu-central-1.wasabisys.com/gh-routing-data/us-south-part2.osm-gh.zip",
+        "https://s3.eu-central-1.wasabisys.com/gh-routing-data/us-south-part3.osm-gh.zip"
       ],
-      "totalSize": 2490025917,
-      "totalSizePretty": "2.49 GB"
+      "totalSize": 2498676680,
+      "totalSizePretty": "2.5 GB"
     },
     "regionName": "US South"
   },

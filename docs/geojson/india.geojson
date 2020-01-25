@@ -1,13 +1,13 @@
 {
   "type": "Feature",
   "properties": {
-    "locusInstall": "locus-actions://https/d.graphhopper.develar.org/2019-01-21/india.locus.xml",
+    "locusInstall": "locus-actions://https/s3.eu-central-1.wasabisys.com/gh-routing-data/india.locus.xml",
     "download": {
       "zipUrls": [
-        "https://d.graphhopper.develar.org/2019-01-21/india.osm-gh.zip"
+        "https://s3.eu-central-1.wasabisys.com/gh-routing-data/india.osm-gh.zip"
       ],
-      "totalSize": 973256406,
-      "totalSizePretty": "973 MB"
+      "totalSize": 976882772,
+      "totalSizePretty": "977 MB"
     },
     "regionName": "India"
   },

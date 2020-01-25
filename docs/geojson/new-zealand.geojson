@@ -1,13 +1,13 @@
 {
   "type": "Feature",
   "properties": {
-    "locusInstall": "locus-actions://https/d.graphhopper.develar.org/2019-01-21/new-zealand.locus.xml",
+    "locusInstall": "locus-actions://https/s3.eu-central-1.wasabisys.com/gh-routing-data/new-zealand.locus.xml",
     "download": {
       "zipUrls": [
-        "https://d.graphhopper.develar.org/2019-01-21/new-zealand.osm-gh.zip"
+        "https://s3.eu-central-1.wasabisys.com/gh-routing-data/new-zealand.osm-gh.zip"
       ],
-      "totalSize": 78957403,
-      "totalSizePretty": "79 MB"
+      "totalSize": 79069791,
+      "totalSizePretty": "79.1 MB"
     },
     "regionName": "New Zealand"
   },

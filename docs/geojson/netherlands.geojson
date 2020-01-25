@@ -1,13 +1,13 @@
 {
   "type": "Feature",
   "properties": {
-    "locusInstall": "locus-actions://https/d.graphhopper.develar.org/2019-01-21/netherlands.locus.xml",
+    "locusInstall": "locus-actions://https/s3.eu-central-1.wasabisys.com/gh-routing-data/netherlands.locus.xml",
     "download": {
       "zipUrls": [
-        "https://d.graphhopper.develar.org/2019-01-21/netherlands.osm-gh.zip"
+        "https://s3.eu-central-1.wasabisys.com/gh-routing-data/netherlands.osm-gh.zip"
       ],
-      "totalSize": 371161802,
-      "totalSizePretty": "371 MB"
+      "totalSize": 371507875,
+      "totalSizePretty": "372 MB"
     },
     "regionName": "Netherlands"
   },

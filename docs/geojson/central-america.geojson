@@ -1,13 +1,13 @@
 {
   "type": "Feature",
   "properties": {
-    "locusInstall": "locus-actions://https/d.graphhopper.develar.org/2019-01-21/central-america.locus.xml",
+    "locusInstall": "locus-actions://https/s3.eu-central-1.wasabisys.com/gh-routing-data/central-america.locus.xml",
     "download": {
       "zipUrls": [
-        "https://d.graphhopper.develar.org/2019-01-21/central-america.osm-gh.zip"
+        "https://s3.eu-central-1.wasabisys.com/gh-routing-data/central-america.osm-gh.zip"
       ],
-      "totalSize": 361897919,
-      "totalSizePretty": "362 MB"
+      "totalSize": 364196903,
+      "totalSizePretty": "364 MB"
     },
     "regionName": "Central America"
   },

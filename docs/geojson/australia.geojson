@@ -1,13 +1,13 @@
 {
   "type": "Feature",
   "properties": {
-    "locusInstall": "locus-actions://https/d.graphhopper.develar.org/2019-01-21/australia.locus.xml",
+    "locusInstall": "locus-actions://https/s3.eu-central-1.wasabisys.com/gh-routing-data/australia.locus.xml",
     "download": {
       "zipUrls": [
-        "https://d.graphhopper.develar.org/2019-01-21/australia.osm-gh.zip"
+        "https://s3.eu-central-1.wasabisys.com/gh-routing-data/australia.osm-gh.zip"
       ],
-      "totalSize": 537143252,
-      "totalSizePretty": "537 MB"
+      "totalSize": 539559724,
+      "totalSizePretty": "540 MB"
     },
     "regionName": "Australia"
   },

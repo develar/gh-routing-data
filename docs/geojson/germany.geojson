@@ -1,14 +1,14 @@
 {
   "type": "Feature",
   "properties": {
-    "locusInstall": "locus-actions://https/d.graphhopper.develar.org/2019-01-21/germany.locus.xml",
+    "locusInstall": "locus-actions://https/s3.eu-central-1.wasabisys.com/gh-routing-data/germany.locus.xml",
     "download": {
       "zipUrls": [
-        "https://d.graphhopper.develar.org/2019-01-21/germany-part1.osm-gh.zip",
-        "https://d.graphhopper.develar.org/2019-01-21/germany-part2.osm-gh.zip",
-        "https://d.graphhopper.develar.org/2019-01-21/germany-part3.osm-gh.zip"
+        "https://s3.eu-central-1.wasabisys.com/gh-routing-data/germany-part1.osm-gh.zip",
+        "https://s3.eu-central-1.wasabisys.com/gh-routing-data/germany-part2.osm-gh.zip",
+        "https://s3.eu-central-1.wasabisys.com/gh-routing-data/germany-part3.osm-gh.zip"
       ],
-      "totalSize": 2519418999,
+      "totalSize": 2524772019,
       "totalSizePretty": "2.52 GB"
     },
     "regionName": "Germany"

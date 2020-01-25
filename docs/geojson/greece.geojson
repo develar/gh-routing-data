@@ -1,13 +1,13 @@
 {
   "type": "Feature",
   "properties": {
-    "locusInstall": "locus-actions://https/d.graphhopper.develar.org/2019-01-21/greece.locus.xml",
+    "locusInstall": "locus-actions://https/s3.eu-central-1.wasabisys.com/gh-routing-data/greece.locus.xml",
     "download": {
       "zipUrls": [
-        "https://d.graphhopper.develar.org/2019-01-21/greece.osm-gh.zip"
+        "https://s3.eu-central-1.wasabisys.com/gh-routing-data/greece.osm-gh.zip"
       ],
-      "totalSize": 279477509,
-      "totalSizePretty": "279 MB"
+      "totalSize": 280312533,
+      "totalSizePretty": "280 MB"
     },
     "regionName": "Greece"
   },

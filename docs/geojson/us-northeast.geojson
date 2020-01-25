@@ -1,13 +1,13 @@
 {
   "type": "Feature",
   "properties": {
-    "locusInstall": "locus-actions://https/d.graphhopper.develar.org/2019-01-21/us-northeast.locus.xml",
+    "locusInstall": "locus-actions://https/s3.eu-central-1.wasabisys.com/gh-routing-data/us-northeast.locus.xml",
     "download": {
       "zipUrls": [
-        "https://d.graphhopper.develar.org/2019-01-21/us-northeast.osm-gh.zip"
+        "https://s3.eu-central-1.wasabisys.com/gh-routing-data/us-northeast.osm-gh.zip"
       ],
-      "totalSize": 801149490,
-      "totalSizePretty": "801 MB"
+      "totalSize": 803602475,
+      "totalSizePretty": "804 MB"
     },
     "regionName": "US Northeast"
   },
