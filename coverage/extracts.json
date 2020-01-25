@@ -34,6 +34,41 @@
       "multipolygon": {
         "file_name": "../docs/geojson/bayern-at-cz.geojson"
       }
+    },
+    {
+      "output": "france.pbf",
+      "output_format": "pbf",
+      "multipolygon": {
+        "file_name": "input/france.poly"
+      }
+    },
+    {
+      "output": "germany.pbf",
+      "output_format": "pbf",
+      "multipolygon": {
+        "file_name": "input/germany.poly"
+      }
+    },
+    {
+      "output": "poland.pbf",
+      "output_format": "pbf",
+      "multipolygon": {
+        "file_name": "input/poland.poly"
+      }
+    },
+    {
+      "output": "czech-republic.pbf",
+      "output_format": "pbf",
+      "multipolygon": {
+        "file_name": "input/czech-republic.poly"
+      }
+    },
+    {
+      "output": "belgium.pbf",
+      "output_format": "pbf",
+      "multipolygon": {
+        "file_name": "input/belgium.poly"
+      }
     }
   ]
 }

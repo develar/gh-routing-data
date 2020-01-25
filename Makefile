@@ -34,6 +34,7 @@ coverage:
 	aria2c --max-connection-per-server=2 --max-concurrent-downloads=2 --input-file=configs/map-poly-urls.txt --dir=coverage/input --conditional-get --allow-overwrite
 	node ./scripts/poly-to-geojson.js
 
+# to reduce download time, some maps (e.g. france) extracted even if maybe downloaded as
 extract-maps: check-env
 	osmium extract --overwrite --config=coverage/extracts.json --strategy=smart --directory="${MAP_DIR}" "${MAP_DIR}/europe-latest.osm.pbf"
 

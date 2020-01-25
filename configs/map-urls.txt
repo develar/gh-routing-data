@@ -10,22 +10,18 @@ http://download.geofabrik.de/europe/alps-latest.osm.pbf
 http://download.geofabrik.de/australia-oceania/australia-latest.osm.pbf
 http://download.geofabrik.de/europe/austria-latest.osm.pbf
 
-http://download.geofabrik.de/europe/belgium-latest.osm.pbf
 http://download.geofabrik.de/south-america/brazil-latest.osm.pbf
 
 http://download.geofabrik.de/north-america/canada-latest.osm.pbf
 http://download.geofabrik.de/central-america-latest.osm.pbf
-http://download.geofabrik.de/europe/czech-republic-latest.osm.pbf
 
 http://download.geofabrik.de/europe/dach-latest.osm.pbf
 http://download.geofabrik.de/europe/denmark-latest.osm.pbf
 
 http://download.geofabrik.de/europe/finland-latest.osm.pbf
-http://download.geofabrik.de/europe/france-latest.osm.pbf
 
 http://download.geofabrik.de/europe/great-britain-latest.osm.pbf
 http://download.geofabrik.de/europe/greece-latest.osm.pbf
-http://download.geofabrik.de/europe/germany-latest.osm.pbf
 
 http://download.geofabrik.de/europe/ireland-and-northern-ireland-latest.osm.pbf
 http://download.geofabrik.de/europe/iceland-latest.osm.pbf
@@ -53,5 +49,3 @@ http://download.geofabrik.de/asia/indonesia-latest.osm.pbf
 http://download.geofabrik.de/asia/thailand-latest.osm.pbf
 http://download.geofabrik.de/asia/taiwan-latest.osm.pbf
 http://download.geofabrik.de/europe/turkey-latest.osm.pbf
-
-http://download.geofabrik.de/europe/poland-latest.osm.pbf

@@ -153,6 +153,9 @@ function buildToC(files, keyToInfo, resultFileName, locusFileToInfo) {
 
     const locusFileName = `${regionId}.locus.xml`
     if (!locusFileToInfo.has(`${path.posix.dirname(info.key)}/${locusFileName}`)) {
+      if (locusFileName === "austria-18-50.locus.xml") {
+        continue
+      }
       throw new Error(`Cannot find ${locusFileName}`)
     }
 

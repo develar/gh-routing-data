@@ -41,7 +41,8 @@ func (t *Builder) upload(regionName string) error {
 
 func (t *Builder) uploadUsingRsync(remoteDir string, filesToUpload []string) error {
 	var args []string
-	args = append(args, "--rsync-path='mkdir -p "+remoteDir+" && rsync'", "--chown=caddy:caddy", "-o", "-g", "--human-readable", "--progress")
+	// --times - preserve modification times
+	args = append(args, "--rsync-path='mkdir -p "+remoteDir+" && rsync'", "--chown=caddy:caddy", "--times", "--human-readable", "--progress")
 	args = append(args, filesToUpload...)
 	args = append(args, "root@"+serverIpV4+":"+remoteDir+"/")
 
