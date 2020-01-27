@@ -1,5 +1,7 @@
 /node_modules/
-/.idea/
+/.idea/shelf/
+/.idea/workspace.xml
 /site/
 configs/server/*.retry
 /tools/
+/out/
