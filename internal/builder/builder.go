@@ -148,6 +148,7 @@ func (t *Builder) buildRegion(region *RegionInfo, bucket *Bucket) error {
 		"-XX:+UseShenandoahGC",
 		ghProperty("datareader.file", region.File),
 		ghProperty("graph.location", graphDir),
+		ghProperty("turn_costs", "true"),
 
 		ghProperty("graph.elevation.cache_dir", t.ElevationCacheDir),
 

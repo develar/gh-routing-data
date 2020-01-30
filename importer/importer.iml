@@ -8,8 +8,8 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="KotlinJavaRuntime" level="project" />
-    <orderEntry type="library" name="com.graphhopper:graphhopper-core:1.0-pre18" level="project" />
-    <orderEntry type="library" name="com.graphhopper:graphhopper-reader-osm:1.0-pre18" level="project" />
+    <orderEntry type="library" name="graphhopper-core" level="project" />
+    <orderEntry type="library" name="graphhopper-reader" level="project" />
     <orderEntry type="library" name="org.slf4j:slf4j-simple:1.7.26" level="project" />
   </component>
 </module>

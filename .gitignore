@@ -5,3 +5,5 @@
 configs/server/*.retry
 /tools/
 /out/
+
+/libs/

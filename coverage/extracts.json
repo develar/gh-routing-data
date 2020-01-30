@@ -1,35 +1,35 @@
 {
   "extracts": [
     {
-      "output": "portugal-spain.osm.pbf",
+      "output": "portugal-spain.pbf",
       "output_format": "pbf",
       "multipolygon": {
         "file_name": "input/portugal-spain.poly"
       }
     },
     {
-      "output": "estonia-latvia-lithuania.osm.pbf",
+      "output": "estonia-latvia-lithuania.pbf",
       "output_format": "pbf",
       "multipolygon": {
         "file_name": "input/estonia-latvia-lithuania.poly"
       }
     },
     {
-      "output": "al-ba-bg-hr-hu-xk-mk-md-me-ro-rs-sk-si.osm.pbf",
+      "output": "al-ba-bg-hr-hu-xk-mk-md-me-ro-rs-sk-si.pbf",
       "output_format": "pbf",
       "multipolygon": {
         "file_name": "input/al-ba-bg-hr-hu-xk-mk-md-me-ro-rs-sk-si.poly"
       }
     },
     {
-      "output": "finland-norway-sweden.osm.pbf",
+      "output": "finland-norway-sweden.pbf",
       "output_format": "pbf",
       "multipolygon": {
         "file_name": "input/finland-norway-sweden.poly"
       }
     },
     {
-      "output": "bayern-at-cz.osm.pbf",
+      "output": "bayern-at-cz.pbf",
       "output_format": "pbf",
       "multipolygon": {
         "file_name": "../docs/geojson/bayern-at-cz.geojson"
@@ -68,6 +68,13 @@
       "output_format": "pbf",
       "multipolygon": {
         "file_name": "input/belgium.poly"
+      }
+    },
+    {
+      "output": "austria.pbf",
+      "output_format": "pbf",
+      "multipolygon": {
+        "file_name": "input/austria.poly"
       }
     }
   ]

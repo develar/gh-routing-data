@@ -8,7 +8,6 @@ http://download.geofabrik.de/europe-latest.osm.pbf
 http://download.geofabrik.de/africa-latest.osm.pbf
 http://download.geofabrik.de/europe/alps-latest.osm.pbf
 http://download.geofabrik.de/australia-oceania/australia-latest.osm.pbf
-http://download.geofabrik.de/europe/austria-latest.osm.pbf
 
 http://download.geofabrik.de/south-america/brazil-latest.osm.pbf
 

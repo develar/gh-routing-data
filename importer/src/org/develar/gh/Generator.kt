@@ -2,11 +2,13 @@ package org.develar.gh
 
 import com.graphhopper.reader.dem.MultiSourceElevationProvider
 import com.graphhopper.reader.osm.GraphHopperOSM
-import com.graphhopper.routing.ch.CHAlgoFactoryDecorator
+import com.graphhopper.routing.ch.CHAlgoFactoryDecorator.EdgeBasedCHMode
 import com.graphhopper.routing.util.*
 import com.graphhopper.routing.util.parsers.*
+import com.graphhopper.storage.CHProfile
 import com.graphhopper.util.PMap
 import com.graphhopper.util.Parameters
+import java.nio.file.Paths
 
 class Generator {
   companion object {
@@ -16,25 +18,49 @@ class Generator {
 
       val graphHopper = GraphHopperOSM(null).forServer()
       graphHopper.graphHopperLocation = System.getProperty("graph.location")
-      graphHopper.setSortGraph(true)
+      if (!isTurnCostEnabled) {
+        graphHopper.setSortGraph(true)
+      }
 
       graphHopper.dataReaderFile = System.getProperty("datareader.file")
       graphHopper.encodingManager = buildEncodingManager(isTurnCostEnabled).build()
 
-      val elevationProvider = MultiSourceElevationProvider(System.getProperty("graph.elevation.cache_dir"))
+      val elevationProvider = MultiSourceElevationProvider(getElevationCacheDir())
       elevationProvider.setAutoRemoveTemporaryFiles(false)
       graphHopper.elevationProvider = elevationProvider
 
       val chFactoryDecorator = graphHopper.chFactoryDecorator
       chFactoryDecorator.preparationThreads = Integer.getInteger("${Parameters.CH.PREPARE}threads", 1)
-      chFactoryDecorator.edgeBasedCHMode = CHAlgoFactoryDecorator.EdgeBasedCHMode.EDGE_OR_NODE
-      for (profile in listOf("fastest", "shortest")) {
-        chFactoryDecorator.addCHProfileAsString("$profile${if (isTurnCostEnabled) "|u_turn_costs=30" else ""}")
+      chFactoryDecorator.edgeBasedCHMode = EdgeBasedCHMode.EDGE_OR_NODE
+
+      val uTurnCosts = 30
+
+      val profiles = listOf("fastest", "shortest")
+      chFactoryDecorator.setCHProfilesAsStrings(profiles.map {
+        "$it${if (isTurnCostEnabled) "|u_turn_costs=$uTurnCosts" else ""}"
+      })
+
+      for (encoder in graphHopper.encodingManager.fetchEdgeEncoders()) {
+        for (chWeightingStr in profiles) {
+          val weighting = graphHopper.createWeighting(HintsMap(chWeightingStr), encoder, null)
+          val profile = if (isTurnCostEnabled && encoder.supportsTurnCosts()) {
+            CHProfile.edgeBased(weighting, uTurnCosts)
+          }
+          else {
+            CHProfile.nodeBased(weighting)
+          }
+          chFactoryDecorator.addCHProfile(profile)
+        }
       }
 
       graphHopper.importAndClose()
     }
   }
+}
+
+private fun getElevationCacheDir(): String {
+  return System.getProperty("graph.elevation.cache_dir")
+    ?: Paths.get("${System.getenv("MAP_DIR")}/../elevation").toAbsolutePath().toString()
 }
 
 private fun buildEncodingManager(isTurnCostEnabled: Boolean): EncodingManager.Builder {
@@ -46,18 +72,39 @@ private fun buildEncodingManager(isTurnCostEnabled: Boolean): EncodingManager.Bu
   builder.add(OSMRoadAccessParser())
 
   builder.add(OSMSurfaceParser())
-  builder.add(OSMGetOffBikeParser())
 
-  builder.add(Bike2WeightFlagEncoder(PMap("")))
-  builder.add(MountainBikeFlagEncoder(PMap("")))
-  builder.add(RacingBikeFlagEncoder(PMap("")))
-  builder.add(HikeFlagEncoder(PMap("")))
-
-  val options = PMap("")
   if (isTurnCostEnabled) {
-    options.put("turn_costs", true)
+    builder.add(OSMTollParser())
+    builder.add(OSMMaxWeightParser())
+    builder.add(OSMMaxHeightParser())
+    builder.add(OSMMaxWidthParser())
+    builder.add(OSMMaxAxleLoadParser())
+    builder.add(OSMTrackTypeParser())
+
+    builder.add(OSMHazmatParser())
+    builder.add(OSMHazmatTunnelParser())
+    builder.add(OSMHazmatWaterParser())
   }
-  val carEncoder = CarFlagEncoder(options)
-  builder.add(carEncoder)
+  else {
+    builder.add(OSMGetOffBikeParser())
+  }
+
+  if (isTurnCostEnabled) {
+    val options = PMap("")
+    options.put("turn_costs", true)
+    builder.add(CarFlagEncoder(options))
+    builder.add(MotorcycleFlagEncoder(options))
+    builder.add(Car4WDFlagEncoder(options))
+    builder.add(FootFlagEncoder())
+  }
+  else {
+    val empty = PMap("")
+    builder.add(Bike2WeightFlagEncoder(empty))
+    builder.add(MountainBikeFlagEncoder(empty))
+    builder.add(RacingBikeFlagEncoder(empty))
+    builder.add(HikeFlagEncoder(empty))
+    builder.add(CarFlagEncoder(empty))
+  }
+
   return builder
 }

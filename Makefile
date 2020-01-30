@@ -21,7 +21,7 @@ build: compile-builder
 	BUILD_WORKER_COUNT=1 ./tools/builder --remove-osm
 
 build-only: compile-builder
-	BUILD_WORKER_COUNT=1 ./tools/builder --no-upload
+	BUILD_WORKER_COUNT=1 ./tools/builder --no-upload --graphhopper ./out/gh-importer.jar
 	# ./tools/builder --no-upload --remove-osm
 
 upload-only: compile-builder

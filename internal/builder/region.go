@@ -40,8 +40,14 @@ func (t *Builder) readRegions(regionFile string) ([]*RegionInfo, error) {
 				name = strings.TrimSuffix(names[0], "-latest")
 			}
 
+			fileName := names[0]
+			if strings.HasSuffix(fileName, "-latest") {
+				fileName += ".osm"
+			}
+			fileName += ".pbf"
+
 			regions = append(regions, &RegionInfo{
-				File: filepath.Join(t.MapDir, names[0]+".osm.pbf"),
+				File: filepath.Join(t.MapDir, fileName),
 				Name: name,
 			})
 		}
