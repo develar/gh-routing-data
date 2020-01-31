@@ -1,20 +1,19 @@
 package builder
 
 import (
-	"context"
-	"github.com/develar/app-builder/pkg/util"
-	"github.com/develar/errors"
-	"github.com/develar/go-fs-util"
-	"github.com/panjf2000/ants"
-	"go.uber.org/zap"
-	"go.uber.org/zap/zapcore"
-	"log"
-	"math"
-	"os"
-	"os/exec"
-	"path/filepath"
-	"strconv"
-	"sync"
+  "context"
+  "github.com/develar/app-builder/pkg/util"
+  "github.com/develar/errors"
+  "github.com/panjf2000/ants"
+  "go.uber.org/zap"
+  "go.uber.org/zap/zapcore"
+  "log"
+  "math"
+  "os"
+  "os/exec"
+  "path/filepath"
+  "strconv"
+  "sync"
 )
 
 type Builder struct {
@@ -148,7 +147,6 @@ func (t *Builder) buildRegion(region *RegionInfo, bucket *Bucket) error {
 		"-XX:+UseShenandoahGC",
 		ghProperty("datareader.file", region.File),
 		ghProperty("graph.location", graphDir),
-		ghProperty("turn_costs", "true"),
 
 		ghProperty("graph.elevation.cache_dir", t.ElevationCacheDir),
 

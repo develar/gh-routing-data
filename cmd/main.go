@@ -22,7 +22,7 @@ func main() {
 
 	mapDir := app.Flag("map-dir", "The path to map files").Required().Envar("MAP_DIR").String()
 	elevationCacheDir := app.Flag("elevation-dir", "The path to elevation cache").Envar("ELEVATION_DIR").String()
-	graphhopperWebJar := app.Flag("graphhopper", "The path to graphhopper-web JAR").String()
+	graphhopperWebJar := app.Flag("graphhopper", "The path to graphhopper-importer JAR").String()
 
 	_ = kingpin.MustParse(app.Parse(os.Args[1:]))
 

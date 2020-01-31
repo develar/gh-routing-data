@@ -2,7 +2,7 @@
 
 Routing data for [GraphHopper](https://www.graphhopper.com) for offline navigation. With one-click installation on the best outdoor navigation app [Locus Map](https://www.locusmap.eu).
 
-For GraphHopper [1.0-pre18 and higher](https://github.com/asamm/locus-addon-graphhopper/pull/4).
+For GraphHopper 1.0-pre18.
 
 File [issue](https://github.com/develar/gh-routing-data/issues) if routing data not provided for wanted country or region.
 

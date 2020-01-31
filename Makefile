@@ -1,7 +1,7 @@
 .PHONY: deps site build coverage compute-geojson extract-maps toc site check-env
 
 deps:
-	brew install aria2 osmium-tool node rsync
+	brew install aria2 osmium-tool node minio/stable/mc
 	# required only to build site
 	brew install python
 	pip3 install mkdocs-material mkdocs pymdown-extensions --upgrade
@@ -16,7 +16,7 @@ compile-builder:
 
 # Java is required, download from https://github.com/AdoptOpenJDK/openjdk13-binaries/releases/download/jdk-13.0.1%2B9/OpenJDK13U-jre_x64_mac_hotspot_13.0.1_9.tar.gz as archive (not as installation media (e.g. dmg) to not pollute your OS),
 # unpack (do not use Archive Utility (otherwise will be marked as untrusted)) to some dir and prepend all commands with JAVA_HOME=<path/to/java/home> (or simply export JAVA_HOME env in current terminal window)
-# e.g.: export JAVA_HOME=~/Downloads/jdk-13.0.2+8-jre/Contents/Home
+# e.g.: export JAVA_HOME=~/jdk-13.0.2+8-jre/Contents/Home
 build: compile-builder
 	BUILD_WORKER_COUNT=1 ./tools/builder --remove-osm
 

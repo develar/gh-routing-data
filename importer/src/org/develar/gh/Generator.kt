@@ -5,6 +5,8 @@ import com.graphhopper.reader.osm.GraphHopperOSM
 import com.graphhopper.routing.ch.CHAlgoFactoryDecorator.EdgeBasedCHMode
 import com.graphhopper.routing.util.*
 import com.graphhopper.routing.util.parsers.*
+import com.graphhopper.routing.weighting.DefaultTurnCostProvider
+import com.graphhopper.routing.weighting.TurnCostProvider
 import com.graphhopper.storage.CHProfile
 import com.graphhopper.util.PMap
 import com.graphhopper.util.Parameters
@@ -14,9 +16,11 @@ class Generator {
   companion object {
     @JvmStatic
     fun main(args: Array<String>) {
-      val isTurnCostEnabled = System.getProperty("turn_costs")?.toBoolean() ?: false
+      val isTurnCostEnabled = System.getenv("TURN_COSTS_ENABLED")?.toBoolean() ?: false
 
       val graphHopper = GraphHopperOSM(null).forServer()
+      graphHopper.setMinNetworkSize(200, 200)
+
       graphHopper.graphHopperLocation = System.getProperty("graph.location")
       if (!isTurnCostEnabled) {
         graphHopper.setSortGraph(true)
@@ -35,16 +39,23 @@ class Generator {
 
       val uTurnCosts = 30
 
-      val profiles = listOf("fastest", "shortest")
+      val profiles = System.getenv("PROFILES")?.split(',') ?: listOf("fastest")
       chFactoryDecorator.setCHProfilesAsStrings(profiles.map {
         "$it${if (isTurnCostEnabled) "|u_turn_costs=$uTurnCosts" else ""}"
       })
 
       for (encoder in graphHopper.encodingManager.fetchEdgeEncoders()) {
         for (chWeightingStr in profiles) {
-          val weighting = graphHopper.createWeighting(HintsMap(chWeightingStr), encoder, null)
+          val turnCostProvider = if (isTurnCostEnabled) {
+            DefaultTurnCostProvider(encoder, graphHopper.graphHopperStorage.turnCostStorage, uTurnCosts)
+          }
+          else {
+            TurnCostProvider.NO_TURN_COST_PROVIDER
+          }
+
+          val weighting = graphHopper.createWeighting(HintsMap(chWeightingStr), encoder, null, turnCostProvider)
           val profile = if (isTurnCostEnabled && encoder.supportsTurnCosts()) {
-            CHProfile.edgeBased(weighting, uTurnCosts)
+            CHProfile.edgeBased(weighting)
           }
           else {
             CHProfile.nodeBased(weighting)
@@ -84,9 +95,6 @@ private fun buildEncodingManager(isTurnCostEnabled: Boolean): EncodingManager.Bu
     builder.add(OSMHazmatParser())
     builder.add(OSMHazmatTunnelParser())
     builder.add(OSMHazmatWaterParser())
-  }
-  else {
-    builder.add(OSMGetOffBikeParser())
   }
 
   if (isTurnCostEnabled) {
