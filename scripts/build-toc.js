@@ -1,7 +1,8 @@
 const path = require("path")
 const fs = require("fs")
 const prettyBytes = require("pretty-bytes")
-const execFileSync = require("child_process").execFileSync
+
+const locusUrl = "https://graphhopper.develar.org/locus/2020-01-24".replace("://", "/")
 
 const regionIdToName = {
   "us-midwest": "US Midwest",
@@ -19,114 +20,47 @@ const regionIdToName = {
   "ireland-and-northern-ireland": "Ireland and Northern Ireland",
 }
 
-const suffix = ".osm-gh.zip"
 const util = require("./info.js")
 
-function collectFiles(locusFileToInfo) {
-  // remove duplicates - later (several days) old items will be removed (cannot be remove on upload a new because old item can be downloaded at this moment)
-  const nameToInfo = new Map()
+async function main() {
+  const regions = JSON.parse(await fs.promises.readFile("./docs/locus/info.json", "utf-8"))
+  const keyToInfo = new Map()
+  for (const region of regions) {
+    const name = region.name
+    keyToInfo.set(name, region)
 
-  function collectDir(dirName) {
-    // caddy output
-    const parentDirUrl = `https://${util.rootUrlWithoutProtocol}${dirName.length === 0 ? "" : `/${dirName}`}`
-    console.log(`Get ${parentDirUrl}`)
-    // const list = JSON.parse(execFileSync("curl", commonCurlArgs().concat(["-H", "Accept: application/json", `${parentDirUrl}/`]), {encoding: "utf-8"}).trim())
-    const list = JSON.parse("[" + execFileSync("mc", ["ls", "--json", `${util.serverAlias}/${util.bucketName}/${dirName}`], {encoding: "utf8"}).trim().split("\n").join(",") + "]")
-    for (const item of list) {
-      // noinspection JSUnresolvedVariable
-      if (item.type !== "file") {
-        continue
+    let title = regionIdToName[name]
+    if (title == null) {
+      const index = name.indexOf("-")
+      if (index > 0) {
+        title = name[0].toUpperCase() + name.substring(1, index) + " " + name[index + 1].toUpperCase() + name.substring(index + 2)
       }
-
-      // noinspection JSUnresolvedVariable
-      const name = item.key
-
-      if (!name.endsWith(suffix)) {
-        if (name.endsWith(".locus.xml")) {
-          // full path to check that locus file in the same dir exists
-          locusFileToInfo.set(dirName.length === 0 ? name : `${dirName}/${name}`, item)
-        }
-        continue
-      }
-
-      let mapKey = name
-
-      item.parentDirUrl = parentDirUrl
-
-      const match = /-part([\d{1}])/.exec(name)
-      // noinspection JSValidateTypes
-      if (match != null) {
-        const partIndex = match[1]
-        // first part will be registered, other parts not
-        mapKey = name.replace(`-part${partIndex}`, "")
-        if (partIndex !== "1") {
-          const firstPartInfo = nameToInfo.get(mapKey)
-          // noinspection JSUnresolvedVariable
-          firstPartInfo.totalSize += item.size
-          firstPartInfo.parts.push(name)
-          continue
-        }
-      }
-
-      // noinspection JSUnresolvedVariable
-      item.totalSize = item.size
-      // noinspection JSUnresolvedVariable
-      item.lastModified = Date.parse(item.lastModified)
-
-      item.parts = [name]
-
-      item.key = dirName.length === 0 ? mapKey : `${dirName}/${mapKey}`
-      item.name = mapKey
-      const existingInfo = nameToInfo.get(mapKey)
-      if (existingInfo === undefined || item.lastModified > existingInfo.lastModified) {
-        nameToInfo.set(mapKey, item)
+      else {
+        title = name[0].toUpperCase() + name.substring(1)
       }
     }
+
+    region.title = title
   }
 
-  // const date = "2019-01-21"
-  collectDir("")
-  return Array.from(nameToInfo.values())
-}
-
-async function main() {
-  const locusFileToInfo = new Map()
-  const files = collectFiles(locusFileToInfo)
-  const keyToInfo = new Map()
-  for (const file of files) {
-    keyToInfo.set(file.key, file)
-  }
-
-  files.sort((a, b) => {
-    if (a.name === `al-ba-bg-hr-hu-xk-mk-md-me-ro-rs-sk-si${suffix}`) {
+  regions.sort((a, b) => {
+    if (a.name === `al-ba-bg-hr-hu-xk-mk-md-me-ro-rs-sk-si`) {
       return 1
     }
-    if (b.name === `al-ba-bg-hr-hu-xk-mk-md-me-ro-rs-sk-si${suffix}`) {
+    if (b.name === `al-ba-bg-hr-hu-xk-mk-md-me-ro-rs-sk-si`) {
       return -1
     }
-    return a.name.localeCompare(b.name)
+    return a.title.localeCompare(b.title)
   })
 
-  buildToC(files, keyToInfo, "index.md", locusFileToInfo)
+  buildToC(regions, keyToInfo, "index.md")
 }
 
-function buildToC(files, keyToInfo, resultFileName, locusFileToInfo) {
+function buildToC(regions, keyToInfo, resultFileName) {
   const regionGroupToResult = new Map()
-  for (const info of files) {
-    const name = info.name
-    let regionId = name.substring(0, name.length - suffix.length)
-    if (regionId === "we-ce-europe") {
-      regionId = "europe-region1"
-    }
-
-    let regionName = regionIdToName[regionId]
-    if (regionName == null) {
-      regionName = regionId[0].toUpperCase() + regionId.substring(1)
-      const index = regionName.indexOf("-")
-      if (index > 0) {
-        regionName = regionName.substring(0, index) + " " + regionId[index + 1].toUpperCase() + regionId.substring(index + 2)
-      }
-    }
+  for (const region of regions) {
+    const regionId = region.name
+    const regionName = region.title
 
     const regionScope = util.getRegionScopeName(regionId)
 
@@ -143,23 +77,15 @@ function buildToC(files, keyToInfo, resultFileName, locusFileToInfo) {
     }
 
     const locusFileName = `${regionId}.locus.xml`
-    const itemDir = path.posix.dirname(info.key)
-    if (!locusFileToInfo.has(itemDir.length === 0 || itemDir === "." ? locusFileName : `${itemDir}/${locusFileName}`)) {
-      if (locusFileName === "austria-18-50.locus.xml") {
-        continue
-      }
-      throw new Error(`Cannot find ${locusFileName}`)
-    }
-
     // https://ux.stackexchange.com/a/98437
-    result += `| <span class="regionInfo" data-parent-dir-url="${info.parentDirUrl}" data-zip-urls="${info.parts.join(",")}">${regionName}</span>`
+    result += `| <span class="regionInfo" data-parent-dir-url="${region.dirUrl}" data-zip-urls="${region.parts.map(it => it.fileName).join(",")}">${regionName}</span>`
 
-    info.totalSizePretty = prettyBytes(info.totalSize)
+    region.totalSizePretty = prettyBytes(region.totalSize)
 
-    const locusInstallUrl = `locus-actions://${info.parentDirUrl.replace("://", "/")}/${locusFileName}`
+    const locusInstallUrl = `locus-actions://${locusUrl}/${locusFileName}`
     result += ` | <a href="${locusInstallUrl}">Locus</a>`
-    result += ` | ${info.totalSizePretty}`
-    result += ` | [coverage](${getCoverageUrlAndChangeGeoJsonIfNeed(regionId, regionName, locusInstallUrl, info)})`
+    result += ` | ${region.totalSizePretty}`
+    result += ` | [coverage](${getCoverageUrlAndChangeGeoJsonIfNeed(regionId, regionName, locusInstallUrl, region)})`
     result += ` |\n`
     regionGroupToResult.set(regionScope, result)
   }
@@ -176,7 +102,7 @@ function buildToC(files, keyToInfo, resultFileName, locusFileToInfo) {
 
 const ownCoverage = new Set(util.polyFiles.concat(["bayern-at-cz"]))
 
-function getCoverageUrlAndChangeGeoJsonIfNeed(regionId, regionName, locusInstallUrl, info) {
+function getCoverageUrlAndChangeGeoJsonIfNeed(regionId, regionName, locusInstallUrl, region) {
   const regionCoverageId = regionId === "de-at-ch" ? "dach" : regionId
   if (!ownCoverage.has(regionCoverageId)) {
     throw new Error(`GeoJSON not provided for ${regionId}`)
@@ -195,9 +121,9 @@ function getCoverageUrlAndChangeGeoJsonIfNeed(regionId, regionName, locusInstall
     }
     properties.locusInstall = locusInstallUrl
     properties.download = {
-      zipUrls: info.parts.map(it => `${info.parentDirUrl}/${it}`),
-      totalSize: info.totalSize,
-      totalSizePretty: info.totalSizePretty,
+      zipUrls: region.parts.map(it => `${region.dirUrl}/${it.fileName}`),
+      totalSize: region.totalSize,
+      totalSizePretty: region.totalSizePretty,
     }
     properties.regionName = regionName
     fs.writeFileSync(geoJsonFile, JSON.stringify(geoJson, null, 2))

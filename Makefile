@@ -10,7 +10,7 @@ download: check-env
 	aria2c --file-allocation=none --max-connection-per-server=2 --max-concurrent-downloads=2 --input-file=configs/map-urls.txt --dir="${MAP_DIR}" --conditional-get --allow-overwrite
 
 compile-builder:
-	go build -ldflags='-s -w' -o tools/builder ./cmd
+	go build -ldflags='-s -w' -o tools/importer ./cmd/import
 
 # env BUILD_WORKER_COUNT must set to 1 if elevation data is not yet downloaded, because graphhopper cannot download it in parallel
 
@@ -64,3 +64,6 @@ dev-site:
 update-deps:
 	go get -u ./...
 	go mod tidy
+
+stats:
+	goaccess ~/gh-logs.txt --log-format COMBINED -o ~/report.html --ignore-crawlers -e 95.91.255.108 --geoip-database ~/Downloads/GeoLite2-City_20200121/GeoLite2-City.mmdb

@@ -2,16 +2,21 @@ package builder
 
 import (
 	"bytes"
+	"github.com/cheggaaa/pb"
 	"github.com/develar/errors"
+	"github.com/minio/minio-go/v6"
 	"github.com/panjf2000/ants"
+	"github.com/peak/s3hash"
 	"go.uber.org/zap"
+	"log"
 	"os"
 	"os/exec"
+	"path"
 	"path/filepath"
 	"strings"
 )
 
-const serverIpV4 = "51.15.100.144"
+const bucketName = "gh-routing-data"
 
 func (t *Builder) upload(regionName string) error {
 	if t.ExecuteContext.Err() != nil {
@@ -19,7 +24,7 @@ func (t *Builder) upload(regionName string) error {
 	}
 
 	// do not in parallel (no sense because build is skipped)
-	command := exec.CommandContext(t.ExecuteContext, "node", filepath.Join(getNodeJsScriptDir(), "locus-action-generator.js"), regionName)
+	command := exec.CommandContext(t.ExecuteContext, "node", filepath.Join(getNodeJsScriptDir(), "compress.js"), regionName)
 
 	var stdout bytes.Buffer
 	command.Stdout = &stdout
@@ -30,8 +35,8 @@ func (t *Builder) upload(regionName string) error {
 	}
 
 	filesToUpload := strings.Split(stdout.String(), "\n")
-	remoteDir := "/mnt/gh/" + filesToUpload[0]
-	err = t.uploadUsingRsync(remoteDir, filesToUpload[1:])
+	remoteDir := filesToUpload[0]
+	err = t.uploadUsingMinio(remoteDir, filesToUpload[1:])
 	if err != nil {
 		return err
 	}
@@ -39,22 +44,61 @@ func (t *Builder) upload(regionName string) error {
 	return nil
 }
 
-func (t *Builder) uploadUsingRsync(remoteDir string, filesToUpload []string) error {
-	var args []string
-	// --times - preserve modification times
-	args = append(args, "--rsync-path='mkdir -p "+remoteDir+" && rsync'", "--chown=caddy:caddy", "--times", "--human-readable", "--progress")
-	args = append(args, filesToUpload...)
-	args = append(args, "root@"+serverIpV4+":"+remoteDir+"/")
+func (t *Builder) uploadUsingMinio(remoteDir string, filesToUpload []string) error {
+	for _, filePath := range filesToUpload {
+		err := t.uploadFile(filePath, bucketName, path.Join(remoteDir, path.Base(filePath)))
+		if err != nil {
+			return err
+		}
+	}
 
-	command := exec.CommandContext(t.ExecuteContext, "/bin/sh", "-c", "rsync "+strings.Join(args, " "))
+	return nil
+}
 
-	command.Stdout = os.Stdout
-	command.Stderr = os.Stderr
+func (t *Builder) uploadFile(filePath string, bucketName string, objectPath string) error {
+	objectInfo, err := t.uploader.StatObjectWithContext(t.ExecuteContext, bucketName, objectPath, minio.StatObjectOptions{})
+	if err != nil {
+		return err
+	}
 
-	err := command.Run()
+	if objectInfo.ETag == "" {
+		t.Logger.Info("file is new", zap.String("file", objectPath))
+	} else {
+		// default chunk size - 8MB
+		eTag, err := s3hash.CalculateForFile(filePath, 8*1024*1024)
+		if err != nil {
+			return err
+		}
+
+		if eTag == objectInfo.ETag {
+			t.Logger.Info("file is not modified and will be not uploaded", zap.String("file", objectPath), zap.String("eTag", eTag))
+		} else {
+			t.Logger.Info("file is modified and will be uploaded", zap.String("file", objectPath), zap.String("localETag", eTag), zap.String("remoteETag", objectInfo.ETag))
+		}
+	}
+
+	fileReader, err := os.Open(filePath)
+	if err != nil {
+		return err
+	}
+
+	//noinspection GoUnhandledErrorResult
+	defer fileReader.Close()
+
+	fileStat, err := fileReader.Stat()
+	if err != nil {
+		return err
+	}
+
+	progress := pb.New64(fileStat.Size())
+	progress.Start()
+	defer progress.Finish()
+
+	options := minio.PutObjectOptions{ContentType: "application/zip", Progress: progress.NewProxyReader(fileReader)}
+	_, err = t.uploader.PutObjectWithContext(t.ExecuteContext, bucketName, objectPath, fileReader, fileStat.Size(), options)
 	if err != nil {
 		t.Logger.Error("cannot upload", zap.Error(err))
-		//return err
+		return err
 	}
 
 	return nil
@@ -91,6 +135,11 @@ func (t *Builder) initUploadPool() error {
 	})
 	if err != nil {
 		return errors.WithStack(err)
+	}
+
+	t.uploader, err = minio.New(os.Getenv("ENDPOINT"), os.Getenv("ACCESS_KEY"), os.Getenv("SECRET_KEY") /* isSecure = */, true)
+	if err != nil {
+		log.Fatalln(err)
 	}
 	return nil
 }

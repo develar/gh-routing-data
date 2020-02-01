@@ -1,7 +1,7 @@
 {
   "type": "Feature",
   "properties": {
-    "locusInstall": "locus-actions://https/s3.eu-central-1.wasabisys.com/gh-routing-data/netherlands.locus.xml",
+    "locusInstall": "locus-actions://https/graphhopper.develar.org/locus/2020-01-24/netherlands.locus.xml",
     "download": {
       "zipUrls": [
         "https://s3.eu-central-1.wasabisys.com/gh-routing-data/netherlands.osm-gh.zip"

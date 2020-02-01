@@ -5,9 +5,6 @@ const child_process = require("child_process")
 const patterns = ["*_bike2_node", "*_mtb_node", "*_racingbike_node"]
 const patterns2 = ["*_car_node", "*_hike_node"]
 
-const util = require("./info.js")
-const serverUrl = `https://${util.rootUrlWithoutProtocol}`
-
 function unlinkIfExists(file) {
   try {
     fs.unlinkSync(file)
@@ -64,60 +61,21 @@ async function main(resultName) {
   const builder = new Builder(resultName)
   if (builder.isUseParts()) {
     await Promise.all([
-      builder.archiveAndUpload(builder.getPartFileName(1), patterns),
-      builder.archiveAndUpload(builder.getPartFileName(2), patterns2),
-      builder.archiveAndUpload(builder.getPartFileName(3), patterns.concat(patterns2), true),
+      builder.archive(builder.getPartFileName(1), patterns),
+      builder.archive(builder.getPartFileName(2), patterns2),
+      builder.archive(builder.getPartFileName(3), patterns.concat(patterns2), true),
     ])
   }
   else {
-    await builder.archiveAndUpload(`${builder.dirName}.zip`, null)
+    await builder.archive(`${builder.dirName}.zip`, null)
   }
 
   if (process.env.SKIP_UPLOAD != null) {
     return
   }
 
-  let data = "<locusActions>"
-  for (const file of builder.fileNames) {
-    const remotePath = `${builder.remoteDir}${file}`
-    data += `<download>
-<source>${escapeXml(`${serverUrl}/${remotePath}`)}</source>
-<dest>/mapsVector/${escapeXml(resultName)}</dest>
-<after>extract|deleteSource</after>
-</download>
-`
-  }
-  data += "</locusActions>"
-
-  const locusFileName = `${resultName}.locus.xml`
-  if (util.isUseS3) {
-    await spawn("mc", ["pipe", builder.getRemotePathSpec(locusFileName)], data)
-  }
-  else {
-    const locusFilePath = path.join(mapDir, locusFileName);
-    fs.writeFileSync(locusFilePath, data)
-    builder.filesToUpload.push(locusFilePath)
-  }
-
   process.stdout.write(builder.remoteDir + "\n")
   process.stdout.write(builder.filesToUpload.join("\n"))
-}
-
-function escapeXml(value) {
-  return value.replace(/[<>&'"]/g, function (c) {
-    switch (c) {
-      case '<':
-        return '&lt;'
-      case '>':
-        return '&gt;'
-      case '&':
-        return '&amp;'
-      case '\'':
-        return '&apos;'
-      case '"':
-        return '&quot;'
-    }
-  })
 }
 
 class Builder {
@@ -134,7 +92,7 @@ class Builder {
     this.filesToUpload = []
   }
 
-  async archiveAndUpload(fileName, patterns, isExclude = false) {
+  async archive(fileName, patterns, isExclude = false) {
     this.fileNames.push(fileName)
 
     const file = path.join(mapDir, fileName)
@@ -155,27 +113,6 @@ class Builder {
       this.filesToUpload.push(file)
     }
   }
-
-  getRemotePathSpec(file) {
-    return `${(util.serverAlias)}/${(util.bucketName)}/${this.remoteDir}${file}`
-  }
-
-  // uploadFiles() {
-  //   if (util.isUseS3) {
-  //     const args = ["cp"]
-  //     args.push(...this.filesToUpload)
-  //     args.push(this.getRemotePathSpec(this.filesToUpload.length === 1 ? path.basename(this.filesToUpload[0]) : ""))
-  //     return spawn("mc", args)
-  //   }
-  //   else {
-  //     const remoteDir = `/var/www/${this.remoteDir}`
-  //     return spawn("rsync", ["--chown=caddy:caddy", "--human-readable", "--progress",
-  //       `--rsync-path="sudo -u caddy mkdir -p '${remoteDir}' && rsync"`,
-  //       ...this.filesToUpload,
-  //       `root@[2001:bc8:4728:da09::1]:${remoteDir}/`,
-  //     ])
-  //   }
-  // }
 
   getPartFileName(index) {
     return `${this.resultName}-part${index}.osm-gh.zip`

@@ -14,7 +14,7 @@ import (
 
 // do not use `osmium merge` to merge OSM maps for graphhopper, it leads to incorrect routing data.
 func main() {
-	var app = kingpin.New("gh-data-builder", "gh-data-builder").Version("0.0.1")
+	var app = kingpin.New("gh-data-builder", "gh-data-builder").Version("1.0.0")
 
 	isBuild := app.Flag("build", "Whether to convert OSM to graphhopper data").Default("true").Bool()
 	isUpload := app.Flag("upload", "Whether to upload result").Default("true").Bool()

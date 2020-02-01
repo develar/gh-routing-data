@@ -1,19 +1,21 @@
 package builder
 
 import (
-  "context"
-  "github.com/develar/app-builder/pkg/util"
-  "github.com/develar/errors"
-  "github.com/panjf2000/ants"
-  "go.uber.org/zap"
-  "go.uber.org/zap/zapcore"
-  "log"
-  "math"
-  "os"
-  "os/exec"
-  "path/filepath"
-  "strconv"
-  "sync"
+	"context"
+	"github.com/develar/app-builder/pkg/util"
+	"github.com/develar/errors"
+	"github.com/develar/go-fs-util"
+	"github.com/minio/minio-go/v6"
+	"github.com/panjf2000/ants"
+	"go.uber.org/zap"
+	"go.uber.org/zap/zapcore"
+	"log"
+	"math"
+	"os"
+	"os/exec"
+	"path/filepath"
+	"strconv"
+	"sync"
 )
 
 type Builder struct {
@@ -36,6 +38,7 @@ type Builder struct {
 
 	uploadPool      *ants.PoolWithFunc
 	uploadWaitGroup sync.WaitGroup
+	uploader        *minio.Client
 
 	Logger *zap.Logger
 }

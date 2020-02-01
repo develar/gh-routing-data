@@ -1,7 +1,7 @@
 {
   "type": "Feature",
   "properties": {
-    "locusInstall": "locus-actions://https/s3.eu-central-1.wasabisys.com/gh-routing-data/us-midwest.locus.xml",
+    "locusInstall": "locus-actions://https/graphhopper.develar.org/locus/2020-01-24/us-midwest.locus.xml",
     "download": {
       "zipUrls": [
         "https://s3.eu-central-1.wasabisys.com/gh-routing-data/us-midwest.osm-gh.zip"

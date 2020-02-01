@@ -7,3 +7,5 @@ configs/server/*.retry
 /out/
 
 /libs/
+
+/docs/locus/
