@@ -1,10 +1,10 @@
 <component name="libraryTable">
   <library name="graphhopper-reader" type="repository">
-    <properties maven-id="com.graphhopper:graphhopper-reader-osm:1.0-pre18" />
+    <properties maven-id="com.graphhopper:graphhopper-reader-osm:1.0-pre20" />
     <CLASSES>
-      <root url="jar://$MAVEN_REPOSITORY$/com/graphhopper/graphhopper-reader-osm/1.0-pre18/graphhopper-reader-osm-1.0-pre18.jar!/" />
-      <root url="jar://$MAVEN_REPOSITORY$/com/graphhopper/graphhopper-core/1.0-pre18/graphhopper-core-1.0-pre18.jar!/" />
-      <root url="jar://$MAVEN_REPOSITORY$/com/graphhopper/graphhopper-api/1.0-pre18/graphhopper-api-1.0-pre18.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/com/graphhopper/graphhopper-reader-osm/1.0-pre20/graphhopper-reader-osm-1.0-pre20.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/com/graphhopper/graphhopper-core/1.0-pre20/graphhopper-core-1.0-pre20.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/com/graphhopper/graphhopper-api/1.0-pre20/graphhopper-api-1.0-pre20.jar!/" />
       <root url="jar://$MAVEN_REPOSITORY$/org/locationtech/jts/jts-core/1.15.1/jts-core-1.15.1.jar!/" />
       <root url="jar://$MAVEN_REPOSITORY$/com/carrotsearch/hppc/0.8.1/hppc-0.8.1.jar!/" />
       <root url="jar://$MAVEN_REPOSITORY$/org/apache/xmlgraphics/xmlgraphics-commons/2.3/xmlgraphics-commons-2.3.jar!/" />
@@ -15,9 +15,9 @@
     </CLASSES>
     <JAVADOC />
     <SOURCES>
-      <root url="jar://$MAVEN_REPOSITORY$/com/graphhopper/graphhopper-reader-osm/1.0-pre18/graphhopper-reader-osm-1.0-pre18-sources.jar!/" />
-      <root url="jar://$MAVEN_REPOSITORY$/com/graphhopper/graphhopper-core/1.0-pre18/graphhopper-core-1.0-pre18-sources.jar!/" />
-      <root url="jar://$MAVEN_REPOSITORY$/com/graphhopper/graphhopper-api/1.0-pre18/graphhopper-api-1.0-pre18-sources.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/com/graphhopper/graphhopper-reader-osm/1.0-pre20/graphhopper-reader-osm-1.0-pre20-sources.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/com/graphhopper/graphhopper-core/1.0-pre20/graphhopper-core-1.0-pre20-sources.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/com/graphhopper/graphhopper-api/1.0-pre20/graphhopper-api-1.0-pre20-sources.jar!/" />
       <root url="jar://$MAVEN_REPOSITORY$/org/locationtech/jts/jts-core/1.15.1/jts-core-1.15.1-sources.jar!/" />
       <root url="jar://$MAVEN_REPOSITORY$/com/carrotsearch/hppc/0.8.1/hppc-0.8.1-sources.jar!/" />
       <root url="jar://$MAVEN_REPOSITORY$/org/apache/xmlgraphics/xmlgraphics-commons/2.3/xmlgraphics-commons-2.3-sources.jar!/" />

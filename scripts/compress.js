@@ -86,7 +86,7 @@ class Builder {
     // const dirName = new Date().toISOString().substr(0, 10)
     // noinspection UnnecessaryLocalVariableJS
     // const dirName = "2019-01-21"
-    this.remoteDir = "/"
+    this.remoteDir = "2020-02-03"
 
     this.fileNames = []
     this.filesToUpload = []
@@ -119,7 +119,7 @@ class Builder {
   }
 
   isUseParts() {
-    const fileStat = statOrNull(path.join(mapDir, this.dirName, "shortcuts_fastest_bike2_node"))
+    const fileStat = statOrNull(path.join(mapDir, this.dirName, "shortcuts_fastest_bikenode_utc2"))
     if (fileStat == null) {
       // gh data dir removed and only previously archived file exists
       return statOrNull(path.join(mapDir, this.getPartFileName(1))) != null

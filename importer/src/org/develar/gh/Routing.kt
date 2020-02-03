@@ -11,7 +11,7 @@ class Routing {
       val gh = GraphHopper().forMobile()
       gh.isAllowWrites = false
       //val ghDataDir = "/Volumes/data/Downloads/austria.osm-gh"
-      val ghDataDir = "/Volumes/data/maps/de-at-ch.osm-gh"
+      val ghDataDir = "/Volumes/data/maps/bayern-at-cz.osm-gh"
       val dir = RAMDirectory(ghDataDir, true)
       val properties = StorableProperties(dir)
       if (!properties.loadExisting()) {

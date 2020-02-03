@@ -84,6 +84,9 @@ private fun buildEncodingManager(isTurnCostEnabled: Boolean): EncodingManager.Bu
 
   builder.add(OSMSurfaceParser())
 
+  // todo remove once pre20 version of graphhopper will be released
+  builder.add(OSMGetOffBikeParser())
+
   if (isTurnCostEnabled) {
     builder.add(OSMTollParser())
     builder.add(OSMMaxWeightParser())
