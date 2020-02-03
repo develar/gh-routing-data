@@ -2,12 +2,14 @@ package builder
 
 import (
 	"bytes"
+	"crypto/md5"
+	"encoding/base64"
 	"github.com/cheggaaa/pb"
 	"github.com/develar/errors"
 	"github.com/minio/minio-go/v6"
 	"github.com/panjf2000/ants"
-	"github.com/peak/s3hash"
 	"go.uber.org/zap"
+	"io"
 	"log"
 	"os"
 	"os/exec"
@@ -57,24 +59,14 @@ func (t *Builder) uploadUsingMinio(remoteDir string, filesToUpload []string) err
 
 func (t *Builder) uploadFile(filePath string, bucketName string, objectPath string) error {
 	objectInfo, err := t.uploader.StatObjectWithContext(t.ExecuteContext, bucketName, objectPath, minio.StatObjectOptions{})
+	isNew := false
 	if err != nil {
-		return err
-	}
-
-	if objectInfo.ETag == "" {
-		t.Logger.Info("file is new", zap.String("file", objectPath))
-	} else {
-		// default chunk size - 8MB
-		eTag, err := s3hash.CalculateForFile(filePath, 8*1024*1024)
-		if err != nil {
+		errorResponse, ok := err.(minio.ErrorResponse)
+		if !ok || errorResponse.Code != "NoSuchKey" {
 			return err
 		}
 
-		if eTag == objectInfo.ETag {
-			t.Logger.Info("file is not modified and will be not uploaded", zap.String("file", objectPath), zap.String("eTag", eTag))
-		} else {
-			t.Logger.Info("file is modified and will be uploaded", zap.String("file", objectPath), zap.String("localETag", eTag), zap.String("remoteETag", objectInfo.ETag))
-		}
+		isNew = true
 	}
 
 	fileReader, err := os.Open(filePath)
@@ -90,11 +82,31 @@ func (t *Builder) uploadFile(filePath string, bucketName string, objectPath stri
 		return err
 	}
 
+	localChecksum, err := computeChecksum(err, fileReader)
+	if err != nil {
+		return err
+	}
+
+	if isNew {
+		t.Logger.Info("file is new", zap.String("file", objectPath))
+	} else {
+		remoteChecksum := objectInfo.UserMetadata["md5"]
+		if localChecksum == remoteChecksum {
+			t.Logger.Info("file is not modified and will be not uploaded", zap.String("file", objectPath), zap.String("checksum", localChecksum))
+		} else {
+			t.Logger.Info("file is modified and will be uploaded", zap.String("file", objectPath), zap.String("localChecksum", localChecksum), zap.String("remoteChecksum", remoteChecksum))
+		}
+	}
+
 	progress := pb.New64(fileStat.Size())
 	progress.Start()
 	defer progress.Finish()
 
-	options := minio.PutObjectOptions{ContentType: "application/zip", Progress: progress.NewProxyReader(fileReader)}
+	options := minio.PutObjectOptions{
+		ContentType:  "application/zip",
+		Progress:     progress,
+		UserMetadata: map[string]string{"md5": localChecksum},
+	}
 	_, err = t.uploader.PutObjectWithContext(t.ExecuteContext, bucketName, objectPath, fileReader, fileStat.Size(), options)
 	if err != nil {
 		t.Logger.Error("cannot upload", zap.Error(err))
@@ -102,6 +114,20 @@ func (t *Builder) uploadFile(filePath string, bucketName string, objectPath stri
 	}
 
 	return nil
+}
+
+func computeChecksum(err error, fileReader *os.File) (string, error) {
+	h := md5.New()
+	_, err = io.Copy(h, fileReader)
+	if err != nil {
+		return "", err
+	}
+
+	_, err = fileReader.Seek(0, 0)
+	if err != nil {
+		return "", err
+	}
+	return base64.RawURLEncoding.EncodeToString(h.Sum(nil)), nil
 }
 
 func (t *Builder) addFileToUploadQueue(regionName string) {
