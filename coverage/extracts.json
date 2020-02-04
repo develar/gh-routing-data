@@ -50,6 +50,13 @@
       }
     },
     {
+      "output": "de-at-ch.pbf",
+      "output_format": "pbf",
+      "multipolygon": {
+        "file_name": "input/dach.poly"
+      }
+    },
+    {
       "output": "poland.pbf",
       "output_format": "pbf",
       "multipolygon": {

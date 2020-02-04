@@ -1,16 +1,6 @@
 {
   "type": "Feature",
-  "properties": {
-    "locusInstall": "locus-actions://https/graphhopper.develar.org/locus/2020-01-24/new-zealand.locus.xml",
-    "download": {
-      "zipUrls": [
-        "https://s3.eu-central-1.wasabisys.com/gh-routing-data/new-zealand.osm-gh.zip"
-      ],
-      "totalSize": 79069791,
-      "totalSizePretty": "79.1 MB"
-    },
-    "regionName": "New Zealand"
-  },
+  "properties": {},
   "geometry": {
     "type": "Polygon",
     "coordinates": [

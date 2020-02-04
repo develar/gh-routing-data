@@ -1,10 +1,13 @@
 package main
 
 import (
+	"bytes"
 	"encoding/json"
 	"errors"
 	"flag"
+	"github.com/dustin/go-humanize"
 	"github.com/minio/minio-go/v6"
+	"io"
 	"io/ioutil"
 	"log"
 	"os"
@@ -16,8 +19,11 @@ import (
 	"strings"
 )
 
-const serverUrl = "https://s3.eu-central-1.wasabisys.com/gh-routing-data"
+const serverUrl = "https://s3.eu-central-1.wasabisys.com"
 const bucketName = "gh-routing-data"
+
+// alphabetical order not suitable, so, list explicitly
+var regionGroups = []string{"Europe", "Northern Europe", "North America", "Asia", "Other"}
 
 func main() {
 	endpoint := flag.String("url", "s3.eu-central-1.wasabisys.com", "The S3 URL.")
@@ -34,16 +40,98 @@ func main() {
 	// indicate to our routine to exit cleanly upon return
 	defer close(doneChannel)
 
-	regions, err := collectRegions(minioClient, doneChannel, err)
+	var stringBuilder strings.Builder
+
+	graphHopperVersionToRegions := []*GraphHopperVersionToRegions{{
+		GraphHopperVersion: "1.0-pre18",
+		remoteRootDir:      "",
+		localRootDir:       "2020-01-24",
+	}, {
+		GraphHopperVersion: "1.0-pre20",
+		remoteRootDir:      "2020-02-03",
+		localRootDir:       "2020-02-03",
+	}}
+
+	for _, group := range graphHopperVersionToRegions {
+		err = collectRegionsAndWriteLocusMetadataForGraphhopperVersion(group, minioClient, doneChannel, err, locusDir, stringBuilder)
+		if err != nil {
+			log.Fatal(err)
+		}
+	}
+
+	data, err := json.MarshalIndent(graphHopperVersionToRegions, "", "  ")
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	var stringBuilder strings.Builder
-
-	err = os.MkdirAll(*locusDir, os.ModePerm)
+	err = ioutil.WriteFile(filepath.Join(*locusDir, "info.json"), data, 0644)
 	if err != nil {
 		log.Fatal(err)
+	}
+
+	t := createTableTemplate()
+
+	items := make([]TemplateData, 0)
+	for _, group := range regionGroups {
+		groups := make([]VersionToGroups, 0)
+		for _, item := range graphHopperVersionToRegions {
+			regions := make([]*Region, 0)
+			for _, region := range item.Regions {
+				if region.Group == group {
+					regions = append(regions, region)
+				}
+			}
+
+			groups = append(groups, VersionToGroups{*item, regions})
+		}
+		items = append(items, TemplateData{group, groups})
+	}
+
+	htmlFile, err := os.Create("./docs/regions.md")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	//noinspection GoUnhandledErrorResult
+	defer htmlFile.Close()
+
+	err = t.Execute(htmlFile, items)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	//log.Printf("%s", data)
+}
+
+type TemplateData struct {
+	GroupName       string
+	VersionToGroups []VersionToGroups
+}
+
+type VersionToGroups struct {
+	Info    GraphHopperVersionToRegions
+	Regions []*Region
+}
+
+func collectRegionsAndWriteLocusMetadataForGraphhopperVersion(group *GraphHopperVersionToRegions, minioClient *minio.Client, doneChannel chan struct{}, err error, locusDir *string, stringBuilder strings.Builder) error {
+	regions, err := collectRegions(bucketName, group.remoteRootDir, minioClient, doneChannel, err)
+	if err != nil {
+		return err
+	}
+
+	err = writeLocusMetadata(regions, filepath.Join(*locusDir, group.localRootDir), &stringBuilder, group)
+	if err != nil {
+		return err
+	}
+
+	group.Regions = regions
+	return nil
+}
+
+func writeLocusMetadata(regions []*Region, outputDir string, stringBuilder *strings.Builder, group *GraphHopperVersionToRegions) error {
+	err := os.MkdirAll(outputDir, os.ModePerm)
+	if err != nil {
+		return err
 	}
 
 	for _, region := range regions {
@@ -54,10 +142,8 @@ func main() {
 			stringBuilder.WriteString("\n  <download>")
 
 			stringBuilder.WriteString("\n    <source>")
-			stringBuilder.WriteString(serverUrl)
-			if !strings.HasSuffix(serverUrl, "/") && !strings.HasPrefix(part.FileName, "/") {
-				stringBuilder.WriteRune('/')
-			}
+			stringBuilder.WriteString(region.DirUrl)
+			stringBuilder.WriteRune('/')
 			stringBuilder.WriteString(part.FileName)
 			stringBuilder.WriteString("</source>")
 
@@ -70,32 +156,66 @@ func main() {
 		}
 		stringBuilder.WriteString("\n</locusActions>")
 
-		err = ioutil.WriteFile(filepath.Join(*locusDir, region.Name+".locus.xml"), []byte(stringBuilder.String()), 0644)
+		fileName := region.Name + ".locus.xml"
+		region.LocusUrl = path.Join(group.localRootDir, fileName)
+		data := []byte(stringBuilder.String())
+
+		err = writeIfNotModified(outputDir, fileName, data)
 		if err != nil {
-			log.Fatal(err)
+			return err
+		}
+	}
+	return nil
+}
+
+func writeIfNotModified(outputDir string, fileName string, data []byte) error {
+	file, err := os.OpenFile(filepath.Join(outputDir, fileName), os.O_RDWR|os.O_CREATE, 0666)
+	if err != nil {
+		return err
+	}
+
+	//noinspection GoUnhandledErrorResult
+	defer file.Close()
+
+	fileInfo, err := file.Stat()
+	if err != nil {
+		return err
+	}
+
+	if fileInfo.Size() == int64(len(data)) {
+		oldData, err := ioutil.ReadAll(file)
+		if err != nil {
+			return err
+		}
+
+		if bytes.Compare(data, oldData) == 0 {
+			return nil
 		}
 	}
 
-	data, err := json.MarshalIndent(regions, "", "  ")
-	if err != nil {
-		log.Fatal(err)
+	n, err := file.Write(data)
+	if err == nil && n < len(data) {
+		err = io.ErrShortWrite
 	}
 
-	// .Dir - locusDir contains date as last part
-	err = ioutil.WriteFile(filepath.Join(filepath.Dir(*locusDir), "info.json"), data, 0644)
-	if err != nil {
-		log.Fatal(err)
+	if err1 := file.Close(); err == nil {
+		err = err1
 	}
 
-	log.Printf("%s", data)
+	return err
 }
 
-func collectRegions(minioClient *minio.Client, doneChannel chan struct{}, err error) ([]*Region, error) {
+func collectRegions(bucket string, dir string, minioClient *minio.Client, doneChannel chan struct{}, err error) ([]*Region, error) {
 	var regions []*Region
 
 	partRegexp := regexp.MustCompile("^([a-z-]+)(-part([\\d{1}]))?\\.")
 
-	objectCh := minioClient.ListObjectsV2(bucketName, "" /* isRecursive = */, false, doneChannel)
+	objectPrefix := dir
+	if objectPrefix != "" {
+		objectPrefix += "/"
+	}
+
+	objectCh := minioClient.ListObjectsV2(bucket, objectPrefix /* isRecursive = */, false, doneChannel)
 	for object := range objectCh {
 		if object.Err != nil {
 			return nil, object.Err
@@ -105,9 +225,10 @@ func collectRegions(minioClient *minio.Client, doneChannel chan struct{}, err er
 			continue
 		}
 
-		parsedName := partRegexp.FindStringSubmatch(object.Key)
+		fileName := path.Base(object.Key)
+		parsedName := partRegexp.FindStringSubmatch(fileName)
 		if parsedName == nil || len(parsedName) < 2 {
-			return nil, errors.New("cannot match " + object.Key)
+			return nil, errors.New("cannot match " + fileName)
 		}
 
 		regionName := parsedName[1]
@@ -129,15 +250,19 @@ func collectRegions(minioClient *minio.Client, doneChannel chan struct{}, err er
 		}
 
 		partInfo := PartInfo{
-			FileName: path.Base(object.Key),
+			FileName: fileName,
 			Index:    partIndex,
 			Size:     object.Size,
 		}
 
+		dirUrl := serverUrl + "/" + path.Join(bucket, dir)
+
 		if region == nil {
 			region = &Region{
 				Name:   regionName,
-				DirUrl: serverUrl,
+				Title:  getRegionTitle(regionName),
+				Group:  getRegionScopeName(regionName),
+				DirUrl: dirUrl,
 				Parts:  []PartInfo{partInfo},
 			}
 
@@ -151,6 +276,8 @@ func collectRegions(minioClient *minio.Client, doneChannel chan struct{}, err er
 
 	// sort parts
 	for _, region := range regions {
+		region.TotalSizeHuman = humanize.Bytes(uint64(region.TotalSize))
+
 		if len(region.Parts) == 0 {
 			continue
 		}
@@ -162,23 +289,17 @@ func collectRegions(minioClient *minio.Client, doneChannel chan struct{}, err er
 
 	// sort regions
 	sort.Slice(regions, func(i, j int) bool {
-		return regions[i].Name < regions[j].Name
+		a := regions[i]
+		if a.Name == `al-ba-bg-hr-hu-xk-mk-md-me-ro-rs-sk-si` {
+			return false
+		}
+
+		b := regions[j]
+		if b.Name == `al-ba-bg-hr-hu-xk-mk-md-me-ro-rs-sk-si` {
+			return true
+		}
+		return a.Title < b.Title
 	})
 
 	return regions, nil
-}
-
-type Region struct {
-	Name      string `json:"name"`
-	TotalSize int64  `json:"totalSize"`
-
-	DirUrl string `json:"dirUrl"`
-
-	Parts []PartInfo `json:"parts"`
-}
-
-type PartInfo struct {
-	FileName string `json:"fileName"`
-	Index    int    `json:"index"`
-	Size     int64  `json:"size"`
 }

@@ -4478,16 +4478,5 @@
         ]
       }
     }
-  ],
-  "properties": {
-    "locusInstall": "locus-actions://https/graphhopper.develar.org/locus/2020-01-24/russia.locus.xml",
-    "download": {
-      "zipUrls": [
-        "https://s3.eu-central-1.wasabisys.com/gh-routing-data/russia.osm-gh.zip"
-      ],
-      "totalSize": 1792741823,
-      "totalSizePretty": "1.79 GB"
-    },
-    "regionName": "Russia"
-  }
+  ]
 }

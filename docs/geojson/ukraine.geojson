@@ -1,16 +1,6 @@
 {
   "type": "Feature",
-  "properties": {
-    "locusInstall": "locus-actions://https/graphhopper.develar.org/locus/2020-01-24/ukraine.locus.xml",
-    "download": {
-      "zipUrls": [
-        "https://s3.eu-central-1.wasabisys.com/gh-routing-data/ukraine.osm-gh.zip"
-      ],
-      "totalSize": 472874626,
-      "totalSizePretty": "473 MB"
-    },
-    "regionName": "Ukraine"
-  },
+  "properties": {},
   "geometry": {
     "type": "Polygon",
     "coordinates": [

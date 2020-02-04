@@ -1,16 +1,6 @@
 {
   "type": "Feature",
-  "properties": {
-    "locusInstall": "locus-actions://https/graphhopper.develar.org/locus/2020-01-24/us-northeast.locus.xml",
-    "download": {
-      "zipUrls": [
-        "https://s3.eu-central-1.wasabisys.com/gh-routing-data/us-northeast.osm-gh.zip"
-      ],
-      "totalSize": 803602475,
-      "totalSizePretty": "804 MB"
-    },
-    "regionName": "US Northeast"
-  },
+  "properties": {},
   "geometry": {
     "type": "Polygon",
     "coordinates": [

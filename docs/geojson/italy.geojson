@@ -1,16 +1,6 @@
 {
   "type": "Feature",
-  "properties": {
-    "locusInstall": "locus-actions://https/graphhopper.develar.org/locus/2020-01-24/italy.locus.xml",
-    "download": {
-      "zipUrls": [
-        "https://s3.eu-central-1.wasabisys.com/gh-routing-data/italy.osm-gh.zip"
-      ],
-      "totalSize": 1156489846,
-      "totalSizePretty": "1.16 GB"
-    },
-    "regionName": "Italy"
-  },
+  "properties": {},
   "geometry": {
     "type": "Polygon",
     "coordinates": [

@@ -78,15 +78,13 @@ func (t *Builder) readRegions(regionFile string) ([]*RegionInfo, error) {
 				// thailand 167 MB requires more than 2 GB
 				empiricalCoefficient = 13
 			} else if fileSizeInMb < 512 {
-				empiricalCoefficient = 11
+				empiricalCoefficient = 10.5
 			} else if fileSizeInMb < 1024 {
 				// brazil
-				empiricalCoefficient = 8.5
-			} else if fileSizeInMb < 2048 {
+				empiricalCoefficient = 8.4
+			} else {
 				// south-america-latest.osm.pbf 1497
 				empiricalCoefficient = 6.6
-			} else {
-				empiricalCoefficient = 7
 			}
 
 			// e.g. us-pacific requires > 1 GB

@@ -1,16 +1,6 @@
 {
   "type": "Feature",
-  "properties": {
-    "locusInstall": "locus-actions://https/graphhopper.develar.org/locus/2020-01-24/china.locus.xml",
-    "download": {
-      "zipUrls": [
-        "https://s3.eu-central-1.wasabisys.com/gh-routing-data/china.osm-gh.zip"
-      ],
-      "totalSize": 1033029716,
-      "totalSizePretty": "1.03 GB"
-    },
-    "regionName": "China"
-  },
+  "properties": {},
   "geometry": {
     "type": "Polygon",
     "coordinates": [

@@ -4,7 +4,7 @@ deps:
 	brew install aria2 osmium-tool node minio/stable/mc
 	# required only to build site
 	brew install python
-	pip3 install mkdocs-material mkdocs pymdown-extensions --upgrade
+	pip3 install mkdocs-material mkdocs pymdown-extensions markdown-include --upgrade
 
 download: check-env
 	aria2c --file-allocation=none --max-connection-per-server=2 --max-concurrent-downloads=2 --input-file=configs/map-urls.txt --dir="${MAP_DIR}" --conditional-get --allow-overwrite
@@ -39,9 +39,10 @@ extract-maps: check-env
 	osmium extract --overwrite --config=coverage/extracts.json --strategy=smart --directory="${MAP_DIR}" "${MAP_DIR}/europe-latest.osm.pbf"
 
 toc:
-	node ./scripts/build-toc.js
+	go build -ldflags='-s -w' -o tools/toc ./cmd/toc
+	./tools/toc --locus-dir=docs/locus
 
-site: toc
+site:
 	mkdocs build --clean
 
 publish-site: site
@@ -65,5 +66,8 @@ update-deps:
 	go get -u ./...
 	go mod tidy
 
+# mc mirror gh/gh-logs /Volumes/data/gh-logs
 stats:
+	go build -ldflags='-s -w' -o tools/s3-logs ./cmd/s3logs
+	./tools/s3-logs
 	goaccess ~/gh-logs.txt --log-format COMBINED -o ~/report.html --ignore-crawlers -e 95.91.255.108 --geoip-database ~/Downloads/GeoLite2-City_20200121/GeoLite2-City.mmdb

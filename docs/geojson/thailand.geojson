@@ -1,16 +1,6 @@
 {
   "type": "Feature",
-  "properties": {
-    "locusInstall": "locus-actions://https/graphhopper.develar.org/locus/2020-01-24/thailand.locus.xml",
-    "download": {
-      "zipUrls": [
-        "https://s3.eu-central-1.wasabisys.com/gh-routing-data/thailand.osm-gh.zip"
-      ],
-      "totalSize": 462304758,
-      "totalSizePretty": "462 MB"
-    },
-    "regionName": "Thailand"
-  },
+  "properties": {},
   "geometry": {
     "type": "Polygon",
     "coordinates": [

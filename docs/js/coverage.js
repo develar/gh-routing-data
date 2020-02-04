@@ -19,6 +19,8 @@ class CoverageApp {
     this.currentLayerId = null
     this.currentGeoJson = null
 
+    this.mapInfo = null
+
     // triggered when `setStyle` is called
     map.on("style.load", () => {
       if (this.currentLayerId != null) {
@@ -70,7 +72,10 @@ class CoverageApp {
       this.currentGeoJson = null
     }
 
-    const regionId = window.location.hash.slice(1)
+    const urlHash = window.location.hash.slice(1)
+    const versionIndex = urlHash.indexOf("@")
+    const regionId = versionIndex < 0 ? urlHash : urlHash.substring(0, versionIndex)
+    const formatVersion = versionIndex < 0 ? "" : urlHash.substring(versionIndex + 1)
     // ensure that malicious input is not used
     if (!/^[\w.-]+$/.test(regionId)) {
       alert("Passed region id violates format")
@@ -92,7 +97,17 @@ class CoverageApp {
           padding: 64,
         })
 
-        this.infoControl.show(geojson)
+        if (this.mapInfo == null) {
+          fetch("/locus/info.json", {mode: "same-origin"})
+            .then(it => it.json())
+            .then(info => {
+              this.mapInfo = info
+              this.infoControl.show(info, regionId, formatVersion)
+            })
+        }
+        else {
+          this.infoControl.show(this.mapInfo, regionId, formatVersion)
+        }
       })
       .catch(e => alert(`Error loading or parsing GeoJSON for region ${regionId}: ${e}`))
   }

@@ -12,8 +12,6 @@ import (
 	"strings"
 )
 
-var serverUrl = "https://s3.eu-central-1.wasabisys.com/gh-routing-data"
-
 func main() {
 	logDir := flag.String("dir", "/Volumes/data/gh-logs", "")
 
@@ -97,6 +95,7 @@ func parseFile(dir string, fileInfo os.FileInfo, writer *bufio.Writer) error {
 		//noinspection SpellCheckingInspection
 		if strings.HasPrefix(s3Method, "REST.PUT.") || s3Method == "REST.GET.PUBLICACCESS" || s3Method == "REST.GET.BUCKET" || s3Method == "REST.GET.VERSIONING" || s3Method == "REST.GET.LOGGING" ||
 			strings.HasPrefix(s3Method, "REST.GET.BUCKET") ||
+			strings.HasPrefix(s3Method, "REST.POST.") ||
 			strings.HasSuffix(s3Method, ".BUCKET") ||
 			s3Method == "REST.GET.ACL" ||
 			s3Method == "REST.GET.LOCATION" ||
@@ -199,8 +198,4 @@ func writeQuotedString(s string, writer *bufio.Writer) {
 		_, _ = writer.WriteString(s)
 	}
 	_, _ = writer.WriteRune('"')
-}
-
-type Client struct {
-	Id string `csv:"id"`
 }

@@ -1,11 +1,13 @@
 .infoRow {
   width: unset !important;
+  display: none;
 }
 
-span.regionInfo {
+.regionInfo {
   cursor: pointer;
 }
-span.regionInfo:hover {
+
+.regionInfo:hover * {
   text-decoration: none;
   border-bottom: 1px dashed;
 }

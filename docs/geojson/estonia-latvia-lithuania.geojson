@@ -1,16 +1,6 @@
 {
   "type": "Feature",
-  "properties": {
-    "locusInstall": "locus-actions://https/graphhopper.develar.org/locus/2020-01-24/estonia-latvia-lithuania.locus.xml",
-    "download": {
-      "zipUrls": [
-        "https://s3.eu-central-1.wasabisys.com/gh-routing-data/estonia-latvia-lithuania.osm-gh.zip"
-      ],
-      "totalSize": 173629276,
-      "totalSizePretty": "174 MB"
-    },
-    "regionName": "Estonia, Latvia and Lithuania"
-  },
+  "properties": {},
   "geometry": {
     "type": "Polygon",
     "coordinates": [

@@ -1,16 +1,6 @@
 {
   "type": "Feature",
-  "properties": {
-    "locusInstall": "locus-actions://https/graphhopper.develar.org/locus/2020-01-24/czech-republic.locus.xml",
-    "download": {
-      "zipUrls": [
-        "https://s3.eu-central-1.wasabisys.com/gh-routing-data/czech-republic.osm-gh.zip"
-      ],
-      "totalSize": 272734291,
-      "totalSizePretty": "273 MB"
-    },
-    "regionName": "Czech Republic"
-  },
+  "properties": {},
   "geometry": {
     "type": "Polygon",
     "coordinates": [

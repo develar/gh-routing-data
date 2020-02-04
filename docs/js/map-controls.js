@@ -18,27 +18,42 @@ class MapboxInfoBoxControl {
     this.container = null
   }
 
-  show(geojson) {
+  show(info, regionName, formatVersion) {
+    let item = null
+    for (const infoElement of info) {
+      if (formatVersion === "" || formatVersion === infoElement.ghVersion) {
+        item = infoElement
+        break
+      }
+    }
+
+    if (item == null) {
+      console.error(`No data for ${item}`)
+      return
+    }
+
+    const regionData = item.regions.find(it => it.name === regionName)
+    console.log(regionData)
+
     this.container.style.display = "block"
     let html = ""
     let downloadText = "Download"
-    const properties = geojson.properties
     if (/(android)/i.test(navigator.userAgent)) {
-      html = `<a href="${properties.locusInstall}">Install on Locus</a> or `
+      html = `<a href="locus-actions://https/graphhopper.develar.org/locus/${regionData.locusUrl}}">Install on Locus</a> or `
       downloadText = downloadText.toLowerCase()
     }
 
-    const zipUrls = properties.download.zipUrls
-    if (zipUrls.length === 1) {
-      html += `<a href="${zipUrls[0]}">${downloadText}</a>`
+    const parts = regionData.parts
+    if (parts.length === 1) {
+      html += `<a href="${regionData.dirUrl}/${parts[0].fileName}">${downloadText}</a>`
     }
     else {
-      html += `${downloadText} ${zipUrls.map((v, index) => `<a href="${v}">part ${index + 1}</a>`).join(", ")}`
+      html += `${downloadText} ${parts.map(part => `<a href="${regionData.dirUrl}/${part.fileName}">part ${part.index}</a>`).join(", ")}`
     }
-    html += ` (${properties.download.totalSizePretty})`
+    html += ` (${regionData.totalSizeHuman})`
     this.container.innerHTML = html
 
-    document.title = `Coverage of ${properties.regionName}`
+    document.title = `Coverage of ${regionData.title}`
   }
 }
 

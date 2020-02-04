@@ -4,7 +4,7 @@ const helpers = require("@turf/helpers")
 const dissolve = require("@turf/dissolve")
 
 function main() {
-  for (const name of require("./info.js").polyFiles) {
+  for (const name of require("fs").readdirSync(path.join(__dirname, "../coverage/input")).filter(it => it.endsWith(".poly")).map(it => it.substring(0, it.length - ".poly".length))) {
     build(`${name}.poly`, `${name}.geojson`)
   }
   build([
@@ -44,7 +44,7 @@ function build(files, outFile) {
   if (result.type !== "FeatureCollection") {
     throw new Error("root object must be FeatureCollection")
   }
-  fs.writeFileSync(path.join(__dirname, "../docs/geojson", outFile), JSON.stringify(result.features.length === 1 ? result.features[0] : result))
+  fs.writeFileSync(path.join(__dirname, "../docs/geojson", outFile), JSON.stringify(result.features.length === 1 ? result.features[0] : result, null, 2))
 }
 
 let poly

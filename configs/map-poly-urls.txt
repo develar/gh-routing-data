@@ -28,7 +28,8 @@ https://download.geofabrik.de/australia-oceania/new-zealand.poly
 
 https://download.geofabrik.de/russia.poly
 
-https://download.geofabrik.de/south-america.poly
+# poly file is broken, do not update
+# https://download.geofabrik.de/south-america.poly
 https://download.geofabrik.de/europe/switzerland.poly
 
 https://download.geofabrik.de/europe/ukraine.poly
@@ -47,3 +48,5 @@ https://download.geofabrik.de/asia/taiwan.poly
 https://download.geofabrik.de/europe/turkey.poly
 
 https://download.geofabrik.de/europe/poland.poly
+
+http://download.geofabrik.de/africa/morocco.poly

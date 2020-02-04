@@ -28,6 +28,8 @@ markdown_extensions:
   - pymdownx.details
   - toc:
       permalink: true
+  - markdown_include.include:
+      base_path: docs
 
 plugins: []
 

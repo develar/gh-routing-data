@@ -1,21 +1,42 @@
 const openedClassName = "openedInfoRow"
 
+let oldSelectedVersion = ""
+
 document.addEventListener("DOMContentLoaded", () => {
-  for (const link of document.getElementsByClassName("regionInfo")) {
-    findElement(link.parentElement, HTMLTableCellElement).addEventListener("click", event => {
+  for (const element of document.getElementsByClassName("regionInfo")) {
+    findElement(element, HTMLTableCellElement).addEventListener("click", event => {
       event.preventDefault()
-      if (link.classList.contains(openedClassName)) {
-        link.classList.remove(openedClassName)
-        collapseLink(event, link)
+      if (element.classList.contains(openedClassName)) {
+        element.classList.remove(openedClassName)
+        expandLink(element, false)
       }
       else {
-        link.classList.add(openedClassName)
-        expandLink(event, link)
+        element.classList.add(openedClassName)
+        expandLink(element, true)
       }
       return false
     })
   }
+
+  document.getElementById("mapVersionFormatSelect").addEventListener("change", event => {
+    const selectElement = event.target
+
+    if (oldSelectedVersion === "") {
+      oldSelectedVersion = selectElement.options[0].value
+    }
+
+    showOrHideVersion(selectElement.value, true)
+    showOrHideVersion(oldSelectedVersion, false)
+    oldSelectedVersion = selectElement.value
+  })
 })
+
+function showOrHideVersion(version, show) {
+  const list = document.getElementsByClassName(`v-${version}`)
+  for (let i = 0; i < list.length; i++) {
+    list.item(i).style.display = show ? "block" : "none"
+  }
+}
 
 function findElement(element, clazz) {
   do {
@@ -30,30 +51,23 @@ function findElement(element, clazz) {
   return null
 }
 
-function expandLink(event, link) {
-  const tr = findElement(link.parentElement, HTMLTableRowElement)
+function expandLink(target, expand) {
+  const tr = findElement(target.parentElement, HTMLTableRowElement)
   const table = findElement(tr.parentElement, HTMLTableElement)
 
-  const rowIndex = tr.rowIndex
-  const newRow = table.insertRow(rowIndex + 1)
-  const newCell = newRow.insertCell(0)
-  newCell.colSpan = 4
+  const infoRow = table.rows[tr.rowIndex + 1]
+  infoRow.style.display = expand ? "table-row" : "none"
 
-  const zipUrls = link.dataset.zipUrls.split(",")
-  const parentDirUrl = link.dataset.parentDirUrl
-  let html = "<tr><td>zip:</td><td>"
-  if (zipUrls.length === 1) {
-    html += `<a href="${parentDirUrl}/${zipUrls[0]}">download</a>`
-  }
-  else {
-    html += zipUrls.map((it, index) => `<a href="${parentDirUrl}/${it}">part ${index + 1}</a>`).join(", ")
-  }
-  html += "</td></tr>"
-
-  newCell.innerHTML = `<table class="infoRow">${html}</table>`
-}
-
-function collapseLink(event, link) {
-  const tr = findElement(link.parentElement, HTMLTableRowElement)
-  findElement(tr.parentElement, HTMLTableElement).deleteRow(tr.rowIndex + 1)
+  // const zipUrls = link.dataset.zipUrls.split(",")
+  // const parentDirUrl = link.dataset.parentDirUrl
+  // let html = "<tr><td>zip:</td><td>"
+  // if (zipUrls.length === 1) {
+  //   html += `<a href="${parentDirUrl}/${zipUrls[0]}">download</a>`
+  // }
+  // else {
+  //   html += zipUrls.map((it, index) => `<a href="${parentDirUrl}/${it}">part ${index + 1}</a>`).join(", ")
+  // }
+  // html += "</td></tr>"
+  //
+  // newCell.innerHTML = `<table class="infoRow">${html}</table>`
 }
