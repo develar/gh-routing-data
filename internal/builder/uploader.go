@@ -4,10 +4,11 @@ import (
 	"bytes"
 	"crypto/md5"
 	"encoding/base64"
-	"github.com/cheggaaa/pb"
 	"github.com/develar/errors"
 	"github.com/minio/minio-go/v6"
 	"github.com/panjf2000/ants"
+	"github.com/vbauerster/mpb/v4"
+	"github.com/vbauerster/mpb/v4/decor"
 	"go.uber.org/zap"
 	"io"
 	"log"
@@ -15,17 +16,21 @@ import (
 	"os/exec"
 	"path"
 	"path/filepath"
+	"runtime"
 	"strings"
+	"time"
 )
 
 const bucketName = "gh-routing-data"
+
+// first char must be upper-case (minio will set to upper-case on set, so, on read we should use also upper-case)
+const md5UserDataName = "Md5"
 
 func (t *Builder) upload(regionName string) error {
 	if t.ExecuteContext.Err() != nil {
 		return nil
 	}
 
-	// do not in parallel (no sense because build is skipped)
 	command := exec.CommandContext(t.ExecuteContext, "node", filepath.Join(getNodeJsScriptDir(), "compress.js"), regionName)
 
 	var stdout bytes.Buffer
@@ -87,33 +92,72 @@ func (t *Builder) uploadFile(filePath string, bucketName string, objectPath stri
 		return err
 	}
 
+	fileSize := fileStat.Size()
+
 	if isNew {
 		t.Logger.Info("file is new", zap.String("file", objectPath))
 	} else {
-		remoteChecksum := objectInfo.UserMetadata["md5"]
+		remoteChecksum := objectInfo.UserMetadata[md5UserDataName]
 		if localChecksum == remoteChecksum {
-			t.Logger.Info("file is not modified and will be not uploaded", zap.String("file", objectPath), zap.String("checksum", localChecksum))
+			if fileSize == objectInfo.Size {
+				t.Logger.Info("file is not modified: skipping", zap.String("file", objectPath), zap.String("checksum", localChecksum))
+				return nil
+			} else {
+				t.Logger.Info("checksums match but sizes differ: uploading", zap.String("file", objectPath), zap.String("checksum", localChecksum), zap.Int64("localSize", fileSize), zap.Int64("remoteSize", objectInfo.Size))
+			}
 		} else {
-			t.Logger.Info("file is modified and will be uploaded", zap.String("file", objectPath), zap.String("localChecksum", localChecksum), zap.String("remoteChecksum", remoteChecksum))
+			t.Logger.Info("file is modified: skipping", zap.String("file", objectPath), zap.String("localChecksum", localChecksum), zap.String("remoteChecksum", remoteChecksum))
 		}
 	}
 
-	progress := pb.New64(fileStat.Size())
-	progress.Start()
-	defer progress.Finish()
-
 	options := minio.PutObjectOptions{
 		ContentType:  "application/zip",
-		Progress:     progress,
-		UserMetadata: map[string]string{"md5": localChecksum},
+		Progress:     &ProgressBarUpdater{bar: createBar(fileSize, t.progressContainer)},
+		UserMetadata: map[string]string{md5UserDataName: localChecksum},
 	}
-	_, err = t.uploader.PutObjectWithContext(t.ExecuteContext, bucketName, objectPath, fileReader, fileStat.Size(), options)
+	_, err = t.uploader.PutObjectWithContext(t.ExecuteContext, bucketName, objectPath, fileReader, fileSize, options)
 	if err != nil {
 		t.Logger.Error("cannot upload", zap.Error(err))
 		return err
 	}
 
 	return nil
+}
+
+type ProgressBarUpdater struct {
+	bar           *mpb.Bar
+	incrementTime time.Time
+}
+
+func (t *ProgressBarUpdater) Read(p []byte) (n int, err error) {
+	n = len(p)
+	t.bar.IncrBy(n, time.Since(t.incrementTime))
+	t.incrementTime = time.Now()
+	return
+}
+
+func createBar(total int64, p *mpb.Progress) *mpb.Bar {
+	var barStyle string
+	var barEndStyle string
+	if runtime.GOOS == "linux" || runtime.GOOS == "darwin" {
+		barStyle = " ▓ ░"
+		barEndStyle = " "
+	} else {
+		// default to non unicode characters
+		barStyle = "[=>"
+		barEndStyle = " ] "
+	}
+
+	return p.AddBar(total, mpb.BarStyle(barStyle),
+		mpb.PrependDecorators(
+			decor.CountersKibiByte("% .2f / % .2f"),
+		),
+		mpb.AppendDecorators(
+			decor.EwmaETA(decor.ET_STYLE_GO, 90),
+			decor.Name(barEndStyle),
+			decor.EwmaSpeed(decor.UnitKiB, "% .2f", 60),
+		),
+	)
 }
 
 func computeChecksum(err error, fileReader *os.File) (string, error) {
@@ -167,6 +211,9 @@ func (t *Builder) initUploadPool() error {
 	if err != nil {
 		log.Fatalln(err)
 	}
+
+	// default 120ms refresh rate, but reduce CPU load
+	t.progressContainer = mpb.NewWithContext(t.ExecuteContext, mpb.WithRefreshRate(480))
 	return nil
 }
 

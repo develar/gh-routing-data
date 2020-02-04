@@ -7,6 +7,7 @@ import (
 	"github.com/develar/go-fs-util"
 	"github.com/minio/minio-go/v6"
 	"github.com/panjf2000/ants"
+	"github.com/vbauerster/mpb/v4"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 	"log"
@@ -36,9 +37,10 @@ type Builder struct {
 	IsUpload            bool
 	IsRemoveOsmOnImport bool
 
-	uploadPool      *ants.PoolWithFunc
-	uploadWaitGroup sync.WaitGroup
-	uploader        *minio.Client
+	uploadPool        *ants.PoolWithFunc
+	uploadWaitGroup   sync.WaitGroup
+	uploader          *minio.Client
+	progressContainer *mpb.Progress
 
 	Logger *zap.Logger
 }

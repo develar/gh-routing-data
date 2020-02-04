@@ -1,5 +1,6 @@
 /node_modules/
 /.idea/shelf/
+/.idea/codeStyles/
 /.idea/workspace.xml
 /site/
 configs/server/*.retry
