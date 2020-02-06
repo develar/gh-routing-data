@@ -7,6 +7,7 @@ import (
 	"flag"
 	"github.com/dustin/go-humanize"
 	"github.com/minio/minio-go/v6"
+	"github.com/zalando/go-keyring"
 	"io"
 	"io/ioutil"
 	"log"
@@ -22,16 +23,26 @@ import (
 const serverUrl = "https://s3.eu-central-1.wasabisys.com"
 const bucketName = "gh-routing-data"
 
-// alphabetical order not suitable, so, list explicitly
-var regionGroups = []string{"Europe", "Northern Europe", "North America", "Asia", "Other"}
-
 func main() {
 	endpoint := flag.String("url", "s3.eu-central-1.wasabisys.com", "The S3 URL.")
 	locusDir := flag.String("locus-dir", "", "The directory of Locus metadata files.")
 
 	flag.Parse()
 
-	minioClient, err := minio.New(*endpoint, os.Getenv("ACCESS_KEY"), os.Getenv("SECRET_KEY") /* isSecure = */, true)
+	accessKey := os.Getenv("ACCESS_KEY")
+	secretKey := os.Getenv("SECRET_KEY")
+	if accessKey == "" && secretKey == "" {
+		secret, err := keyring.Get("wasabi", "reader")
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		pair := strings.SplitN(secret, ":", 2)
+		accessKey = pair[0]
+		secretKey = pair[1]
+	}
+
+	minioClient, err := minio.New(*endpoint, accessKey, secretKey /* isSecure = */, true)
 	if err != nil {
 		log.Fatalln(err)
 	}

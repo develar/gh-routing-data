@@ -13,7 +13,7 @@ import (
 )
 
 func main() {
-	logDir := flag.String("dir", "/Volumes/data/gh-logs", "")
+	logDir := flag.String("dir", "/Volumes/data/Google Drive/archive/gh-logs", "")
 
 	flag.Parse()
 

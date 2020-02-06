@@ -39,10 +39,10 @@ extract-maps: check-env
 	osmium extract --overwrite --config=coverage/extracts.json --strategy=smart --directory="${MAP_DIR}" "${MAP_DIR}/europe-latest.osm.pbf"
 
 toc:
-	go build -ldflags='-s -w' -o tools/toc ./cmd/toc
+	go run ./cmd/toc/main.go
 	./tools/toc --locus-dir=docs/locus
 
-site:
+site: toc
 	mkdocs build --clean
 
 publish-site: site
@@ -68,6 +68,5 @@ update-deps:
 
 # mc mirror gh/gh-logs /Volumes/data/gh-logs
 stats:
-	go build -ldflags='-s -w' -o tools/s3-logs ./cmd/s3logs
-	./tools/s3-logs
+	go run ./cmd/s3logs/main.go
 	goaccess ~/gh-logs.txt --log-format COMBINED -o ~/report.html --ignore-crawlers -e 95.91.255.108 --geoip-database ~/Downloads/GeoLite2-City_20200121/GeoLite2-City.mmdb

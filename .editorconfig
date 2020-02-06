@@ -9,3 +9,6 @@ ij_any_block_comment_at_first_column = false
 ij_any_line_comment_at_first_column = false
 ij_javascript_force_semicolon_style = true
 ij_javascript_use_semicolon_after_statement = false
+
+[congis/countries.csv]
+indent_style = tab

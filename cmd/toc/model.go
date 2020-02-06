@@ -1,6 +1,13 @@
 package main
 
-import "strings"
+import (
+	"log"
+	"strings"
+)
+
+// alphabetical order not suitable, so, list explicitly
+var regionGroups = []string{"Europe", "Northern Europe", "North America", "Asia", "Other"}
+var continentCodeToRegion = map[string]string{"EU": "Europe", "AS": "Asia", "AF": "Other"}
 
 type GraphHopperVersionToRegions struct {
 	GraphHopperVersion string `json:"ghVersion"`
@@ -81,6 +88,19 @@ func getRegionScopeName(name string) string {
 	} else if _, ok := northernEuropeRegions[name]; ok || strings.HasPrefix(name, "finland") {
 		return "Northern Europe"
 	} else {
-		return "Europe"
+		continent, err := getContinentByCountryName(name)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		if continent == "" {
+			return "Europe"
+		}
+
+		result, ok := continentCodeToRegion[continent]
+		if !ok {
+			log.Fatal("unknown continent: " + continent)
+		}
+		return result
 	}
 }

@@ -228,19 +228,6 @@
 </tr>
 
 <tr>
-  <td class="regionInfo">Turkey</td>
-  <td><a href="locus-actions://https/graphhopper.develar.org/locus/2020-01-24/turkey.locus.xml">Locus</a></td>
-  <td>562 MB</td>
-  <td><a href="/coverage.html#turkey@1.0-pre18">coverage</a></td>
-</tr>
-
-<tr class="infoRow">
-<td colSpan="4">
-  zip: <a href="https://s3.eu-central-1.wasabisys.com/gh-routing-data/turkey.osm-gh.zip">download</a>
-</td>
-</tr>
-
-<tr>
   <td class="regionInfo">Ukraine</td>
   <td><a href="locus-actions://https/graphhopper.develar.org/locus/2020-01-24/ukraine.locus.xml">Locus</a></td>
   <td>473 MB</td>
@@ -492,19 +479,6 @@
 <tr class="infoRow">
 <td colSpan="4">
   zip: <a href="https://s3.eu-central-1.wasabisys.com/gh-routing-data/2020-02-03/switzerland.osm-gh.zip">download</a>
-</td>
-</tr>
-
-<tr>
-  <td class="regionInfo">Turkey</td>
-  <td><a href="locus-actions://https/graphhopper.develar.org/locus/2020-02-03/turkey.locus.xml">Locus</a></td>
-  <td>564 MB</td>
-  <td><a href="/coverage.html#turkey@1.0-pre20">coverage</a></td>
-</tr>
-
-<tr class="infoRow">
-<td colSpan="4">
-  zip: <a href="https://s3.eu-central-1.wasabisys.com/gh-routing-data/2020-02-03/turkey.osm-gh.zip">download</a>
 </td>
 </tr>
 
@@ -1006,6 +980,19 @@
   zip: <a href="https://s3.eu-central-1.wasabisys.com/gh-routing-data/thailand.osm-gh.zip">download</a>
 </td>
 </tr>
+
+<tr>
+  <td class="regionInfo">Turkey</td>
+  <td><a href="locus-actions://https/graphhopper.develar.org/locus/2020-01-24/turkey.locus.xml">Locus</a></td>
+  <td>562 MB</td>
+  <td><a href="/coverage.html#turkey@1.0-pre18">coverage</a></td>
+</tr>
+
+<tr class="infoRow">
+<td colSpan="4">
+  zip: <a href="https://s3.eu-central-1.wasabisys.com/gh-routing-data/turkey.osm-gh.zip">download</a>
+</td>
+</tr>
  
 </table>
 </div>
@@ -1099,6 +1086,19 @@
 <tr class="infoRow">
 <td colSpan="4">
   zip: <a href="https://s3.eu-central-1.wasabisys.com/gh-routing-data/2020-02-03/thailand.osm-gh.zip">download</a>
+</td>
+</tr>
+
+<tr>
+  <td class="regionInfo">Turkey</td>
+  <td><a href="locus-actions://https/graphhopper.develar.org/locus/2020-02-03/turkey.locus.xml">Locus</a></td>
+  <td>564 MB</td>
+  <td><a href="/coverage.html#turkey@1.0-pre20">coverage</a></td>
+</tr>
+
+<tr class="infoRow">
+<td colSpan="4">
+  zip: <a href="https://s3.eu-central-1.wasabisys.com/gh-routing-data/2020-02-03/turkey.osm-gh.zip">download</a>
 </td>
 </tr>
  
@@ -1269,6 +1269,19 @@
 <tr class="infoRow">
 <td colSpan="4">
   zip: <a href="https://s3.eu-central-1.wasabisys.com/gh-routing-data/2020-02-03/central-america.osm-gh.zip">download</a>
+</td>
+</tr>
+
+<tr>
+  <td class="regionInfo">Morocco</td>
+  <td><a href="locus-actions://https/graphhopper.develar.org/locus/2020-02-03/morocco.locus.xml">Locus</a></td>
+  <td>270 MB</td>
+  <td><a href="/coverage.html#morocco@1.0-pre20">coverage</a></td>
+</tr>
+
+<tr class="infoRow">
+<td colSpan="4">
+  zip: <a href="https://s3.eu-central-1.wasabisys.com/gh-routing-data/2020-02-03/morocco.osm-gh.zip">download</a>
 </td>
 </tr>
 
