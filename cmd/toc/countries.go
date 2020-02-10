@@ -23,7 +23,12 @@ func getContinentByCountryName(name string) (string, error) {
 
 		nameToCountry = make(map[string]Country)
 		for _, country := range countries {
-			nameToCountry[strings.ToLower(country.Name)] = country
+      lowerCased := strings.ToLower(country.Name)
+      nameToCountry[lowerCased] = country
+      spaceToHyphen := strings.ReplaceAll(lowerCased, " ", "-")
+      if spaceToHyphen != lowerCased {
+        nameToCountry[spaceToHyphen] = country
+      }
 		}
 	}
 

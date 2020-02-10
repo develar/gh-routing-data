@@ -4,7 +4,7 @@ deps:
 	brew install aria2 osmium-tool node minio/stable/mc
 	# required only to build site
 	brew install python
-	pip3 install mkdocs-material mkdocs pymdown-extensions markdown-include --upgrade
+	pip3 install mkdocs-material mkdocs pymdown-extensions --upgrade
 
 download: check-env
 	aria2c --file-allocation=none --max-connection-per-server=2 --max-concurrent-downloads=2 --input-file=configs/map-urls.txt --dir="${MAP_DIR}" --conditional-get --allow-overwrite

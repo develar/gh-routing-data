@@ -7,13 +7,13 @@ import (
 
 // alphabetical order not suitable, so, list explicitly
 var regionGroups = []string{"Europe", "Northern Europe", "North America", "Asia", "Other"}
-var continentCodeToRegion = map[string]string{"EU": "Europe", "AS": "Asia", "AF": "Other"}
+// OC - Oceania
+var continentCodeToRegion = map[string]string{"EU": "Europe", "AS": "Asia", "AF": "Other", "OC": "Other", "SA": "Other"}
 
 type GraphHopperVersionToRegions struct {
 	GraphHopperVersion string `json:"ghVersion"`
 
-	localRootDir  string
-	remoteRootDir string
+	rootDir string
 
 	// we don't want to show on site, but still don't want to remove locus files
 	// (1 day period to ensure all links were updated / data downloaded)
@@ -80,15 +80,12 @@ func getRegionTitle(name string) string {
 }
 
 var northernEuropeRegions = map[string]string{"iceland": "", "great-britain": "", "sweden": "", "norway": "", "denmark": "", "ireland-and-northern-ireland": ""}
-var asiaRegions = map[string]string{"japan": "", "india": "", "china": "", "indonesia": "", "thailand": "", "taiwan": ""}
 
 func getRegionScopeName(name string) string {
 	if strings.HasPrefix(name, "us-") || name == "canada" {
 		return "North America"
-	} else if name == "australia" || name == "new-zealand" || name == "africa" || name == "south-america" || name == "brazil" || name == "central-america" {
+	} else if name == "africa" || name == "south-america" || name == "central-america" {
 		return "Other"
-	} else if _, ok := asiaRegions[name]; ok {
-		return "Asia"
 	} else if _, ok := northernEuropeRegions[name]; ok || strings.HasPrefix(name, "finland") {
 		return "Northern Europe"
 	} else {
