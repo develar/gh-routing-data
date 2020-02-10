@@ -6,7 +6,33 @@ import (
 )
 
 func createTableTemplate() *template.Template {
-	htmlTemplate := `
+	t := template.Must(template.New("html-tmpl").Funcs(template.FuncMap{
+		"humanSize": func(size int64) string {
+			// it uses 1000 and not 1024
+			return humanize.Bytes(uint64(size))
+		},
+		"regionCoverageId": func(region Region) string {
+			if region.Name == "de-at-ch" {
+				return "dach"
+			} else {
+				return region.Name
+			}
+		},
+		"isCommaRequired": func(region Region, part PartInfo) bool {
+			return part.Index != len(region.Parts)
+		},
+	}).Parse(`
+{{- if gt (len .) 1 -}}
+{{ else }}
+<label for="pet-select">Locus Map Add-on Version:</label>
+<select name="pets" id="mapVersionFormatSelect">
+  <option value="1.0-pre18">0.8 | GraphHopper 1.0-pre18</option>
+  <option value="1.0-pre20">0.9 (unreleased) | GraphHopper 1.0-pre20</option>
+</select>
+{{ end -}}
+
+<small>[Europe](#europe) | [Northern Europe](#northern-europe) | [North America](#north-america) | [Asia](#asia) | [Other](#other)</small>
+
 {{ range . -}}
 ### {{ .GroupName }}
 {{ range $index, $element := .VersionToGroups }}
@@ -29,7 +55,7 @@ func createTableTemplate() *template.Template {
 {{- range .Regions }}
 <tr>
   <td class="regionInfo">{{ .Title }}</td>
-  <td><a href="locus-actions://https/graphhopper.develar.org/locus/{{ .LocusUrl }}">Locus</a></td>
+  <td><a href="locus-actions://https/gh-data.org/locus/{{ .LocusUrl }}">Locus</a></td>
   <td>{{ humanSize .TotalSize }}</td>
   <td><a href="/coverage.html#{{ regionCoverageId . }}@{{ $graphHopperVersion }}">coverage</a></td>
 </tr>
@@ -50,23 +76,6 @@ func createTableTemplate() *template.Template {
 {{ end }} 
 </table>
 {{ end -}}
-`
-
-	t := template.Must(template.New("html-tmpl").Funcs(template.FuncMap{
-		"humanSize": func(size int64) string {
-			// it uses 1000 and not 1024
-			return humanize.Bytes(uint64(size))
-		},
-		"regionCoverageId": func(region Region) string {
-			if region.Name == "de-at-ch" {
-				return "dach"
-			} else {
-				return region.Name
-			}
-		},
-		"isCommaRequired": func(region Region, part PartInfo) bool {
-			return part.Index != len(region.Parts)
-		},
-	}).Parse(htmlTemplate))
+`))
 	return t
 }

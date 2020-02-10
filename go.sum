@@ -33,6 +33,7 @@ github.com/develar/errors v0.9.0/go.mod h1:zNbO3fZHcBjapJKbvUnvyaNrKGKkxgaL6C8Z7
 github.com/develar/go-fs-util v2.0.0+incompatible h1:6kCjtzWAG/fxAIo3suA/I1Nw03s6zenyGNoAaXPAEKM=
 github.com/develar/go-fs-util v2.0.0+incompatible/go.mod h1:SXW85p2ee+QAcICT1s6o2tnqGltUMEPRcNMynORGW/U=
 github.com/docopt/docopt-go v0.0.0-20180111231733-ee0de3bc6815/go.mod h1:WwZ+bS3ebgob9U8Nd0kOddGdZWjyMGR8Wziv+TBNwSE=
+github.com/dustin/go-humanize v1.0.0 h1:VSnTsYCnlFHaM2/igO1h6X3HA71jcobQuxemgkq4zYo=
 github.com/dustin/go-humanize v1.0.0/go.mod h1:HtrtbFcZ19U5GC7JDqmcUSB87Iq5E25KnS6fMYU6eOk=
 github.com/fatih/color v1.7.0 h1:DkWD4oS2D8LGGgTQ6IvwJJXSL5Vp2ffcQg58nFV38Ys=
 github.com/fatih/color v1.7.0/go.mod h1:Zm6kSWBoL9eyXnKyktHP6abPY2pDugNf5KwzbycvMj4=

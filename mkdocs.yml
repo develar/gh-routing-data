@@ -35,4 +35,4 @@ plugins: []
 
 google_analytics:
   - 'UA-120844885-1'
-  - 'graphhopper.develar.org'
+  - 'gh-data.org'

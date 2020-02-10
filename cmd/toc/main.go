@@ -57,6 +57,7 @@ func main() {
 		GraphHopperVersion: "1.0-pre18",
 		remoteRootDir:      "",
 		localRootDir:       "2020-01-24",
+		isHidden:           true,
 	}, {
 		GraphHopperVersion: "1.0-pre20",
 		remoteRootDir:      "2020-02-03",
@@ -86,6 +87,10 @@ func main() {
 	for _, group := range regionGroups {
 		groups := make([]VersionToGroups, 0)
 		for _, item := range graphHopperVersionToRegions {
+			if item.isHidden {
+				continue
+			}
+
 			regions := make([]*Region, 0)
 			for _, region := range item.Regions {
 				if region.Group == group {
@@ -110,8 +115,6 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-
-	//log.Printf("%s", data)
 }
 
 type TemplateData struct {

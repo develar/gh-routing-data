@@ -39,7 +39,7 @@ class MapboxInfoBoxControl {
     let html = ""
     let downloadText = "Download"
     if (/(android)/i.test(navigator.userAgent)) {
-      html = `<a href="locus-actions://https/graphhopper.develar.org/locus/${regionData.locusUrl}}">Install on Locus</a> or `
+      html = `<a href="locus-actions://https/gh-data.org/locus/${regionData.locusUrl}}">Install on Locus</a> or `
       downloadText = downloadText.toLowerCase()
     }
 

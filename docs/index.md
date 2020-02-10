@@ -2,8 +2,6 @@
 
 Routing data for [GraphHopper](https://www.graphhopper.com) for offline navigation. With one-click installation on the best outdoor navigation app [Locus Map](https://www.locusmap.eu).
 
-For GraphHopper 1.0-pre18.
-
 File [issue](https://github.com/develar/gh-routing-data/issues) if routing data not provided for wanted country or region.
 
 !!! tip "Cross border navigation"
@@ -36,13 +34,5 @@ Click on the region name to see other download options.
     Also, data can be updated once a new version of GraphHopper is released.
     
     Last update: 2020-02-03.
-
-<label for="pet-select">Locus Map Add-on Version:</label>
-<select name="pets" id="mapVersionFormatSelect">
-  <option value="1.0-pre18">0.8 | GraphHopper 1.0-pre18</option>
-  <option value="1.0-pre20">0.9 (unreleased) | GraphHopper 1.0-pre20</option>
-</select>
-
-<small>[Europe](#europe) | [Northern Europe](#northern-europe) | [North America](#north-america) | [Asia](#asia) | [Other](#other)</small>
 
 {!regions.md!}

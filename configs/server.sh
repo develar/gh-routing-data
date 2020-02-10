@@ -38,7 +38,7 @@ rc-service netdata restart
 ####### caddy
 # curl -L https://github.com/caddyserver/caddy/releases/download/v1.0.4/caddy_v1.0.4_linux_amd64.tar.gz | tar xvz && mv caddy /usr/bin/caddy && chmod +x /usr/bin/caddy
 ulimit -n 8192
-caddy -host d.graphhopper.develar.org -root /mnt/gh -email develar@gmail.com -agree -conf /etc/Caddyfile
+caddy -host d.gh-data.org -root /mnt/gh -email develar@gmail.com -agree -conf /etc/Caddyfile
 
 groupadd --system caddy
 useradd --system \
@@ -83,7 +83,7 @@ Group=caddy
 Environment=CADDYPATH=/etc/ssl/caddy
 
 ; Always set "-root" to something safe in case it gets forgotten in the Caddyfile.
-ExecStart=/usr/local/bin/caddy -log stdout -log-timestamps=false -agree=true -host d.graphhopper.develar.org -root /mnt/gh -email develar@gmail.com -agree -conf /etc/Caddyfile
+ExecStart=/usr/local/bin/caddy -log stdout -log-timestamps=false -agree=true -host d.gh-data.org -root /mnt/gh -email develar@gmail.com -agree -conf /etc/Caddyfile
 ExecReload=/bin/kill -USR1 $MAINPID
 
 ; Use graceful shutdown with a reasonable timeout

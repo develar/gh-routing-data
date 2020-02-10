@@ -15,6 +15,10 @@ type GraphHopperVersionToRegions struct {
 	localRootDir  string
 	remoteRootDir string
 
+	// we don't want to show on site, but still don't want to remove locus files
+	// (1 day period to ensure all links were updated / data downloaded)
+	isHidden bool
+
 	Regions []*Region `json:"regions"`
 }
 
