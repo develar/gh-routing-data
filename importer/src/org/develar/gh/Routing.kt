@@ -18,7 +18,6 @@ class Routing {
         throw IllegalStateException("Cannot load properties at: ${dir.location}")
       }
 
-      gh.isCHEnabled = (properties.get("prepare.ch.done") == "true")
       gh.setElevation(properties.get("prepare.elevation_interpolation.done") == "true")
 
       gh.load(ghDataDir)

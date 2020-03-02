@@ -76,18 +76,13 @@ func (t *Builder) readRegions(regionFile string) ([]*RegionInfo, error) {
 			var empiricalCoefficient float64
 			if fileSizeInMb < 256 {
 				// thailand 167 MB requires more than 2 GB
-				empiricalCoefficient = 13
+				empiricalCoefficient = 12
 			} else if fileSizeInMb < 512 {
-				empiricalCoefficient = 10.5
-			} else if fileSizeInMb < 1024 {
-				// brazil
-				empiricalCoefficient = 8.4
+				empiricalCoefficient = 10
 			} else {
-				// south-america-latest.osm.pbf 1497
-				empiricalCoefficient = 6.6
+				empiricalCoefficient = 6
 			}
 
-			// e.g. us-pacific requires > 1 GB
 			region.requiredMemoryInMb = max(int(float64(fileSizeInMb)*empiricalCoefficient), 2048)
 			return nil
 		}, nil

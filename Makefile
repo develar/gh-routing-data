@@ -7,34 +7,33 @@ deps:
 	pip3 install mkdocs-material mkdocs pymdown-extensions --upgrade
 
 download: check-env
-	aria2c --file-allocation=none --max-connection-per-server=2 --max-concurrent-downloads=2 --input-file=configs/map-urls.txt --dir="${MAP_DIR}" --conditional-get --allow-overwrite
+	./scripts/download-maps.sh
 
 compile-importer:
+	cd importer && mvn package && cp target/graphhopper-importer-1.0-SNAPSHOT-jar-with-dependencies.jar ../tools/gh-importer.jar
 	go build -ldflags='-s -w' -o tools/importer ./cmd/import
 
 # env BUILD_WORKER_COUNT must set to 1 if elevation data is not yet downloaded, because graphhopper cannot download it in parallel
 
-# Java is required, download from https://github.com/AdoptOpenJDK/openjdk13-binaries/releases/download/jdk-13.0.1%2B9/OpenJDK13U-jre_x64_mac_hotspot_13.0.1_9.tar.gz as archive (not as installation media (e.g. dmg) to not pollute your OS),
-# unpack (do not use Archive Utility (otherwise will be marked as untrusted)) to some dir and prepend all commands with JAVA_HOME=<path/to/java/home> (or simply export JAVA_HOME env in current terminal window)
-# e.g.: export JAVA_HOME=~/jdk-13.0.2+8-jre/Contents/Home
+# Java is required, download from https://www.azul.com/downloads/zulu-community/?&version=java-13&os=&os=macos&architecture=x86-64-bit&package=jre (macOS) as ZIP archive (not as installation media (e.g. dmg) to not pollute your OS),
+# unpack to some dir and prepend all commands with JAVA_HOME=<path/to/java/home> (or simply export JAVA_HOME env in current terminal window)
+# curl -O https://cdn.azul.com/zulu/bin/zulu13.29.9-ca-jre13.0.2-macosx_x64.zip && unzip zulu13.29.9-ca-jre13.0.2-macosx_x64.zip
+# e.g.: export JAVA_HOME=~/zulu13.29.9-ca-jre13.0.2-macosx_x64
 build: compile-importer
 	BUILD_WORKER_COUNT=1 ./tools/importer --remove-osm
 
 build-only: compile-importer
-	BUILD_WORKER_COUNT=1 ./tools/importer --no-upload --graphhopper ./out/gh-importer.jar
+	BUILD_WORKER_COUNT=1 ./tools/importer --no-upload --graphhopper ./tools/gh-importer.jar
 	# ./tools/importer --no-upload --remove-osm
 
 upload-only: compile-importer
 	SKIP_ZIP=true ./tools/importer --no-build
 
-upload-only-locus-files: compile-importer
-	SKIP_ZIP=true SKIP_FILE_UPLOAD=true ./tools/importer --no-build
-
 coverage:
 	aria2c --max-connection-per-server=1 --max-concurrent-downloads=2 --input-file=configs/map-poly-urls.txt --dir=coverage/input --conditional-get --allow-overwrite
 	node ./scripts/poly-to-geojson.js
 
-# to reduce download time, some maps (e.g. france) extracted even if maybe downloaded as
+# to reduce download time, some maps (e.g. france) extracted even if maybe downloaded as is
 extract-maps: check-env
 	osmium extract --overwrite --config=coverage/extracts.json --strategy=smart --directory="${MAP_DIR}" "${MAP_DIR}/europe-latest.osm.pbf"
 

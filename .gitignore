@@ -10,3 +10,5 @@ configs/server/*.retry
 /libs/
 
 /docs/locus/
+
+target/

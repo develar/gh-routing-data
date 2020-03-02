@@ -1,24 +1,21 @@
 package builder
 
 import (
-	"bytes"
-	"crypto/md5"
-	"encoding/base64"
-	"github.com/develar/errors"
-	"github.com/minio/minio-go/v6"
-	"github.com/panjf2000/ants"
-	"github.com/vbauerster/mpb/v4"
-	"github.com/vbauerster/mpb/v4/decor"
-	"go.uber.org/zap"
-	"io"
-	"log"
-	"os"
-	"os/exec"
-	"path"
-	"path/filepath"
-	"runtime"
-	"strings"
-	"time"
+  "bytes"
+  "crypto/md5"
+  "encoding/base64"
+  "github.com/cheggaaa/pb/v3"
+  "github.com/develar/errors"
+  "github.com/minio/minio-go/v6"
+  "github.com/panjf2000/ants"
+  "go.uber.org/zap"
+  "io"
+  "os"
+  "os/exec"
+  "path"
+  "path/filepath"
+  "strings"
+  "time"
 )
 
 const bucketName = "gh-routing-data"
@@ -110,9 +107,22 @@ func (t *Builder) uploadFile(filePath string, bucketName string, objectPath stri
 		}
 	}
 
+	// mbp https://github.com/vbauerster/mpb leads to high CPU usage (100-300%), so, just use single progress bar
+  progressBar := pb.Start64(fileSize)
+  // no need to refresh very often
+  progressBar.SetRefreshRate(time.Second)
+  progressBar.SetWriter(os.Stdout)
+  progressBar.Set(pb.Bytes, true)
+
+  if err = progressBar.Err(); err != nil {
+    return err
+  }
+
+  defer progressBar.Finish()
+
 	options := minio.PutObjectOptions{
 		ContentType:  "application/zip",
-		Progress:     &ProgressBarUpdater{bar: createBar(fileSize, t.progressContainer)},
+		Progress:     &ProgressBarUpdater{bar: progressBar},
 		UserMetadata: map[string]string{md5UserDataName: localChecksum},
 	}
 	_, err = t.uploader.PutObjectWithContext(t.ExecuteContext, bucketName, objectPath, fileReader, fileSize, options)
@@ -125,39 +135,12 @@ func (t *Builder) uploadFile(filePath string, bucketName string, objectPath stri
 }
 
 type ProgressBarUpdater struct {
-	bar           *mpb.Bar
-	incrementTime time.Time
+  bar *pb.ProgressBar
 }
 
 func (t *ProgressBarUpdater) Read(p []byte) (n int, err error) {
-	n = len(p)
-	t.bar.IncrBy(n, time.Since(t.incrementTime))
-	t.incrementTime = time.Now()
+	t.bar.Add(len(p))
 	return
-}
-
-func createBar(total int64, p *mpb.Progress) *mpb.Bar {
-	var barStyle string
-	var barEndStyle string
-	if runtime.GOOS == "linux" || runtime.GOOS == "darwin" {
-		barStyle = " ▓ ░"
-		barEndStyle = " "
-	} else {
-		// default to non unicode characters
-		barStyle = "[=>"
-		barEndStyle = " ] "
-	}
-
-	return p.AddBar(total, mpb.BarStyle(barStyle),
-		mpb.PrependDecorators(
-			decor.CountersKibiByte("% .2f / % .2f"),
-		),
-		mpb.AppendDecorators(
-			decor.EwmaETA(decor.ET_STYLE_GO, 90),
-			decor.Name(barEndStyle),
-			decor.EwmaSpeed(decor.UnitKiB, "% .2f", 60),
-		),
-	)
 }
 
 func computeChecksum(err error, fileReader *os.File) (string, error) {
@@ -209,11 +192,9 @@ func (t *Builder) initUploadPool() error {
 
 	t.uploader, err = minio.New(os.Getenv("ENDPOINT"), os.Getenv("ACCESS_KEY"), os.Getenv("SECRET_KEY") /* isSecure = */, true)
 	if err != nil {
-		log.Fatalln(err)
+		return errors.WithStack(err)
 	}
 
-	// default 120ms refresh rate, but reduce CPU load
-	t.progressContainer = mpb.NewWithContext(t.ExecuteContext, mpb.WithRefreshRate(480))
 	return nil
 }
 

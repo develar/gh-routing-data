@@ -2,7 +2,6 @@ package org.develar.gh
 
 import com.graphhopper.reader.dem.MultiSourceElevationProvider
 import com.graphhopper.reader.osm.GraphHopperOSM
-import com.graphhopper.routing.ch.CHAlgoFactoryDecorator.EdgeBasedCHMode
 import com.graphhopper.routing.util.*
 import com.graphhopper.routing.util.parsers.*
 import com.graphhopper.routing.weighting.DefaultTurnCostProvider
@@ -33,16 +32,15 @@ class Generator {
       elevationProvider.setAutoRemoveTemporaryFiles(false)
       graphHopper.elevationProvider = elevationProvider
 
-      val chFactoryDecorator = graphHopper.chFactoryDecorator
-      chFactoryDecorator.preparationThreads = Integer.getInteger("${Parameters.CH.PREPARE}threads", 1)
-      chFactoryDecorator.edgeBasedCHMode = EdgeBasedCHMode.EDGE_OR_NODE
+      val chPreparationHandler = graphHopper.chPreparationHandler
+      chPreparationHandler.preparationThreads = Integer.getInteger("${Parameters.CH.PREPARE}threads", 1)
 
       val uTurnCosts = 30
 
       val profiles = System.getenv("PROFILES")?.split(',') ?: listOf("fastest")
-      chFactoryDecorator.setCHProfilesAsStrings(profiles.map {
-        "$it${if (isTurnCostEnabled) "|u_turn_costs=$uTurnCosts" else ""}"
-      })
+      //chPreparationHandler.setCHProfilesAsStrings(profiles.map {
+      //  "$it${if (isTurnCostEnabled) "|u_turn_costs=$uTurnCosts" else ""}"
+      //})
 
       for (encoder in graphHopper.encodingManager.fetchEdgeEncoders()) {
         for (chWeightingStr in profiles) {
@@ -53,14 +51,14 @@ class Generator {
             TurnCostProvider.NO_TURN_COST_PROVIDER
           }
 
-          val weighting = graphHopper.createWeighting(HintsMap(chWeightingStr), encoder, null, turnCostProvider)
+          val weighting = graphHopper.createWeighting(HintsMap(chWeightingStr), encoder, turnCostProvider)
           val profile = if (isTurnCostEnabled && encoder.supportsTurnCosts()) {
             CHProfile.edgeBased(weighting)
           }
           else {
             CHProfile.nodeBased(weighting)
           }
-          chFactoryDecorator.addCHProfile(profile)
+          chPreparationHandler.addCHProfile(profile)
         }
       }
 
@@ -83,9 +81,6 @@ private fun buildEncodingManager(isTurnCostEnabled: Boolean): EncodingManager.Bu
   builder.add(OSMRoadAccessParser())
 
   builder.add(OSMSurfaceParser())
-
-  // todo remove once pre20 version of graphhopper will be released
-  builder.add(OSMGetOffBikeParser())
 
   if (isTurnCostEnabled) {
     builder.add(OSMTollParser())

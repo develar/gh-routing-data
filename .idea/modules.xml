@@ -3,7 +3,6 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/gh-routing-data.iml" filepath="$PROJECT_DIR$/.idea/gh-routing-data.iml" />
-      <module fileurl="file://$PROJECT_DIR$/importer/importer.iml" filepath="$PROJECT_DIR$/importer/importer.iml" />
     </modules>
   </component>
 </project>

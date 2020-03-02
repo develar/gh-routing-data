@@ -86,7 +86,7 @@ class Builder {
     // const dirName = new Date().toISOString().substr(0, 10)
     // noinspection UnnecessaryLocalVariableJS
     // const dirName = "2019-01-21"
-    this.remoteDir = "2020-02-03"
+    this.remoteDir = "2020-03-02"
 
     this.fileNames = []
     this.filesToUpload = []

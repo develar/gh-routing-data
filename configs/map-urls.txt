@@ -3,8 +3,6 @@
 # 1. geofabrik anyway uses smart extract
 # 2. in any case for user better to not hope that route will be covered, but download merged area (several countries) to be sure
 
-http://download.geofabrik.de/europe-latest.osm.pbf
-
 http://download.geofabrik.de/africa-latest.osm.pbf
 http://download.geofabrik.de/europe/alps-latest.osm.pbf
 http://download.geofabrik.de/australia-oceania/australia-latest.osm.pbf

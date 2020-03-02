@@ -57,6 +57,9 @@ func main() {
   graphHopperVersionToRegions := []*GraphHopperVersionToRegions{{
     GraphHopperVersion: "1.0-pre20",
     rootDir:            "2020-02-03",
+  }, {
+    GraphHopperVersion: "1.0-pre26",
+    rootDir:            "2020-03-02",
   }}
 
   for _, group := range graphHopperVersionToRegions {
