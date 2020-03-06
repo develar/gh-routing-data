@@ -47,3 +47,6 @@ http://download.geofabrik.de/asia/taiwan-latest.osm.pbf
 http://download.geofabrik.de/europe/turkey-latest.osm.pbf
 
 http://download.geofabrik.de/africa/morocco-latest.osm.pbf
+
+http://download.geofabrik.de/asia/philippines-latest.osm.pbf
+http://download.geofabrik.de/asia/nepal-latest.osm.pbf
