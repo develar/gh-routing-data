@@ -38,10 +38,6 @@ class Generator {
       val uTurnCosts = 30
 
       val profiles = System.getenv("PROFILES")?.split(',') ?: listOf("fastest")
-      //chPreparationHandler.setCHProfilesAsStrings(profiles.map {
-      //  "$it${if (isTurnCostEnabled) "|u_turn_costs=$uTurnCosts" else ""}"
-      //})
-
       for (encoder in graphHopper.encodingManager.fetchEdgeEncoders()) {
         for (chWeightingStr in profiles) {
           val turnCostProvider = if (isTurnCostEnabled) {

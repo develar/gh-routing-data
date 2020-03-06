@@ -49,4 +49,7 @@ https://download.geofabrik.de/europe/turkey.poly
 
 https://download.geofabrik.de/europe/poland.poly
 
-http://download.geofabrik.de/africa/morocco.poly
+https://download.geofabrik.de/africa/morocco.poly
+
+https://download.geofabrik.de/asia/philippines.poly
+https://download.geofabrik.de/asia/nepal.poly

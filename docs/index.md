@@ -1098,6 +1098,32 @@ Click on the region name to see other download options.
 </tr>
 
 <tr>
+  <td class="regionInfo">Nepal</td>
+  <td><a href="locus-actions://https/gh-data.org/locus/2020-03-02/nepal.locus.xml">Locus</a></td>
+  <td>124 MB</td>
+  <td><a href="/coverage.html#nepal@1.0-pre26">coverage</a></td>
+</tr>
+
+<tr class="infoRow">
+<td colSpan="4">
+  zip: <a href="https://s3.eu-central-1.wasabisys.com/gh-routing-data/2020-03-02/nepal.osm-gh.zip">download</a>
+</td>
+</tr>
+
+<tr>
+  <td class="regionInfo">Philippines</td>
+  <td><a href="locus-actions://https/gh-data.org/locus/2020-03-02/philippines.locus.xml">Locus</a></td>
+  <td>178 MB</td>
+  <td><a href="/coverage.html#philippines@1.0-pre26">coverage</a></td>
+</tr>
+
+<tr class="infoRow">
+<td colSpan="4">
+  zip: <a href="https://s3.eu-central-1.wasabisys.com/gh-routing-data/2020-03-02/philippines.osm-gh.zip">download</a>
+</td>
+</tr>
+
+<tr>
   <td class="regionInfo">Taiwan</td>
   <td><a href="locus-actions://https/gh-data.org/locus/2020-03-02/taiwan.locus.xml">Locus</a></td>
   <td>136 MB</td>
