@@ -4,7 +4,7 @@ deps:
 	brew install aria2 osmium-tool node minio/stable/mc
 	# required only to build site
 	brew install python
-	pip3 install mkdocs-material mkdocs pymdown-extensions --upgrade
+	pip3 install "mkdocs-material>=5.0.0rc3" mkdocs "pymdown-extensions>=7.0b2" --upgrade
 
 download: check-env
 	./scripts/download-maps.sh
@@ -17,8 +17,8 @@ compile-importer:
 
 # Java is required, download from https://www.azul.com/downloads/zulu-community/?&version=java-13&os=&os=macos&architecture=x86-64-bit&package=jre (macOS) as ZIP archive (not as installation media (e.g. dmg) to not pollute your OS),
 # unpack to some dir and prepend all commands with JAVA_HOME=<path/to/java/home> (or simply export JAVA_HOME env in current terminal window)
-# curl -O https://cdn.azul.com/zulu/bin/zulu13.29.9-ca-jre13.0.2-macosx_x64.zip && unzip zulu13.29.9-ca-jre13.0.2-macosx_x64.zip
-# e.g.: export JAVA_HOME=~/zulu13.29.9-ca-jre13.0.2-macosx_x64
+# curl -O https://cdn.azul.com/zulu/bin/zulu14.27.1-ca-jdk14-macosx_x64.zip && unzip zulu14.27.1-ca-jdk14-macosx_x64.zip
+# e.g.: export JAVA_HOME=~/zulu14.27.1-ca-jdk14-macosx_x64
 build: compile-importer
 	BUILD_WORKER_COUNT=1 ./tools/importer --remove-osm
 
@@ -62,7 +62,7 @@ dev-site:
 	caddy -root site -quic -port 8080 -host localhost "ext .html" "log stdout" "tls self_signed" "bind 127.0.0.1"
 
 update-deps:
-	go get -u ./...
+	go get -u -d ./...
 	go mod tidy
 
 # mc mirror gh/gh-logs /Volumes/data/gh-logs

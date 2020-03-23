@@ -6,7 +6,7 @@ import (
 	"github.com/develar/errors"
 	"github.com/develar/go-fs-util"
 	"github.com/minio/minio-go/v6"
-	"github.com/panjf2000/ants"
+  "github.com/panjf2000/ants/v2"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 	"log"
@@ -19,7 +19,7 @@ import (
 )
 
 type Builder struct {
-	GraphhopperWebJar string
+	ImporterJar string
 
 	MapDir            string
 	ElevationCacheDir string
@@ -82,12 +82,9 @@ func (t *Builder) Build(regionFile string) error {
 		}
 	} else {
 		for _, region := range regions {
-			err = t.upload(region.Name)
-			if err != nil {
-				return err
-			}
+      t.addFileToUploadQueue(region.Name)
 		}
-	}
+  }
 
 	return nil
 }
@@ -155,7 +152,7 @@ func (t *Builder) buildRegion(region *RegionInfo, bucket *Bucket) error {
 
 		ghProperty("prepare.ch.threads", chThreadCount),
 
-		"-jar", t.GraphhopperWebJar,
+		"-jar", t.ImporterJar,
 	)
 
 	logFilePath := filepath.Join(filepath.Dir(region.File), region.Name+".log")

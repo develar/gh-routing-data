@@ -7,7 +7,7 @@ import (
   "github.com/cheggaaa/pb/v3"
   "github.com/develar/errors"
   "github.com/minio/minio-go/v6"
-  "github.com/panjf2000/ants"
+  "github.com/panjf2000/ants/v2"
   "go.uber.org/zap"
   "io"
   "os"
@@ -168,34 +168,42 @@ func (t *Builder) addFileToUploadQueue(regionName string) {
 		err := t.uploadPool.Invoke(regionName)
 		if err != nil && err != ants.ErrPoolClosed {
 			t.uploadWaitGroup.Done()
-			t.Logger.Error("cannot upload", zap.String("region", regionName), zap.Error(err))
-			t.appendError("cannot upload " + regionName + ": " + err.Error())
+      t.addUploadError(regionName, err)
 		}
 	}()
 }
 
 func (t *Builder) initUploadPool() error {
 	var err error
-	t.uploadPool, err = ants.NewPoolWithFunc(2 /* 2 parallel uploads are enough */, func(payload interface{}) {
+	// 2 parallel uploads are enough
+	poolSize := 2
+	if !t.IsBuild {
+    poolSize = 4
+  }
+	t.uploadPool, err = ants.NewPoolWithFunc(poolSize, func(payload interface{}) {
 		defer t.uploadWaitGroup.Done()
 
 		regionName := payload.(string)
 		err = t.upload(regionName)
 		if err != nil {
-			t.Logger.Error("cannot upload", zap.String("region", regionName), zap.Error(err))
-			t.appendError("cannot upload " + regionName + ": " + err.Error())
-		}
-	})
-	if err != nil {
-		return errors.WithStack(err)
-	}
+      t.addUploadError(regionName, err)
+    }
+  })
+  if err != nil {
+    return errors.WithStack(err)
+  }
 
-	t.uploader, err = minio.New(os.Getenv("ENDPOINT"), os.Getenv("ACCESS_KEY"), os.Getenv("SECRET_KEY") /* isSecure = */, true)
-	if err != nil {
-		return errors.WithStack(err)
-	}
+  t.uploader, err = minio.New(os.Getenv("ENDPOINT"), os.Getenv("ACCESS_KEY"), os.Getenv("SECRET_KEY") /* isSecure = */, true)
+  if err != nil {
+    return errors.WithStack(err)
+  }
 
-	return nil
+  return nil
+}
+
+func (t *Builder) addUploadError(regionName string, err error) {
+  t.Logger.Error("cannot upload", zap.String("region", regionName), zap.Error(err))
+  t.appendError("cannot upload " + regionName + ": " + err.Error())
 }
 
 func (t *Builder) WaitAndCloseUploadPool() error {

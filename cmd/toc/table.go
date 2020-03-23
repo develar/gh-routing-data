@@ -28,6 +28,7 @@ func createTableTemplate() *template.Template {
 <select name="ghVersions" id="mapVersionFormatSelect">
   <option value="1.0-pre20">0.9 | GraphHopper 1.0-pre20</option>
   <option value="1.0-pre26">0.10 (unreleased) | GraphHopper 1.0-pre26</option>
+  <option value="1.0-pre31">0.10 (unreleased) | GraphHopper 1.0-pre31</option>
 </select>
 {{ end -}}
 

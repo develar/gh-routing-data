@@ -22,7 +22,7 @@ func main() {
 
 	mapDir := app.Flag("map-dir", "The path to map files").Required().Envar("MAP_DIR").String()
 	elevationCacheDir := app.Flag("elevation-dir", "The path to elevation cache").Envar("ELEVATION_DIR").String()
-	graphhopperWebJar := app.Flag("graphhopper", "The path to graphhopper-importer JAR").String()
+	ghJar := app.Flag("graphhopper", "The path to graphhopper-importer JAR").String()
 
 	_ = kingpin.MustParse(app.Parse(os.Args[1:]))
 
@@ -55,7 +55,7 @@ func main() {
 		IsUpload:            *isUpload,
 		IsRemoveOsmOnImport: *isRemoveOsmOnImport,
 
-		GraphhopperWebJar: *graphhopperWebJar,
+		ImporterJar: *ghJar,
 
 		Logger: logger,
 	}
@@ -64,9 +64,13 @@ func main() {
 		builder.ElevationCacheDir = filepath.Join(*mapDir, "..", "elevation")
 	}
 
-	// https://search.maven.org/search?q=a:graphhopper-web
-	if builder.GraphhopperWebJar == "" {
-		builder.GraphhopperWebJar = filepath.Join(builder.MapDir, "gh-importer.jar")
+	if len(builder.ImporterJar) == 0 {
+    executablePath, err := os.Executable()
+    if err != nil {
+      log.Fatalf("%+v\n", err)
+      return
+    }
+		builder.ImporterJar = filepath.Join(filepath.Dir(executablePath), "gh-importer.jar")
 	}
 
 	err = doBuild(&builder)

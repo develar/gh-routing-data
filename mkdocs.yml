@@ -3,8 +3,8 @@ use_directory_urls: false
 theme:
   name: material
   favicon: favicon.ico
-  logo:
-    icon: 'directions'
+  icon:
+    logo: material/directions
   palette:
     primary: 'light blue'
     accent: 'light blue'

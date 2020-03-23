@@ -1,11 +1,10 @@
 package org.develar.gh
 
-import com.graphhopper.reader.dem.MultiSourceElevationProvider
+import com.graphhopper.config.ProfileConfig
+import com.graphhopper.reader.dem.ReliableSkadiProvider
 import com.graphhopper.reader.osm.GraphHopperOSM
 import com.graphhopper.routing.util.*
 import com.graphhopper.routing.util.parsers.*
-import com.graphhopper.routing.weighting.DefaultTurnCostProvider
-import com.graphhopper.routing.weighting.TurnCostProvider
 import com.graphhopper.storage.CHProfile
 import com.graphhopper.util.PMap
 import com.graphhopper.util.Parameters
@@ -28,26 +27,21 @@ class Generator {
       graphHopper.dataReaderFile = System.getProperty("datareader.file")
       graphHopper.encodingManager = buildEncodingManager(isTurnCostEnabled).build()
 
-      val elevationProvider = MultiSourceElevationProvider(getElevationCacheDir())
+      val elevationProvider = ReliableSkadiProvider(getElevationCacheDir())
       elevationProvider.setAutoRemoveTemporaryFiles(false)
       graphHopper.elevationProvider = elevationProvider
 
       val chPreparationHandler = graphHopper.chPreparationHandler
       chPreparationHandler.preparationThreads = Integer.getInteger("${Parameters.CH.PREPARE}threads", 1)
 
-      val uTurnCosts = 30
-
-      val profiles = System.getenv("PROFILES")?.split(',') ?: listOf("fastest")
+      val weightingNames = System.getenv("PROFILES")?.split(',') ?: listOf("fastest")
       for (encoder in graphHopper.encodingManager.fetchEdgeEncoders()) {
-        for (chWeightingStr in profiles) {
-          val turnCostProvider = if (isTurnCostEnabled) {
-            DefaultTurnCostProvider(encoder, graphHopper.graphHopperStorage.turnCostStorage, uTurnCosts)
-          }
-          else {
-            TurnCostProvider.NO_TURN_COST_PROVIDER
-          }
-
-          val weighting = graphHopper.createWeighting(HintsMap(chWeightingStr), encoder, turnCostProvider)
+        for (weightingName in weightingNames) {
+          val profileConfig = ProfileConfig("$encoder-$weightingName")
+            .setWeighting(weightingName)
+            .setVehicle(encoder.toString())
+            .setTurnCosts(isTurnCostEnabled)
+          val weighting = graphHopper.createWeighting(profileConfig, PMap())
           val profile = if (isTurnCostEnabled && encoder.supportsTurnCosts()) {
             CHProfile.edgeBased(weighting)
           }
@@ -93,14 +87,14 @@ private fun buildEncodingManager(isTurnCostEnabled: Boolean): EncodingManager.Bu
 
   if (isTurnCostEnabled) {
     val options = PMap("")
-    options.put("turn_costs", true)
+    options.putObject(Parameters.Routing.TURN_COSTS, true)
     builder.add(CarFlagEncoder(options))
     builder.add(MotorcycleFlagEncoder(options))
     builder.add(Car4WDFlagEncoder(options))
     builder.add(FootFlagEncoder())
   }
   else {
-    val empty = PMap("")
+    val empty = PMap()
     builder.add(Bike2WeightFlagEncoder(empty))
     builder.add(MountainBikeFlagEncoder(empty))
     builder.add(RacingBikeFlagEncoder(empty))

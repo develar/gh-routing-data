@@ -2,7 +2,7 @@ const fs = require("fs")
 const path = require("path")
 const child_process = require("child_process")
 
-const patterns = ["*_bike2_node", "*_mtb_node", "*_racingbike_node"]
+const patterns = ["*_bikenode_utc2", "*_mtb_node", "*_racingbike_node"]
 const patterns2 = ["*_car_node", "*_hike_node"]
 
 function unlinkIfExists(file) {
@@ -84,9 +84,7 @@ class Builder {
     this.dirName = `${resultName}.osm-gh`
 
     // const dirName = new Date().toISOString().substr(0, 10)
-    // noinspection UnnecessaryLocalVariableJS
-    // const dirName = "2019-01-21"
-    this.remoteDir = "2020-03-02"
+    this.remoteDir = "2020-03-21"
 
     this.fileNames = []
     this.filesToUpload = []

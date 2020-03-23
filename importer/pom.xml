@@ -11,10 +11,10 @@
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <kotlin.version>1.3.70-eap-274</kotlin.version>
+    <kotlin.version>1.3.70</kotlin.version>
     <kotlin.code.style>official</kotlin.code.style>
-    <gh.version>1.0-pre26</gh.version>
-    <java.version>13</java.version>
+    <gh.version>1.0-pre31</gh.version>
+    <java.version>14</java.version>
   </properties>
 
   <dependencies>
