@@ -34,8 +34,9 @@ class Generator {
       val chPreparationHandler = graphHopper.chPreparationHandler
       chPreparationHandler.preparationThreads = Integer.getInteger("${Parameters.CH.PREPARE}threads", 1)
 
-      val weightingNames = System.getenv("PROFILES")?.split(',') ?: listOf("fastest")
+      val profiles = mutableListOf<ProfileConfig>()
       for (encoder in graphHopper.encodingManager.fetchEdgeEncoders()) {
+        val weightingNames = if (encoder is MountainBikeFlagEncoder || encoder is HikeFlagEncoder) listOf("shortest", "short_fastest", "fastest") else listOf("fastest")
         for (weightingName in weightingNames) {
           val profileConfig = ProfileConfig("$encoder-$weightingName")
             .setWeighting(weightingName)
@@ -48,10 +49,12 @@ class Generator {
           else {
             CHProfile.nodeBased(weighting)
           }
+          profiles.add(profileConfig)
           chPreparationHandler.addCHProfile(profile)
         }
       }
 
+      graphHopper.profiles = profiles
       graphHopper.importAndClose()
     }
   }

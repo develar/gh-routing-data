@@ -84,7 +84,7 @@ class Builder {
     this.dirName = `${resultName}.osm-gh`
 
     // const dirName = new Date().toISOString().substr(0, 10)
-    this.remoteDir = "2020-03-21"
+    this.remoteDir = "2020-03-29"
 
     this.fileNames = []
     this.filesToUpload = []
